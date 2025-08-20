@@ -9,9 +9,9 @@ export type Note = NoteInput & {
 	updatedAt: string;
 };
 
-export type UpdateNote = Partial<NoteInput>;
+// export type UpdateNote = Partial<NoteInput>;
 
-export interface ErrorResponse {
-	message: string;
-	error?: string;
-}
+// export interface ErrorResponse {
+// 	message: string;
+// 	error?: string;
+// }

@@ -1,6 +1,8 @@
 import "./App.css";
+import type { NoteInput } from "./lib/types";
 
 function App() {
+	const data: NoteInput = { title: "test", content: "testing" };
 	return (
 		<main className="flex justify-between items-center h-full w-full">
 			<section className="hidden md:flex md:flex-col  h-[95%]  w-[300px] bg-neutral-700 p-3 rounded-lg">
