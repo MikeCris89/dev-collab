@@ -33,3 +33,16 @@ export class BadRequestError extends CustomError {
 		return { message: this.message };
 	}
 }
+
+export class UnauthorizedError extends CustomError {
+	statusCode = 401;
+
+	constructor(message: string = "Unauthorized") {
+		super(message);
+		Object.setPrototypeOf(this, new.target.prototype);
+	}
+
+	serialize() {
+		return { message: this.message };
+	}
+}

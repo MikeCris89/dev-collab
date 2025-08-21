@@ -8,10 +8,3 @@ export interface Note extends NoteInput {
 	createdAt: string;
 	updatedAt: string;
 }
-
-// export type UpdateNote = Partial<NoteInput>;
-
-// export interface ErrorResponse {
-// 	message: string;
-// 	error?: string;
-// }
