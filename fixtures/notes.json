@@ -1,0 +1,18 @@
+{
+	"1234": [
+		{
+			"title": "First Note",
+			"content": "This is the first note I made!",
+			"createdAt": "2025-08-01T10:15:30.000Z",
+			"updatedAt": "2025-08-01T10:45:00.000Z",
+			"id": "1"
+		},
+		{
+			"title": "Second Note",
+			"content": "This is the second note I made!",
+			"createdAt": "2025-08-02T14:20:10.000Z",
+			"updatedAt": "2025-08-02T15:05:45.000Z",
+			"id": "2"
+		}
+	]
+}

@@ -22,11 +22,12 @@ export const errorHandler = (
 	});
 };
 
-export const requireAuth: RequestHandler = (req, res, next) => {
+export const requireAuth: RequestHandler = (req, _res, next) => {
 	const token = req.cookies?.session;
 	if (!token) throw new UnauthorizedError("Auth Required");
 
 	try {
+		// TODO get user info: {uid: string, username: string}
 		const payload = jwt.verify(token, process.env.JWT_SECRET!);
 		(req as any).user = payload;
 		next();

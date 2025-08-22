@@ -9,7 +9,7 @@ import { errorHandler, requireAuth } from "./lib/middleware.js";
 const app = express();
 const PORT = 4001;
 
-app.use(cors({ origin: `http://localhost:5173` }));
+app.use(cors({ origin: `http://localhost:5173`, credentials: true }));
 app.use(cookieParser());
 
 // Body Parser
@@ -17,6 +17,9 @@ app.use(express.json());
 
 // Morgan Logging
 app.use(morgan("tiny"));
+
+// Health for Playwright
+app.get("/health", (_req, res) => res.sendStatus(200));
 
 // Routers
 app.use("/api/auth", authRouter);

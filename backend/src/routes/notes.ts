@@ -2,17 +2,18 @@ import express, { Request, Response } from "express";
 import type { Note, NoteInput } from "../lib/types.js";
 import { NotFoundError } from "../lib/errors.js";
 import { testNote, validateNoteInput } from "../lib/utils.js";
+import { requireAuth } from "../lib/middleware.js";
 
 const router = express.Router();
 
-router.get("/", async (_req, res: Response<Note[]>) => {
+router.get("/", requireAuth, async (_req: Request, res: Response<Note[]>) => {
 	const data = await Promise.resolve(testNote);
 	if (!data) throw new NotFoundError();
 
 	res.json([data]);
 });
 
-router.get("/:id", async (req, res: Response<Note>) => {
+router.get("/:id", requireAuth, async (req: Request, res: Response<Note>) => {
 	const { id } = req.params;
 
 	const data = await Promise.resolve(testNote);
@@ -23,6 +24,7 @@ router.get("/:id", async (req, res: Response<Note>) => {
 
 router.post(
 	"/",
+	requireAuth,
 	validateNoteInput,
 	async (req: Request, res: Response<Note>) => {
 		const body = req.body as NoteInput;
@@ -37,6 +39,7 @@ router.post(
 
 router.put(
 	"/:id",
+	requireAuth,
 	validateNoteInput,
 	async (req: Request, res: Response<Note>) => {
 		const { id } = req.params;
@@ -49,7 +52,7 @@ router.put(
 	}
 );
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", requireAuth, (req, res) => {
 	const { id } = req.params;
 
 	res.status(204).end();

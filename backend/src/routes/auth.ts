@@ -1,8 +1,14 @@
 import express from "express";
 import { BadRequestError, UnauthorizedError } from "../lib/errors.js";
 import jwt from "jsonwebtoken";
+import { requireAuth } from "../lib/middleware.js";
 
 const router = express.Router();
+
+router.get("/me", requireAuth, async (req, res) => {
+	const user = (req as any).user;
+	res.json(user);
+});
 
 router.post("/login", async (req, res) => {
 	const { username, password } = req.body;

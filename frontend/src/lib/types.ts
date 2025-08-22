@@ -8,3 +8,8 @@ export interface Note extends NoteInput {
 	createdAt: string;
 	updatedAt: string;
 }
+
+export interface User {
+	id: string;
+	username: string;
+}
