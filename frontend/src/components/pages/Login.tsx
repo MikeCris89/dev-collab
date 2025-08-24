@@ -16,41 +16,52 @@ const Login = () => {
 	};
 
 	return (
-		<div className="flex justify-center items-center h-full w-full">
-			<h1>Login</h1>
+		<div className="flex flex-col justify-center items-center h-full w-full">
+			<h2 className="text-3xl p-3">Login</h2>
 			{login && (
 				<form
 					onSubmit={handleSubmit}
-					className="flex flex-col items-center justify-center rounded ring-1 ring-neutral-300 p-4 "
+					className="card flex flex-col gap-4 items-center justify-center w-full max-w-[500px]"
 				>
-					<label htmlFor="username">Username</label>
-					<input
-						name="username"
-						id="username"
-						required
-						onChange={(e) => setUsername(e.target.value)}
-						disabled={isLoading}
-					/>
+					<div className="flex flex-col gap-1">
+						<label htmlFor="username" className="self-start">
+							Username
+						</label>
+						<input
+							name="username"
+							id="username"
+							required
+							onChange={(e) => setUsername(e.target.value)}
+							disabled={isLoading}
+						/>
+					</div>
 
-					<label htmlFor="password">Password</label>
-					<input
-						name="password"
-						id="password"
-						type="password"
-						required
-						onChange={(e) => setPassword(e.target.value)}
-						disabled={isLoading}
-					/>
+					<div className="flex flex-col gap-1">
+						<label htmlFor="password" className="self-start">
+							Password
+						</label>
+						<input
+							name="password"
+							id="password"
+							type="password"
+							required
+							onChange={(e) => setPassword(e.target.value)}
+							disabled={isLoading}
+						/>
+					</div>
+					{error && (
+						<p role="alert" className="text-red-500">
+							{error}
+						</p>
+					)}
 
-					<div className="flex gap-2 self-end">
-						<button type="button">Cancel</button>
+					<div className="flex gap-2 self-end p-3">
 						<button type="submit" disabled={isLoading}>
 							Submit
 						</button>
 					</div>
 				</form>
 			)}
-			{error && <p className="text-red-500">{error}</p>}
 		</div>
 	);
 };

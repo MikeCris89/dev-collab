@@ -28,7 +28,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 			const resp = await api.get("/api/auth/me");
 			setUser(resp.data);
 		} catch (e) {
-			setError("Error logging in");
+			console.log("User not logged in, rendering login page");
 		} finally {
 			setIsLoading(false);
 		}
@@ -42,8 +42,8 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 
 	const login = async (username: string, password: string) => {
 		try {
-			const resp = await api.post("/api/auth/login", { username, password });
-
+			await api.post("/api/auth/login", { username, password });
+			const resp = await api.get("/api/auth/me");
 			setUser(resp.data);
 		} catch (e) {
 			setError("Error logging in");
@@ -51,7 +51,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	};
 
 	const logout = async () => {
-		await api.post("/auth/logout");
+		await api.post("/api/auth/logout");
 		setUser(null);
 	};
 

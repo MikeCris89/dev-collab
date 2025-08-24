@@ -8,12 +8,12 @@ function App() {
 	const { user, isLoading } = useAuth();
 
 	return (
-		<main>
+		<main className="h-full w-full">
 			{isLoading ? (
 				<p>Loading...</p>
 			) : user ? (
 				<NotesProvider>
-					<Notes />{" "}
+					<Notes />
 				</NotesProvider>
 			) : (
 				<Login />

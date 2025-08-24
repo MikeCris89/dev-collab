@@ -8,29 +8,35 @@ const Notes = () => {
 
 	return (
 		<div className="flex justify-between items-center h-full w-full">
-			<section className="hidden md:flex md:flex-col  h-[95%]  w-[300px] bg-neutral-700 p-3 rounded-lg">
-				<input placeholder="search..." />
+			<section className="card hidden md:flex md:flex-col gap-4 h-[95%] w-[300px]">
+				<input placeholder="search…" />
 				<div className="flex justify-between items-center">
 					<h2>My Notes</h2>
 					<button>+New Note</button>
 				</div>
-				<div className="divide-y divide-neutral-300">
+				<div className="divide-y divide-neutral-600">
 					{(isLoading ? <p>Loading notes...</p> : notes.length > 0) ? (
 						notes.map((note) => {
-							return <h3 onClick={() => setSelected(note)}>{note.title}</h3>;
+							return (
+								<div key={note.id} className="w-full">
+									<h3 onClick={() => setSelected(note)} className="m-auto">
+										{note.title}
+									</h3>
+								</div>
+							);
 						})
 					) : (
 						<h3>No Notes</h3>
 					)}
 				</div>
 			</section>
-			<section className="flex-1 flex flex-col gap-3 justify-start items-center h-[95%]">
+			<section className="flex-1 flex flex-col gap-3 justify-start items-center h-[95%] w-full">
 				{error ? (
-					<h2>Error: {error}</h2>
+					<h2 className="text-red-500">Error: {error}</h2>
 				) : selected ? (
 					<>
-						<div className="flex justify-between items-center p-2">
-							<div>
+						<div className="flex justify-between items-center p-2 w-full">
+							<div className="text-left">
 								<p>
 									created: {new Date(selected.createdAt).toLocaleDateString()}
 								</p>
@@ -48,7 +54,7 @@ const Notes = () => {
 						<p>{selected.content}</p>
 					</>
 				) : (
-					<h2>No Note Selected...</h2>
+					<h2 className="justify-self-center">No Note Selected...</h2>
 				)}
 			</section>
 		</div>

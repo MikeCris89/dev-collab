@@ -7,12 +7,13 @@
 
 	color-scheme: light dark;
 	color: rgba(255, 255, 255, 0.87);
-	background-color: #242424;
 
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+
+	@apply bg-neutral-900;
 }
 
 a {
@@ -39,7 +40,7 @@ h1 {
 
 button {
 	border-radius: 8px;
-	border: 1px solid transparent;
+	/* border: 1px solid transparent; */
 	padding: 0.6em 1.2em;
 	font-size: 1em;
 	font-weight: 500;
@@ -47,13 +48,19 @@ button {
 	background-color: #1a1a1a;
 	cursor: pointer;
 	transition: border-color 0.25s;
+
+	@apply outline-1 outline-neutral-600;
 }
 button:hover {
-	border-color: #646cff;
+	@apply outline-cyan-400;
 }
 button:focus,
 button:focus-visible {
-	outline: 4px auto -webkit-focus-ring-color;
+	@apply outline-1 outline-cyan-400;
+}
+
+input {
+	@apply outline-1 outline-neutral-300 rounded-md caret-cyan-400 p-1 px-2 focus:outline-cyan-400 my-1;
 }
 
 @media (prefers-color-scheme: light) {
