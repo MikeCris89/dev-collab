@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { CustomError, UnauthorizedError } from "./errors.js";
+import { JwtUser } from "../types/types.js";
 
 export const errorHandler = (
 	err: unknown,
@@ -28,8 +29,14 @@ export const requireAuth: RequestHandler = (req, _res, next) => {
 
 	try {
 		// TODO get user info: {uid: string, username: string}
-		const payload = jwt.verify(token, process.env.JWT_SECRET!);
-		(req as any).user = payload;
+		const payload = jwt.verify(
+			token,
+			process.env.JWT_SECRET!
+		) as jwt.JwtPayload & Partial<JwtUser>;
+		// normalize
+		req.user = {
+			sub: String(payload.sub),
+		};
 		next();
 	} catch (e) {
 		throw new UnauthorizedError("Invalid or Expired Session");

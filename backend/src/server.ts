@@ -5,6 +5,9 @@ import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { errorHandler, requireAuth } from "./lib/middleware.js";
+import dotenv from "dotenv";
+
+dotenv.config({ path: ".env.local" });
 
 const app = express();
 const PORT = 4001;
