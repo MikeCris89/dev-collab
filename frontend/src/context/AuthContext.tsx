@@ -6,16 +6,12 @@ interface AuthCtx {
 	isLoading: boolean;
 	error: string | null;
 	user: User | null;
-	login?: (username: string, password: string) => Promise<void>;
-	logout?: () => Promise<void>;
-	refresh?: () => Promise<void>;
+	login: (username: string, password: string) => Promise<void>;
+	logout: () => Promise<void>;
+	refresh: () => Promise<void>;
 }
 
-export const AuthContext = createContext<AuthCtx>({
-	isLoading: true,
-	error: null,
-	user: null,
-});
+export const AuthContext = createContext<AuthCtx | undefined>(undefined);
 
 const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -66,4 +62,8 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 
 export default AuthProvider;
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+	const ctx = useContext(AuthContext);
+	if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
+	return ctx;
+};

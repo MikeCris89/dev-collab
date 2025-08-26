@@ -1,0 +1,61 @@
+import { useState } from "react";
+import type { Note } from "../lib/types";
+import { useNotes } from "../context/NotesContext";
+
+const NoteForm = ({ existing }: { existing?: Note }) => {
+	const { addNote, updateNote, isLoading } = useNotes();
+
+	const [title, setTitle] = useState<string>(existing?.title ?? "");
+	const [content, setContent] = useState<string>(existing?.content ?? "");
+
+	const handleSubmit = (e: React.FormEvent) => {
+		console.log("saving form");
+		e.preventDefault();
+		if (title && content) {
+			const newNote = { title, content };
+			if (existing?.id) {
+				updateNote(existing.id, newNote);
+			} else {
+				addNote(newNote);
+			}
+		}
+	};
+
+	return (
+		<form
+			id="note-form"
+			onSubmit={handleSubmit}
+			className="flex-1 flex flex-col gap-10 justify-center items-center h-full w-full "
+		>
+			<input
+				value={title}
+				placeholder="Title"
+				required
+				onChange={(e) => setTitle(e.target.value)}
+				className="text-[36px] text-accent"
+				disabled={isLoading}
+			/>
+			<textarea
+				placeholder="content"
+				required
+				onChange={(e) => setContent(e.target.value)}
+				className="h-[50%] w-full max-w-[90%]"
+				disabled={isLoading}
+			/>
+			{/* <div>
+				<button
+					type="button"
+					onClick={() => setShowForm({ show: false, note: null })}
+					disabled={isLoading}
+				>
+					cancel
+				</button>
+				<button type="submit" disabled={isLoading}>
+					submit
+				</button>
+			</div> */}
+		</form>
+	);
+};
+
+export default NoteForm;

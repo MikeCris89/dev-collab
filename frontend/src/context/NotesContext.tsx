@@ -2,20 +2,37 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { Note, NoteInput } from "../lib/types";
 import { api } from "../lib/api";
 
+export type SetShowForm = React.Dispatch<React.SetStateAction<ShowForm>>;
+
+export type ShowForm = {
+	show: boolean;
+	note: Note | null;
+};
+
 interface NotesCtx {
 	notes: Note[];
+	selected: Note | null;
+	setSelected: React.Dispatch<React.SetStateAction<Note | null>>;
 	isLoading: boolean;
 	error: string | null;
-	refetch?: () => Promise<void>;
-	addNote?: (note: NoteInput) => Promise<void>;
-	updateNote?: (id: string, note: NoteInput) => Promise<void>;
-	deleteNote?: (id: string) => Promise<void>;
+	showForm: ShowForm;
+	setShowForm: SetShowForm;
+	refetch: () => Promise<void>;
+	addNote: (note: NoteInput) => Promise<void>;
+	updateNote: (id: string, note: NoteInput) => Promise<void>;
+	deleteNote: (id: string) => Promise<void>;
 }
 
 export const NotesContext = createContext<NotesCtx | undefined>(undefined);
 
 const NotesProvider = ({ children }: React.PropsWithChildren) => {
 	const [notes, setNotes] = useState<Note[]>([]);
+	const [selected, setSelected] = useState<Note | null>(null);
+	const [showForm, setShowForm] = useState<ShowForm>({
+		show: false,
+		note: null,
+	});
+
 	const [isFetching, setIsFetching] = useState(true);
 	const [isAdding, setIsAdding] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
@@ -51,6 +68,7 @@ const NotesProvider = ({ children }: React.PropsWithChildren) => {
 			setError("Error adding note");
 		} finally {
 			setIsAdding(false);
+			setShowForm({ show: false, note: null });
 		}
 	};
 
@@ -67,6 +85,7 @@ const NotesProvider = ({ children }: React.PropsWithChildren) => {
 			setError("Error updating note");
 		} finally {
 			setIsUpdating(false);
+			setShowForm({ show: false, note: null });
 		}
 	};
 
@@ -87,12 +106,16 @@ const NotesProvider = ({ children }: React.PropsWithChildren) => {
 		<NotesContext.Provider
 			value={{
 				notes,
+				selected,
+				setSelected,
 				isLoading: isFetching || isAdding || isUpdating || isDeleting,
 				error,
 				refetch: fetchNotes,
 				addNote,
 				updateNote,
 				deleteNote,
+				showForm,
+				setShowForm,
 			}}
 		>
 			{children}
