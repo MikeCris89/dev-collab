@@ -1,0 +1,56 @@
+/* @import "tailwindcss"; */
+
+@theme {
+	/* Light Mode Colors */
+
+	/* Backgrounds */
+	--color-bg-main: oklch(0.98 0 0); /* #fafafa */
+	--color-bg-elevated: oklch(1 0 0); /* #ffffff */
+	--color-bg-muted: oklch(0 0 0 / 0.03); /* cards, surfaces */
+	/* --color-bg-surface: oklch(0.2972 0 0 / 80%); */
+	--color-bg-surface: oklch(1 0 0 / 0.8);
+
+	/* Accent */
+	--color-accent: oklch(0.6 0.15 250); /* glowing blue */
+	--color-accent-hover: oklch(0.6 0.15 250 / 0.1); /* hover states */
+
+	/* Accent */
+	--color-accent: oklch(0.7762 0.1116 188.54); /* #4ecdc4 */
+	--color-accent-hover: oklch(0.7762 0.1116 188.54 / 0.1); /* hover states */
+
+	/* Text */
+	--color-text-primary: oklch(0.2 0 0); /* primary text */
+	--color-text-muted: oklch(0.5 0 0); /* secondary text */
+
+	/* Interactive */
+	--color-border-medium: oklch(0 0 0 / 0.06); /* light borders */
+	--color-border-light: oklch(0 0 0 / 0.15); /* medium borders */
+	--color-hover-medium: oklch(0 0 0 / 0.02); /* light hover backgrounds */
+	--color-hover-light: oklch(0 0 0 / 0.08); /* medium hover backgrounds */
+}
+
+@layer theme {
+	.dark {
+		/* Dark Mode Colors */
+
+		/* Backgrounds */
+		--color-bg-main: oklch(0.11 0 0); /* #1a1a1a */
+		--color-bg-elevated: oklch(0.19 0 0); /* #2d2d2d */
+		--color-bg-muted: oklch(1 0 0 / 0.05);
+		--color-bg-surface: oklch(0.2972 0 0 / 80%); /* cards, surfaces */
+
+		/* Accent */
+		--color-accent: oklch(0.7762 0.1116 188.54); /* #4ecdc4 */
+		--color-accent-hover: oklch(0.7762 0.1116 188.54 / 0.1); /* hover states */
+
+		/* Text */
+		--color-text-primary: oklch(1 0 0); /* primary text */
+		--color-text-muted: oklch(1 0 0 / 0.7); /* secondary text */
+
+		/* Interactive */
+		--color-hover-light: oklch(1 0 0 / 0.06); /* rgba(255, 255, 255, 0.06) */
+		--color-hover-medium: oklch(1 0 0 / 0.1); /* rgba(255, 255, 255, 0.1) */
+		--color-border-light: oklch(1 0 0 / 0.1); /* rgba(255, 255, 255, 0.08) */
+		--color-border-medium: oklch(1 0 0 / 0.3); /* rgba(255, 255, 255, 0.3) */
+	}
+}
