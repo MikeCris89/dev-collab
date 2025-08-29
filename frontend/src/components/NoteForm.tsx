@@ -4,6 +4,7 @@ import { useNotes } from "../context/NotesContext";
 
 const NoteForm = ({ existing }: { existing?: Note }) => {
 	const { addNote, updateNote, isLoading } = useNotes();
+	console.log(existing);
 
 	const [title, setTitle] = useState<string>(existing?.title ?? "");
 	const [content, setContent] = useState<string>(existing?.content ?? "");
@@ -32,14 +33,15 @@ const NoteForm = ({ existing }: { existing?: Note }) => {
 				placeholder="Title"
 				required
 				onChange={(e) => setTitle(e.target.value)}
-				className="text-[36px] text-accent"
+				className="text-[36px] text-accent text-center max-w-[95%]"
 				disabled={isLoading}
 			/>
 			<textarea
+				value={content}
 				placeholder="content"
 				required
 				onChange={(e) => setContent(e.target.value)}
-				className="h-[50%] w-full max-w-[90%]"
+				className="h-[50%] w-full max-w-[90%] text-center text-balance"
 				disabled={isLoading}
 			/>
 			{/* <div>

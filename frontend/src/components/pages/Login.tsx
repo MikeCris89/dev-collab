@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import Button from "../Button";
+import ThemeSwitcher from "../ThemeSwitcher";
 
 const Login = () => {
 	const [username, setUsername] = useState<string | null>(null);
@@ -17,12 +18,16 @@ const Login = () => {
 	};
 
 	return (
-		<div className="flex flex-col justify-center items-center h-full w-full ">
+		<div className="flex flex-col justify-center items-center h-full w-full relative max-w-[90%] m-auto">
+			<div className="absolute top-0 right-0  h-10 w-10 p-6">
+				<ThemeSwitcher />
+			</div>
 			<h1 className="p-3">MyNotes Login</h1>
 
 			<form
 				onSubmit={handleSubmit}
 				className="card flex flex-col gap-4 items-center justify-center w-full max-w-[500px] "
+				autoComplete="off"
 			>
 				<div className="flex flex-col gap-1">
 					<label htmlFor="username" className="self-start">
@@ -34,6 +39,8 @@ const Login = () => {
 						required
 						onChange={(e) => setUsername(e.target.value)}
 						disabled={isLoading}
+						autoComplete="off"
+						className="w-[250px]"
 					/>
 				</div>
 
@@ -48,6 +55,7 @@ const Login = () => {
 						required
 						onChange={(e) => setPassword(e.target.value)}
 						disabled={isLoading}
+						className="w-[250px]"
 					/>
 				</div>
 				{error && (

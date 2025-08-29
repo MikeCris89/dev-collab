@@ -16,11 +16,14 @@ interface NotesCtx {
 	isLoading: boolean;
 	error: string | null;
 	showForm: ShowForm;
+	showMenu: boolean;
+	setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
 	setShowForm: SetShowForm;
 	refetch: () => Promise<void>;
 	addNote: (note: NoteInput) => Promise<void>;
 	updateNote: (id: string, note: NoteInput) => Promise<void>;
 	deleteNote: (id: string) => Promise<void>;
+	toggleMenu: () => void;
 }
 
 export const NotesContext = createContext<NotesCtx | undefined>(undefined);
@@ -32,6 +35,7 @@ const NotesProvider = ({ children }: React.PropsWithChildren) => {
 		show: false,
 		note: null,
 	});
+	const [showMenu, setShowMenu] = useState(false);
 
 	const [isFetching, setIsFetching] = useState(true);
 	const [isAdding, setIsAdding] = useState(false);
@@ -102,6 +106,10 @@ const NotesProvider = ({ children }: React.PropsWithChildren) => {
 		}
 	};
 
+	const toggleMenu = () => {
+		setShowMenu((prev) => !prev);
+	};
+
 	return (
 		<NotesContext.Provider
 			value={{
@@ -116,6 +124,9 @@ const NotesProvider = ({ children }: React.PropsWithChildren) => {
 				deleteNote,
 				showForm,
 				setShowForm,
+				showMenu,
+				setShowMenu,
+				toggleMenu,
 			}}
 		>
 			{children}

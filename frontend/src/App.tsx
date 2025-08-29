@@ -8,7 +8,7 @@ function App() {
 	const { user, isLoading } = useAuth();
 
 	return (
-		<main className="h-full w-full">
+		<main className="h-full w-full relative overflow-hidden">
 			{isLoading ? (
 				<p>Loading...</p>
 			) : user ? (

@@ -6,9 +6,6 @@
 @tailwind utilities; */
 
 @layer utilities {
-	* {
-		@apply transition-all duration-200;
-	}
 	html {
 		font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 		line-height: 1.5;
@@ -30,11 +27,11 @@
 	}
 
 	body {
-		@apply p-0 m-0 w-[100vw] h-[100dvh] box-border bg-bg-main transition-colors duration-500 text-text-primary;
+		@apply p-0 m-0 w-[100vw] h-[100dvh] box-border bg-bg-main transition-colors duration-300 text-text-primary;
 	}
 
 	h1 {
-		@apply mb-2 text-[36px] leading-[1.1] text-accent font-bold;
+		@apply mb-2 text-[42px] leading-[1.1] text-accent font-bold;
 	}
 
 	h2 {
@@ -55,7 +52,11 @@
 	}
 
 	button {
-		@apply rounded-xl text-text-primary  m-2 transition-all duration-300 cursor-pointer font-medium;
+		@apply rounded-xl text-text-primary  transition-all duration-300 cursor-pointer font-medium;
+	}
+
+	button:disabled {
+		@apply opacity-50 text-text-muted cursor-not-allowed;
 	}
 
 	/* button:hover {
