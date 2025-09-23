@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TEAM
+}
+
+model Users {
+   id String  @id @default(uuid()) @db.Uuid
+   username String @unique @db.VarChar(20)
+   password String @db.VarChar(255)
+   role Role @default(TEAM)
+   teamId String @db.Uuid @map("team_id") 
+   createdAt DateTime @default(now()) @map("created_at")
+
+   team Teams @relation(fields: [teamId], references: [id], onDelete: Cascade)
+   notes Notes[]
+   comments Comments[]
+   projectsUsers ProjectsUsers[]
+   @@index([teamId])
+}
+
+model Teams {
+  id String  @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  users Users[]
+  projects Projects[]
+}
+
+model Projects {
+   id String  @id @default(uuid()) @db.Uuid
+   title String @db.VarChar(50)
+   teamId String @db.Uuid @map("team_id")
+   createdAt DateTime @default(now()) @map("created_at")
+
+   folders Folders[]
+   notes Notes[]
+   projectsUsers ProjectsUsers[]
+
+   team Teams @relation(fields: [teamId], references: [id], onDelete: Cascade)
+   @@index([teamId])
+}
+
+model Folders {
+   id String  @id @default(uuid()) @db.Uuid
+   title String @db.VarChar(50)
+   projectId String @db.Uuid @map("project_id")
+   createdAt DateTime @default(now()) @map("created_at")
+   
+   project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+   notes Notes[]
+   @@index([projectId])
+   @@unique([id, projectId])
+}
+
+model Notes {
+   id String  @id @default(uuid()) @db.Uuid
+   title String @db.VarChar(50)
+   body String @db.Text
+   userId String? @db.Uuid @map("user_id")
+   projectId String @db.Uuid @map("project_id")
+   folderId String @db.Uuid @map("folder_id")
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @updatedAt @map("updated_at")
+
+   comments Comments[]
+
+   user Users? @relation(fields: [userId], references: [id], onDelete: SetNull)
+   project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+   folder Folders @relation(fields: [folderId, projectId], references: [id, projectId], onDelete: Cascade)
+
+   @@index([projectId, folderId])
+   @@index([projectId, updatedAt])
+   @@index([userId])
+
+}
+
+model Comments {
+  id String  @id @default(uuid()) @db.Uuid
+  body String @db.Text
+  userId String? @db.Uuid @map("user_id")
+  noteId String @db.Uuid @map("note_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user Users? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  note Notes @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([noteId, createdAt])
+}
+
+model ProjectsUsers {
+  userId String @db.Uuid @map("user_id")
+  projectId String @db.Uuid @map("project_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@id([userId, projectId])
+  @@index([projectId])
+  @@map("projects_users")
+}
+

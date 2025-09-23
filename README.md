@@ -67,3 +67,9 @@ note-taking-app/
 ## Basic Wireframe
 
 ![Note App Wireframe](wireframe.png)
+
+## Database Schema
+
+[Online Link](https://dbdiagram.io/d/68cd9239960f6d821af77f52)
+
+<iframe width="560" height="315" src='https://dbdiagram.io/e/68cd9239960f6d821af77f52/68d312c97c85fb996108d421'></iframe>
