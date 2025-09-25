@@ -1,0 +1,8 @@
+import { PrismaClient } from "@prisma/client";
+
+export default new PrismaClient({
+	log:
+		process.env.NODE_ENV === "production"
+			? ["error"]
+			: ["query", "info", "warn", "error"], // display SQL in console
+});

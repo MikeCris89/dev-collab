@@ -32,11 +32,14 @@ export const requireAuth: RequestHandler = (req, _res, next) => {
 		const payload = jwt.verify(
 			token,
 			process.env.JWT_SECRET!
-		) as jwt.JwtPayload & Partial<JwtUser>;
+		) as jwt.JwtPayload & JwtUser;
 		// normalize
 		req.user = {
 			sub: String(payload.sub),
+			role: String(payload.role),
+			teamId: String(payload.teamId),
 		};
+
 		next();
 	} catch (e) {
 		throw new UnauthorizedError("Invalid or Expired Session");

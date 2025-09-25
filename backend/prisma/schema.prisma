@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -19,56 +18,60 @@ enum Role {
   TEAM
 }
 
-model Users {
+model User {
    id String  @id @default(uuid()) @db.Uuid
    username String @unique @db.VarChar(20)
    password String @db.VarChar(255)
+   firstName String @db.VarChar(20) @map("first_name")
+   lastName String @db.VarChar(20) @map("last_name")
    role Role @default(TEAM)
    teamId String @db.Uuid @map("team_id") 
    createdAt DateTime @default(now()) @map("created_at")
 
-   team Teams @relation(fields: [teamId], references: [id], onDelete: Cascade)
-   notes Notes[]
-   comments Comments[]
-   projectsUsers ProjectsUsers[]
+   notes Note[]
+   comments Comment[]
+   projectsUsers ProjectsUser[]
+
+   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
    @@index([teamId])
 }
 
-model Teams {
+model Team {
   id String  @id @default(uuid()) @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
 
-  users Users[]
-  projects Projects[]
+  users User[]
+  projects Project[]
 }
 
-model Projects {
+model Project {
    id String  @id @default(uuid()) @db.Uuid
    title String @db.VarChar(50)
    teamId String @db.Uuid @map("team_id")
    createdAt DateTime @default(now()) @map("created_at")
 
-   folders Folders[]
-   notes Notes[]
-   projectsUsers ProjectsUsers[]
+   folders Folder[]
+   notes Note[]
+   projectsUsers ProjectsUser[]
 
-   team Teams @relation(fields: [teamId], references: [id], onDelete: Cascade)
+   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
    @@index([teamId])
 }
 
-model Folders {
+model Folder {
    id String  @id @default(uuid()) @db.Uuid
    title String @db.VarChar(50)
    projectId String @db.Uuid @map("project_id")
    createdAt DateTime @default(now()) @map("created_at")
    
-   project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
-   notes Notes[]
+   notes Note[]
+
+   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
    @@index([projectId])
    @@unique([id, projectId])
 }
 
-model Notes {
+model Note {
    id String  @id @default(uuid()) @db.Uuid
    title String @db.VarChar(50)
    body String @db.Text
@@ -78,11 +81,11 @@ model Notes {
    createdAt DateTime @default(now()) @map("created_at")
    updatedAt DateTime @updatedAt @map("updated_at")
 
-   comments Comments[]
+   comments Comment[]
 
-   user Users? @relation(fields: [userId], references: [id], onDelete: SetNull)
-   project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
-   folder Folders @relation(fields: [folderId, projectId], references: [id, projectId], onDelete: Cascade)
+   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+   folder Folder @relation(fields: [folderId, projectId], references: [id, projectId], onDelete: Cascade)
 
    @@index([projectId, folderId])
    @@index([projectId, updatedAt])
@@ -90,7 +93,7 @@ model Notes {
 
 }
 
-model Comments {
+model Comment {
   id String  @id @default(uuid()) @db.Uuid
   body String @db.Text
   userId String? @db.Uuid @map("user_id")
@@ -98,20 +101,20 @@ model Comments {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  user Users? @relation(fields: [userId], references: [id], onDelete: SetNull)
-  note Notes @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
   @@index([noteId, createdAt])
 }
 
-model ProjectsUsers {
+model ProjectsUser {
   userId String @db.Uuid @map("user_id")
   projectId String @db.Uuid @map("project_id")
   createdAt DateTime @default(now()) @map("created_at")
 
-  user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project Projects @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@id([userId, projectId])
   @@index([projectId])

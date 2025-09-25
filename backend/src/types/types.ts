@@ -1,5 +1,6 @@
 import { Request } from "express";
 import { UnauthorizedError } from "../lib/errors.js";
+import { Role } from "@prisma/client";
 
 export interface NoteInput {
 	title: string;
@@ -12,12 +13,18 @@ export interface Note extends NoteInput {
 	updatedAt: string;
 }
 
+export const ROLES = {
+	admin: "ADMIN",
+	team: "TEAM",
+} as const;
+
 export interface User {
 	id: string;
 	username: string;
+	role: Role;
 }
 
-export type JwtUser = { sub: string; role?: "user" | "admin" };
+export type JwtUser = { sub: string; role: Role; teamId: string };
 
 // ==== BACKEND ONLY ====
 // =======================
