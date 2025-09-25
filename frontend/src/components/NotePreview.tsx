@@ -113,7 +113,7 @@ const NotePreview = () => {
 				</div>
 			)}
 
-			{!showForm.show && !selected && (
+			{/* {!showForm.show && !selected && (
 				<div className="h-full w-full flex flex-col justify-center items-center gap-3">
 					<div
 						className={clsx(
@@ -134,7 +134,7 @@ const NotePreview = () => {
 						New Note
 					</Button>
 				</div>
-			)}
+			)} */}
 		</section>
 	);
 };
