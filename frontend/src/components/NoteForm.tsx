@@ -1,13 +1,23 @@
 import { useState } from "react";
 import type { Note } from "../lib/types";
 import { useNotes } from "../context/NotesContext";
+import { useUnsavedChanges } from "../hooks/useUnsavedChanges";
 
 const NoteForm = ({ existing }: { existing?: Note }) => {
 	const { addNote, updateNote, isLoading } = useNotes();
+
 	console.log(existing);
 
 	const [title, setTitle] = useState<string>(existing?.title ?? "");
 	const [content, setContent] = useState<string>(existing?.content ?? "");
+
+	// Calculate if dirty based on comparison to original values
+	const isDirty = !existing
+		? title.trim() !== "" || content.trim() !== ""
+		: title !== existing.title || content !== existing.content;
+
+	// Block navigation for unsaved changes
+	useUnsavedChanges(isDirty);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		console.log("saving form");

@@ -6,38 +6,40 @@ import {
 	Navigate,
 	Outlet,
 	Route,
+	RouterProvider,
 	Routes,
 	useLocation,
 } from "react-router-dom";
-import type { User } from "./lib/types";
 import Signup from "./components/pages/Signup";
 import Home from "./components/pages/Home";
-import NotePreview from "./components/NotePreview";
+import NotePreview from "./components/pages/NotePreview";
 import NotesProvider from "./context/NotesContext";
 import NotFound from "./components/pages/NotFound";
+import SelectNote from "./components/pages/SelectNote";
+import { router } from "./routes";
 
-const PublicRoutes = () => {
-	const { user } = useAuth();
-	const location = useLocation();
-	if (user) {
-		return <Navigate to={location.state?.from?.pathname ?? "/"} replace />;
-	}
+// const PublicRoutes = () => {
+// 	const { user } = useAuth();
+// 	const location = useLocation();
+// 	if (user) {
+// 		return <Navigate to={location.state?.from?.pathname ?? "/"} replace />;
+// 	}
 
-	return <Outlet />;
-};
+// 	return <Outlet />;
+// };
 
-const PrivateRoutes = () => {
-	const { user } = useAuth();
-	const location = useLocation();
-	if (!user) {
-		return <Navigate to="/login" state={{ from: location }} replace />;
-	}
-	return (
-		<NotesProvider>
-			<Outlet />
-		</NotesProvider>
-	);
-};
+// const PrivateRoutes = () => {
+// 	const { user } = useAuth();
+// 	const location = useLocation();
+// 	if (!user) {
+// 		return <Navigate to="/login" state={{ from: location }} replace />;
+// 	}
+// 	return (
+// 		<NotesProvider>
+// 			<Outlet />
+// 		</NotesProvider>
+// 	);
+// };
 
 function App() {
 	const { isLoading } = useAuth();
@@ -46,7 +48,8 @@ function App() {
 
 	return (
 		<main className="h-full w-full relative overflow-hidden">
-			<BrowserRouter>
+			<RouterProvider router={router} />;
+			{/* <BrowserRouter>
 				<Routes>
 					<Route element={<PublicRoutes />}>
 						<Route path="/login" element={<Login />} />
@@ -55,20 +58,21 @@ function App() {
 
 					<Route element={<PrivateRoutes />}>
 						<Route path="/" element={<Home />}>
+							<Route index element={<SelectNote />} />
+							<Route path="/p/:projectId" />
+							<Route path="/p/:projectId/f/:folderId" />
 							<Route
 								path="p/:projectId/f/:folderId/n/:noteId"
 								element={<NotePreview />}
 							/>
 							<Route path="p/:projectId/n/:noteId" element={<NotePreview />} />
+							<Route path="*" element={<NotFound />} />
 						</Route>
-						<Route path="/p/:projectId" element={<Home />} />
-						<Route path="/p/:projectId/f/:folderId" element={<Home />} />
 					</Route>
-					<Route path="*" element={<NotFound />} />
 
 					<Route path="*" element={<Navigate to="/" replace />} />
 				</Routes>
-			</BrowserRouter>
+			</BrowserRouter> */}
 		</main>
 	);
 }

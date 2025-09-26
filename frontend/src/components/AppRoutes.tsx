@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Home from "./pages/Home";
-import NotePreview from "./NotePreview";
+import NotePreview from "./pages/NotePreview";
 import NotFound from "./pages/NotFound";
 
 const AppRoutes = () => {
