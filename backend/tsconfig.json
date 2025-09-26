@@ -48,7 +48,14 @@
 
 {
 	"compilerOptions": {
-		"rootDir": "./src",
+		"baseUrl": ".",
+		// "paths": {
+		// 	"@contract": ["../contract/types.js"],
+		// 	"@contract/*": ["../contract"]
+		// },
+		// "verbatimModuleSyntax": true,
+
+		"rootDirs": ["./src", "../contract"],
 		"outDir": "./dist",
 		"target": "ES2022",
 		"lib": ["ES2022"],
@@ -67,5 +74,5 @@
 		"exactOptionalPropertyTypes": true,
 		"skipLibCheck": true
 	},
-	"include": ["src"]
+	"include": ["src", "../contract/types"]
 }

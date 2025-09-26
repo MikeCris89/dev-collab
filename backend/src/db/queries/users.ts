@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../client.js";
-import { ROLES } from "../../types/types.js";
+import { ROLES } from "@you/contract";
 
 export type CreateUserDTO = Omit<Prisma.UserCreateInput, "team"> & {
 	teamId?: string;

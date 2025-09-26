@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"prebuild": "npm --prefix ../contract run build",
 		"dev": "tsx watch src/server.ts",
 		"build": "tsc",
 		"start": "node dist/server.js",
@@ -14,6 +15,7 @@
 	"license": "ISC",
 	"type": "module",
 	"dependencies": {
+		"@you/contract": "file:../contract",
 		"@prisma/client": "^6.15.0",
 		"@types/pg": "^8.15.5",
 		"bcrypt": "^6.0.0",
