@@ -1,5 +1,5 @@
 {
-	"name": "@you/contract",
+	"name": "@shared/contract",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
