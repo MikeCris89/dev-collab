@@ -2,7 +2,7 @@ import express from "express";
 import { BadRequestError, UnauthorizedError } from "../lib/errors.js";
 import jwt from "jsonwebtoken";
 import { requireAuth } from "../lib/middleware.js";
-import { ROLES } from "../types/types.js";
+import { ROLES } from "@shared/contract";
 import { userQueries } from "../db/queries/index.js";
 import type { User } from "@prisma/client";
 import bcrypt from "bcrypt";

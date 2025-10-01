@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { CustomError, UnauthorizedError } from "./errors.js";
-import { JwtUser } from "../types/types.js";
+import { JwtUser } from "@shared/contract";
 
 export const errorHandler = (
 	err: unknown,

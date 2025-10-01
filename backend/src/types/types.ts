@@ -1,4 +1,4 @@
-import { JwtUser } from "@you/contract";
+import { JwtUser } from "@shared/contract";
 import { Request } from "express";
 import { UnauthorizedError } from "../lib/errors.js";
 
