@@ -2,9 +2,9 @@ import clsx from "clsx";
 import { useNotes } from "../context/NotesContext";
 import Button from "./Button";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Note } from "../lib/types";
 import { useAuth } from "../context/AuthContext";
 import ThemeSwitcher from "./ThemeSwitcher";
+import type { Note } from "@shared/contract";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
@@ -136,7 +136,7 @@ const Sidebar = () => {
 								>
 									{note.title}
 								</h3>
-								<small className="line-clamp-2 text-left">{note.content}</small>
+								<small className="line-clamp-2 text-left">{note.body}</small>
 								<small>{new Date(note.createdAt).toLocaleDateString()}</small>
 							</button>
 						);

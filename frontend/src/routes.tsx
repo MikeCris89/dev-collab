@@ -6,13 +6,26 @@ import {
 } from "react-router-dom";
 import Home from "./components/pages/Home";
 import Login from "./components/pages/Login";
-import Signup from "./components/pages/Signup";
 import NotePreview from "./components/pages/NotePreview";
 import SelectNote from "./components/pages/SelectNote";
 import NotFound from "./components/pages/NotFound";
 import { useAuth } from "./context/AuthContext";
 import NotesProvider from "./context/NotesContext";
-import PublicRoutes from "./components/PublicRoutes";
+import PublicHome from "./components/pages/PublicHome";
+import Signup from "./components/pages/Signup";
+
+const PublicRoutes = () => {
+	const { user } = useAuth();
+	const location = useLocation();
+
+	if (user) {
+		return <Navigate to={location.state?.from?.pathname ?? "/"} replace />;
+	}
+
+	return <PublicHome />;
+};
+
+export default PublicRoutes;
 
 const PrivateRoutes = () => {
 	const { user } = useAuth();
@@ -43,8 +56,8 @@ export const router = createBrowserRouter([
 				element: <Home />,
 				children: [
 					{ index: true, element: <SelectNote /> },
-					{ path: "p/:projectId", element: <></> },
-					{ path: "p/:projectId/f/:folderId", element: <></> },
+					{ path: "p/:projectId" },
+					{ path: "p/:projectId/f/:folderId" },
 					{ path: "p/:projectId/n/:noteId", element: <NotePreview /> },
 					{
 						path: "p/:projectId/f/:folderId/n/:noteId",

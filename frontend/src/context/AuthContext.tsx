@@ -1,12 +1,20 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import type { User } from "../lib/types";
 import { api } from "../lib/api";
+import type {
+	ErrorDTO,
+	LoginRequest,
+	SignupRequest,
+	User,
+} from "@shared/contract";
+import type { AxiosError } from "axios";
 
 interface AuthCtx {
 	isLoading: boolean;
 	error: string | null;
+	setError: React.Dispatch<React.SetStateAction<string | null>>;
 	user: User | null;
-	login: (username: string, password: string) => Promise<void>;
+	signup: (userData: SignupRequest) => Promise<void>;
+	login: (userData: LoginRequest) => Promise<void>;
 	logout: () => Promise<void>;
 	refresh: () => Promise<void>;
 }
@@ -36,24 +44,58 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 		})();
 	}, []);
 
-	const login = async (username: string, password: string) => {
+	const signup = async (userData: SignupRequest) => {
 		try {
-			await api.post("/api/auth/login", { username, password });
-			const resp = await api.get("/api/auth/me");
+			setIsLoading(true);
+			const resp = await api.post("/api/auth/signup", userData);
 			setUser(resp.data);
+			return resp.data;
+		} catch (e) {
+			const err = e as AxiosError<ErrorDTO>;
+			const msg = err.response?.data?.message ?? err.message ?? "Unknown error";
+			setError(msg);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const login = async (userData: LoginRequest) => {
+		try {
+			setIsLoading(true);
+			const resp = await api.post("/api/auth/login", userData);
+			setUser(resp.data);
+			return resp.data;
 		} catch (e) {
 			setError("Error logging in");
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
 	const logout = async () => {
-		await api.post("/api/auth/logout");
-		setUser(null);
+		try {
+			setIsLoading(true);
+			await api.post("/api/auth/logout");
+			setUser(null);
+		} catch (e) {
+			setError("Unable to logout at this time.");
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return (
 		<AuthContext.Provider
-			value={{ isLoading, user, error, login, logout, refresh }}
+			value={{
+				isLoading,
+				user,
+				error,
+				setError,
+				signup,
+				login,
+				logout,
+				refresh,
+			}}
 		>
 			{children}
 		</AuthContext.Provider>

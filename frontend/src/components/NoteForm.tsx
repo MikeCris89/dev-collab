@@ -1,7 +1,7 @@
 import { useState } from "react";
-import type { Note } from "../lib/types";
 import { useNotes } from "../context/NotesContext";
 import { useUnsavedChanges } from "../hooks/useUnsavedChanges";
+import type { Note } from "@shared/contract";
 
 const NoteForm = ({ existing }: { existing?: Note }) => {
 	const { addNote, updateNote, isLoading } = useNotes();
@@ -9,12 +9,12 @@ const NoteForm = ({ existing }: { existing?: Note }) => {
 	console.log(existing);
 
 	const [title, setTitle] = useState<string>(existing?.title ?? "");
-	const [content, setContent] = useState<string>(existing?.content ?? "");
+	const [body, setBody] = useState<string>(existing?.body ?? "");
 
 	// Calculate if dirty based on comparison to original values
 	const isDirty = !existing
-		? title.trim() !== "" || content.trim() !== ""
-		: title !== existing.title || content !== existing.content;
+		? title.trim() !== "" || body.trim() !== ""
+		: title !== existing.title || body !== existing.body;
 
 	// Block navigation for unsaved changes
 	useUnsavedChanges(isDirty);
@@ -22,8 +22,8 @@ const NoteForm = ({ existing }: { existing?: Note }) => {
 	const handleSubmit = (e: React.FormEvent) => {
 		console.log("saving form");
 		e.preventDefault();
-		if (title && content) {
-			const newNote = { title, content };
+		if (title && body) {
+			const newNote = { title, body };
 			if (existing?.id) {
 				updateNote(existing.id, newNote);
 			} else {
@@ -47,10 +47,10 @@ const NoteForm = ({ existing }: { existing?: Note }) => {
 				disabled={isLoading}
 			/>
 			<textarea
-				value={content}
-				placeholder="content"
+				value={body}
+				placeholder="body"
 				required
-				onChange={(e) => setContent(e.target.value)}
+				onChange={(e) => setBody(e.target.value)}
 				className="h-[50%] w-full max-w-[90%] text-center text-balance"
 				disabled={isLoading}
 			/>

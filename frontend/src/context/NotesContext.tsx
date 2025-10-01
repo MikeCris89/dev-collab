@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import type { Note, NoteInput } from "../lib/types";
 import { api } from "../lib/api";
+import type { Note, NoteInput } from "@shared/contract";
 
 export type SetShowForm = React.Dispatch<React.SetStateAction<ShowForm>>;
 
