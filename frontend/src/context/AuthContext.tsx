@@ -29,7 +29,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	const refresh = async () => {
 		try {
 			setIsLoading(true);
-			const resp = await api.get("/api/auth/me");
+			const resp = await api.get("/auth/me");
 			setUser(resp.data);
 		} catch (e) {
 			console.log("User not logged in, rendering login page");
@@ -47,7 +47,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	const signup = async (userData: SignupRequest) => {
 		try {
 			setIsLoading(true);
-			const resp = await api.post("/api/auth/signup", userData);
+			const resp = await api.post("/auth/signup", userData);
 			setUser(resp.data);
 			return resp.data;
 		} catch (e) {
@@ -62,7 +62,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	const login = async (userData: LoginRequest) => {
 		try {
 			setIsLoading(true);
-			const resp = await api.post("/api/auth/login", userData);
+			const resp = await api.post("/auth/login", userData);
 			setUser(resp.data);
 			return resp.data;
 		} catch (e) {
@@ -75,7 +75,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	const logout = async () => {
 		try {
 			setIsLoading(true);
-			await api.post("/api/auth/logout");
+			await api.post("/auth/logout");
 			setUser(null);
 		} catch (e) {
 			setError("Unable to logout at this time.");

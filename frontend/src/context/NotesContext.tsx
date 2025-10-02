@@ -80,7 +80,7 @@ const NotesProvider = ({ children }: React.PropsWithChildren) => {
 		try {
 			setError(null);
 			setIsUpdating(true);
-			const resp = await api.put(`/api/notes/${id}`, note);
+			const resp = await api.put(`/notes/${id}`, note);
 			if (resp.data)
 				setNotes((prev) =>
 					prev.map((note) => (note.id === id ? resp.data : note))

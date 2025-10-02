@@ -50,7 +50,7 @@ const Sidebar = () => {
 			return notes.filter(
 				(el) =>
 					el.title.toLowerCase().includes(search.toLowerCase()) ||
-					el.content.toLowerCase().includes(search.toLowerCase())
+					el.body.toLowerCase().includes(search.toLowerCase())
 			);
 		}
 		return notes;

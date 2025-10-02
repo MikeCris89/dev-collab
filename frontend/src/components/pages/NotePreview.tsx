@@ -27,7 +27,7 @@ const NotePreview = () => {
 						<h1 className="m-auto ">{selected.title}</h1>
 					</div>
 					<p className="card w-full max-w-[600px] min-h-[100px] p-6 text-center text-balance whitespace-pre-line">
-						{selected.content}
+						{selected.body}
 					</p>
 				</div>
 			)}

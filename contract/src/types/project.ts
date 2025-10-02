@@ -12,6 +12,7 @@ export type Project = {
 
 export type ProjectInput = {
 	title: string;
+	userIds?: string[];
 };
 
 export type ProjectWithFolders = Project & {

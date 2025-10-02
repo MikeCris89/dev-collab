@@ -74,12 +74,60 @@ router.post("/", async (req, res) => {
 		throw new BadRequestError("Title must be 50 characters or less");
 	}
 
+	// Create project - apply project permission for users
 	const resp = await prisma.project.create({
 		data: {
-			...body,
+			title: body.title,
 			teamId,
+			projectsUsers: {
+				create: body.userIds?.map((userId) => ({ userId })) || [],
+			},
 		},
 	});
 
 	res.json(resp);
+});
+
+router.put("/:id", async (req, res) => {
+	const { teamId, role } = reqUser(req);
+	const { id } = req.params;
+
+	if (role !== ROLES.admin) throw new UnauthorizedError();
+
+	const body: ProjectInput = req.body;
+
+	if (!body.title || body.title.trim() === "") {
+		throw new BadRequestError("Title is required");
+	}
+
+	if (body.title.length > 50) {
+		throw new BadRequestError("Title must be 50 characters or less");
+	}
+
+	const resp = await prisma.project.update({
+		where: { id, teamId },
+		data: {
+			title: body.title,
+			projectsUsers: {
+				deleteMany: {},
+				create: body.userIds?.map((userId) => ({ userId })) || [],
+			},
+		},
+	});
+
+	res.json(resp);
+});
+
+router.delete("/:id", async (req, res) => {
+	const { teamId, role } = reqUser(req);
+
+	if (role !== ROLES.admin) throw new UnauthorizedError();
+
+	const { id } = req.params;
+
+	await prisma.project.deleteMany({
+		where: { id, teamId },
+	});
+
+	res.status(204).send();
 });
