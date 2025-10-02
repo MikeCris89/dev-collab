@@ -15,3 +15,9 @@ export const isAuth = (req: Request): req is AuthReq =>
 	!!req.user &&
 	typeof req.user === "object" &&
 	typeof (req.user as any).sub === "string";
+
+export const reqUser = (req: Request): JwtUser => {
+	const user = req.user;
+	if (!user || !user.teamId || !user.role) throw new UnauthorizedError();
+	return user;
+};

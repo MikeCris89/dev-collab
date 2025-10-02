@@ -13,7 +13,13 @@ export type Note = {
 	updatedAt: string;
 };
 
-export type NoteInput = Omit<Note, "id">;
+export type NoteInput = {
+	title: string;
+	body: string;
+	userId: string | null;
+	projectId: string;
+	folderId: string;
+};
 
 export type NoteWithUser = Note & {
 	user: User | null;

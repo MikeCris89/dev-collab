@@ -10,8 +10,8 @@ export type Project = {
 	createdAt: string;
 };
 
-export type ProjectWithTeam = Project & {
-	team: Team;
+export type ProjectInput = {
+	title: string;
 };
 
 export type ProjectWithFolders = Project & {
@@ -27,7 +27,6 @@ export type ProjectWithUsers = Project & {
 };
 
 export type ProjectWithAll = Project & {
-	team: Team;
 	folders: Folder[];
 	notes: Note[];
 	projectsUsers: ProjectsUser[];

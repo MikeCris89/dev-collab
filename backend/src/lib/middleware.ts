@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { CustomError, UnauthorizedError } from "./errors.js";
-import { JwtUser } from "@shared/contract";
+import { JwtUser, Roles } from "@shared/contract";
 
 export const errorHandler = (
 	err: unknown,
@@ -36,7 +36,7 @@ export const requireAuth: RequestHandler = (req, _res, next) => {
 		// normalize
 		req.user = {
 			sub: String(payload.sub),
-			role: String(payload.role),
+			role: String(payload.role) as Roles,
 			teamId: String(payload.teamId),
 		};
 

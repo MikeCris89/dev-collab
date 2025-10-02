@@ -1,10 +1,11 @@
 import { RequestHandler } from "express";
 import { BadRequestError } from "./errors.js";
+import { JwtUser } from "@shared/contract";
 
 export const testNote = {
 	id: "1",
 	title: "Hello",
-	content: "World",
+	body: "World",
 	createdAt: new Date().toISOString(),
 	updatedAt: new Date().toISOString(),
 };
@@ -25,8 +26,8 @@ export const validateNoteInput: RequestHandler = (req, _res, next) => {
 	// Check property types and
 	if (typeof note.title !== "string" || note.title.trim().length === 0)
 		throw new BadRequestError("title must be a non-empty string.");
-	if (typeof note.content !== "string" || note.content.trim().length === 0)
-		throw new BadRequestError("content must be a non-empty string.");
+	if (typeof note.body !== "string" || note.body.trim().length === 0)
+		throw new BadRequestError("Body must be a non-empty string.");
 
 	next();
 };

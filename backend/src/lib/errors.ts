@@ -11,9 +11,8 @@ export abstract class CustomError extends Error {
 export class NotFoundError extends CustomError {
 	statusCode = 404;
 
-	constructor() {
-		super("Not Found");
-		// Object.setPrototypeOf(this, new.target.prototype);
+	constructor(message = "Not Found") {
+		super(message);
 	}
 
 	serialize() {
@@ -26,7 +25,6 @@ export class BadRequestError extends CustomError {
 
 	constructor(message = "Bad Request") {
 		super(message);
-		// Object.setPrototypeOf(this, new.target.prototype);
 	}
 
 	serialize() {
@@ -39,7 +37,6 @@ export class UnauthorizedError extends CustomError {
 
 	constructor(message = "Unauthorized") {
 		super(message);
-		// Object.setPrototypeOf(this, new.target.prototype);
 	}
 
 	serialize() {

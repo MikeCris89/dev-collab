@@ -1,15 +1,17 @@
 import express, { Request, Response } from "express";
-import { JwtUser, type Note, type NoteInput } from "../types/types.js";
 import { NotFoundError } from "../lib/errors.js";
 import { testNote, validateNoteInput } from "../lib/utils.js";
 import { requireAuth } from "../lib/middleware.js";
 import notesTestData from "../../../fixtures/notes.json" with {type: "json"};
+import { JwtUser, Note, NoteInput } from "@shared/contract";
 
-const testNotes: Record<string, Note[]> = notesTestData;
+const testNotes: Note[] = notesTestData;
 
 const router = express.Router();
 
-router.get("/", requireAuth, async (req: Request, res: Response<Note[]>) => {
+router.use(requireAuth);
+
+router.get("/", async (req: Request, res: Response<Note[]>) => {
 	const user = req.user as JwtUser;
 
 	// TODO fetch notes from db
@@ -19,7 +21,7 @@ router.get("/", requireAuth, async (req: Request, res: Response<Note[]>) => {
 	res.json(data[user.sub] ?? []);
 });
 
-router.get("/:id", requireAuth, async (req: Request, res: Response<Note>) => {
+router.get("/:id",  async (req: Request, res: Response<Note>) => {
 	const user = req.user as JwtUser;
 	const { id } = req.params;
 
@@ -35,7 +37,6 @@ router.get("/:id", requireAuth, async (req: Request, res: Response<Note>) => {
 
 router.post(
 	"/",
-	requireAuth,
 	validateNoteInput,
 	async (req: Request, res: Response<Note>) => {
 		const user = req.user as JwtUser;
@@ -58,7 +59,6 @@ router.post(
 
 router.put(
 	"/:id",
-	requireAuth,
 	validateNoteInput,
 	async (req: Request, res: Response<Note>) => {
 		const user = req.user as JwtUser;
@@ -73,7 +73,7 @@ router.put(
 	}
 );
 
-router.delete("/:id", requireAuth, (req, res) => {
+router.delete("/:id", (req, res) => {
 	const user = req.user as JwtUser;
 	const { id } = req.params;
 
