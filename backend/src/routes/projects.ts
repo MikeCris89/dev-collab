@@ -1,31 +1,27 @@
 import { LIMITS } from "@shared/contract";
 import express from "express";
-import { requireAuth } from "src/lib/middleware.js";
+import { adminOnly, requireAuth } from "src/lib/middleware.js";
 import { reqUser } from "src/types/types.js";
 import prisma from "../db/client.js";
 import { ProjectInput, ROLES } from "@shared/contract";
-import {
-	BadRequestError,
-	NotFoundError,
-	UnauthorizedError,
-} from "src/lib/errors.js";
+import { BadRequestError, NotFoundError } from "src/lib/errors.js";
 
 const router = express.Router();
 
 router.use(requireAuth);
 
-router.get("/", async (req, res) => {
-	const { teamId, role, sub } = reqUser(req);
+// router.get("/", async (req, res) => {
+// 	const { teamId, role, sub } = reqUser(req);
 
-	const projects = await prisma.project.findMany({
-		where:
-			role === ROLES.admin
-				? { teamId }
-				: { teamId, projectsUsers: { some: { userId: sub } } },
-	});
+// 	const projects = await prisma.project.findMany({
+// 		where:
+// 			role === ROLES.admin
+// 				? { teamId }
+// 				: { teamId, projectsUsers: { some: { userId: sub } } },
+// 	});
 
-	res.json(projects);
-});
+// 	res.json(projects);
+// });
 
 router.get("/:id", async (req, res) => {
 	const { teamId, role, sub } = reqUser(req);
@@ -36,10 +32,11 @@ router.get("/:id", async (req, res) => {
 			role === ROLES.admin
 				? { id, teamId }
 				: { id, teamId, projectsUsers: { some: { userId: sub } } },
-		include: {
+
+		select: {
+			id: true,
 			folders: true,
 			notes: true,
-			projectsUsers: true,
 		},
 	});
 
@@ -50,10 +47,8 @@ router.get("/:id", async (req, res) => {
 	res.json(project);
 });
 
-router.post("/", async (req, res) => {
-	const { teamId, role } = reqUser(req);
-
-	if (role !== ROLES.admin) throw new UnauthorizedError();
+router.post("/", adminOnly, async (req, res) => {
+	const { teamId } = reqUser(req);
 
 	const projectCount = await prisma.project.count({
 		where: { teamId },
@@ -88,11 +83,9 @@ router.post("/", async (req, res) => {
 	res.json(resp);
 });
 
-router.put("/:id", async (req, res) => {
-	const { teamId, role } = reqUser(req);
-	const { id } = req.params;
-
-	if (role !== ROLES.admin) throw new UnauthorizedError();
+router.put("/:id", adminOnly, async (req, res) => {
+	const { teamId } = reqUser(req);
+	const { id } = req.params as { id: string };
 
 	const body: ProjectInput = req.body;
 
@@ -113,17 +106,16 @@ router.put("/:id", async (req, res) => {
 				create: body.userIds?.map((userId) => ({ userId })) || [],
 			},
 		},
+		include: { projectsUsers: true },
 	});
 
 	res.json(resp);
 });
 
-router.delete("/:id", async (req, res) => {
-	const { teamId, role } = reqUser(req);
+router.delete("/:id", adminOnly, async (req, res) => {
+	const { teamId } = reqUser(req);
 
-	if (role !== ROLES.admin) throw new UnauthorizedError();
-
-	const { id } = req.params;
+	const { id } = req.params as { id: string };
 
 	await prisma.project.deleteMany({
 		where: { id, teamId },

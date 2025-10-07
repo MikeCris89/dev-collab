@@ -1,7 +1,6 @@
 import { Folder } from "./folder.js";
 import { Note } from "./note.js";
 import { ProjectsUser } from "./projects-user.js";
-import { Team } from "./team.js";
 
 export type Project = {
 	id: string;
@@ -24,11 +23,10 @@ export type ProjectWithNotes = Project & {
 };
 
 export type ProjectWithUsers = Project & {
-	projectsUsers: ProjectsUser[];
+	projectsUsers: Omit<ProjectsUser, "projectId">[];
 };
 
 export type ProjectWithAll = Project & {
 	folders: Folder[];
 	notes: Note[];
-	projectsUsers: ProjectsUser[];
 };
