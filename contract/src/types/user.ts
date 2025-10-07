@@ -7,17 +7,15 @@ export type Roles = (typeof ROLES)[keyof typeof ROLES];
 export type User = {
 	id: string;
 	username: string;
-	firstName?: string;
-	lastName?: string;
+	name?: string;
 	role: Roles;
 	teamId: string;
 	createdAt: string;
 };
 
 export type EditUser = {
-	username: string;
-	firstName?: string;
-	lastName?: string;
+	name?: string;
+	projectIds?: string[];
 };
 
 export type UserWithTeam = User & {
@@ -25,15 +23,15 @@ export type UserWithTeam = User & {
 };
 
 export type UserWithProjects = User & {
-	projectsUsers: ProjectsUser[];
+	projectsUsers: Omit<ProjectsUser, "userId">[];
 };
 
 export type SignupRequest = {
 	username: string;
 	password: string;
-	firstName?: string;
-	lastName?: string;
+	name?: string;
 	teamId?: string;
+	projectIds?: string[];
 };
 
 export type LoginRequest = {

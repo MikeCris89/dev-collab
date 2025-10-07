@@ -1,13 +1,21 @@
-import { Project } from "./project.js";
-import { User } from "./user.js";
+import { Project, ProjectWithUsers } from "./project.js";
+import { Roles, User } from "./user.js";
 
 export type Team = {
 	id: string;
 	createdAt: string;
 };
 
+export type TeamMember = {
+	id: string;
+	username: string;
+	name: string | null;
+	role: Roles;
+	createdAt: string;
+};
+
 export type TeamWithUsers = Team & {
-	users: User[];
+	users: TeamMember[];
 };
 
 export type TeamWithProjects = Team & {
@@ -15,6 +23,6 @@ export type TeamWithProjects = Team & {
 };
 
 export type TeamWithAll = Team & {
-	users: User[];
-	projects: Project[];
+	users: TeamMember[];
+	projects: ProjectWithUsers[];
 };

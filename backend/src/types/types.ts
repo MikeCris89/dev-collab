@@ -1,6 +1,6 @@
-import { JwtUser } from "@shared/contract";
+import { JwtUser, ROLES } from "@shared/contract";
 import { Request } from "express";
-import { UnauthorizedError } from "../lib/errors.js";
+import { BadRequestError, UnauthorizedError } from "../lib/errors.js";
 
 // ==== BACKEND ONLY ====
 // =======================
@@ -16,8 +16,14 @@ export const isAuth = (req: Request): req is AuthReq =>
 	typeof req.user === "object" &&
 	typeof (req.user as any).sub === "string";
 
-export const reqUser = (req: Request): JwtUser => {
+// keep in types.ts for TS to recognize req.user
+export const reqUser = (req: Request): JwtUser & { isAdmin: boolean } => {
 	const user = req.user;
-	if (!user || !user.teamId || !user.role) throw new UnauthorizedError();
-	return user;
+
+	if (!user || !user.teamId || !user.role)
+		throw new BadRequestError("Missing user data");
+
+	const isAdmin = user.role === ROLES.admin;
+
+	return { ...user, isAdmin };
 };
