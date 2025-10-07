@@ -3,24 +3,18 @@
 
 import type { Project, ProjectInput, ProjectWithAll } from "@shared/contract";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleter, fetcher, poster, putter } from "src/lib/api";
+import { deleter, fetcher, poster, putter } from "@/lib/api";
+import { TEAMKEY } from "./useTeam";
 
 const KEY = "projects";
 const BASE = "/projects";
 
-// fetch all projects (no content)
-export const useProjects = () => {
-	return useQuery({
-		queryKey: [KEY],
-		queryFn: () => fetcher<Project[]>(BASE),
-	});
-};
-
 // fetch ONE project with folders and notes
-export const useProject = (id: string) => {
+export const useProject = (id: string | null) => {
 	return useQuery({
 		queryKey: [KEY, id],
 		queryFn: () => fetcher<ProjectWithAll>(`${BASE}/${id}`),
+		enabled: !!id,
 	});
 };
 
@@ -34,11 +28,14 @@ export const useCreateProject = () => {
 	return useMutation({
 		mutationFn: (data: ProjectInput) =>
 			poster<ProjectInput, Project>(BASE, data),
-		onSuccess: (response) => {
-			queryClient.setQueryData([KEY], (old: Project[]) => {
-				return [...old, response];
-			});
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [TEAMKEY] });
 		},
+		// onSuccess: (response) => {
+		// 	queryClient.setQueryData([TEAMKEY], (old: FullData) => {
+		// 		return { users: old.users, projects: [...old.projects, response] };
+		// 	});
+		// },
 	});
 };
 
@@ -49,18 +46,17 @@ export const useUpdateProject = () => {
 	return useMutation({
 		mutationFn: ({ id, data }: { id: string; data: ProjectInput }) =>
 			putter<ProjectInput, Project>(`${BASE}/${id}`, data),
-		onSuccess: (resp, vars) => {
-			queryClient.setQueryData([KEY, resp.id], (old: ProjectWithAll) => {
-				return {
-					...old,
-					...vars.data,
-				};
-			});
-
-			queryClient.setQueryData([KEY], (old: Project[]) => {
-				return old.map((f) => (f.id === vars.id ? resp : f));
-			});
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [TEAMKEY] });
 		},
+		// onSuccess: (resp, vars) => {
+		// 	queryClient.setQueryData([TEAMKEY], (old: FullData) => {
+		// 		return {
+		// 			...old,
+		// 			projects: old.projects.map((f) => (f.id === vars.id ? resp : f)),
+		// 		};
+		// 	});
+		// },
 	});
 };
 
@@ -71,9 +67,11 @@ export const useDeleteProject = () => {
 	return useMutation({
 		mutationFn: (id: string) => deleter(`${BASE}/${id}`),
 		onSuccess: (_, id) => {
-			queryClient.setQueryData([KEY], (old: Project[]) =>
-				old.filter((f) => f.id !== id)
-			);
+			// queryClient.setQueryData([TEAMKEY], (old: FullData) => ({
+			// 	users: old.users,
+			// 	projects: old.projects.filter((f) => f.id !== id),
+			// }));
+			queryClient.invalidateQueries({ queryKey: [TEAMKEY] });
 
 			queryClient.removeQueries({ queryKey: [KEY, id] });
 		},
