@@ -19,7 +19,7 @@ const Signup = () => {
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		if (userData.username) signup(userData);
+		if (userData.username && userData.password) signup(userData);
 	};
 
 	return (
@@ -62,28 +62,12 @@ const Signup = () => {
 				</div>
 
 				<div className="flex flex-col gap-1">
-					<label htmlFor="firstName" className="self-start">
-						First Name
+					<label htmlFor="name" className="self-start">
+						Name
 					</label>
 					<input
-						name="firstName"
-						id="firstName"
-						required
-						onChange={handleChange}
-						disabled={isLoading}
-						autoComplete="off"
-						className="w-[250px]"
-						placeholder="(optional)"
-					/>
-				</div>
-
-				<div className="flex flex-col gap-1">
-					<label htmlFor="lastName" className="self-start">
-						Last Name
-					</label>
-					<input
-						name="lastName"
-						id="lastName"
+						name="name"
+						id="name"
 						required
 						onChange={handleChange}
 						disabled={isLoading}

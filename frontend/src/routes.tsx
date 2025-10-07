@@ -10,9 +10,9 @@ import NotePreview from "./components/pages/NotePreview";
 import SelectNote from "./components/pages/SelectNote";
 import NotFound from "./components/pages/NotFound";
 import { useAuth } from "./context/AuthContext";
-import NotesProvider from "./context/NotesContext";
 import PublicHome from "./components/pages/PublicHome";
 import Signup from "./components/pages/Signup";
+import { useTeam } from "./hooks/useTeam";
 
 const PublicRoutes = () => {
 	const { user } = useAuth();
@@ -30,14 +30,14 @@ export default PublicRoutes;
 const PrivateRoutes = () => {
 	const { user } = useAuth();
 	const location = useLocation();
+
 	if (!user) {
 		return <Navigate to="/login" state={{ from: location }} replace />;
 	}
-	return (
-		<NotesProvider>
-			<Outlet />
-		</NotesProvider>
-	);
+
+	useTeam();
+
+	return <Outlet />;
 };
 
 export const router = createBrowserRouter([
@@ -58,7 +58,6 @@ export const router = createBrowserRouter([
 					{ index: true, element: <SelectNote /> },
 					{ path: "p/:projectId" },
 					{ path: "p/:projectId/f/:folderId" },
-					{ path: "p/:projectId/n/:noteId", element: <NotePreview /> },
 					{
 						path: "p/:projectId/f/:folderId/n/:noteId",
 						element: <NotePreview />,

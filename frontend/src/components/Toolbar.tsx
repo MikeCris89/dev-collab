@@ -1,16 +1,16 @@
-import { useNotes } from "../context/NotesContext";
+import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
 
 const Toolbar = () => {
 	const {
 		selected,
-		error,
-		showForm,
-		setShowForm,
-		setSelected,
-		showMenu,
-		setShowMenu,
-	} = useNotes();
+		// setSelected,
+		// error,
+		// showForm,
+		// setShowForm,
+		// showMenu,
+		// setShowMenu,
+	} = useGlobal();
 
 	return (
 		<div
@@ -19,18 +19,25 @@ const Toolbar = () => {
 		>
 			{
 				<>
-					<div className="flex justify-between w-full md:flex-col md:justify-start md:w-fit text-left">
-						<p className="text-xs text-text-muted font-bold md:p-1 m-0 text-balance">
-							created: <br />
-							{selected ? new Date(selected.createdAt).toLocaleString() : " - "}
-						</p>
+					{/* {selected.n && (
+						<div className="flex justify-between w-full md:flex-col md:justify-start md:w-fit text-left">
+							<p className="text-xs text-text-muted font-bold md:p-1 m-0 text-balance">
+								created: <br />
+								{selected
+									? new Date(selected.n.createdAt).toLocaleString()
+									: " - "}
+							</p>
 
-						<p className="text-right md:text-left text-text-muted text-xs text-balance md:p-1 m-0">
-							last updated: <br />
-							{selected ? new Date(selected.updatedAt).toLocaleString() : " - "}
-						</p>
-					</div>
-					<div className="flex flex-nowrap justify-end gap-3 py-3 md:py-0 h-[65px] md:h-fit">
+							<p className="text-right md:text-left text-text-muted text-xs text-balance md:p-1 m-0">
+								last updated: <br />
+								{selected
+									? new Date(selected.n.updatedAt).toLocaleString()
+									: " - "}
+							</p>
+						</div>
+					)} */}
+
+					{/* <div className="flex flex-nowrap justify-end gap-3 py-3 md:py-0 h-[65px] md:h-fit">
 						{!showForm.show && selected && (
 							<>
 								<Button
@@ -53,7 +60,7 @@ const Toolbar = () => {
 								</Button>
 							</>
 						)}
-					</div>
+					</div> */}
 				</>
 			}
 		</div>

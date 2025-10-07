@@ -1,10 +1,10 @@
 import { Edit3 } from "lucide-react";
 import Button from "../Button";
 import clsx from "clsx";
-import { useNotes } from "../../context/NotesContext";
+import { useGlobal } from "../../context/GlobalContext";
 
 const SelectNote = () => {
-	const { setShowForm, setSelected } = useNotes();
+	const { setSelected } = useGlobal();
 	return (
 		<div className="h-full w-full flex flex-col justify-center items-center gap-3">
 			<div
@@ -17,10 +17,10 @@ const SelectNote = () => {
 			<h3 className="text-text-muted">No note selected.</h3>
 			<Button
 				variant="primary"
-				onClick={() => {
-					setShowForm({ show: true, note: null });
-					setSelected(null);
-				}}
+				// onClick={() => {
+				// 	setShowForm({ show: true, note: null });
+				// 	setSelected(null);
+				// }}
 				className="w-[150px]"
 			>
 				New Note

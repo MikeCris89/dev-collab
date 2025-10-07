@@ -1,19 +1,19 @@
-import { useNotes } from "../../context/NotesContext";
-import NoteForm from "../NoteForm";
+import { useGlobal } from "../../context/GlobalContext";
+import NoteForm from "../forms/NoteForm";
 
 const NotePreview = () => {
-	const { selected, error, showForm, setSelected } = useNotes();
+	const { selected, setSelected } = useGlobal();
 
-	if (error)
-		return (
-			<div className="flex-1  text-red-500">
-				<h3 className="m-auto">Error: {error}</h3>
-			</div>
-		);
+	// if (error)
+	// 	return (
+	// 		<div className="flex-1  text-red-500">
+	// 			<h3 className="m-auto">Error: {error}</h3>
+	// 		</div>
+	// 	);
 
 	return (
 		<section className="flex-1 flex flex-col gap-3 justify-start items-center h-full w-full border-r border-r-border-medium">
-			{showForm.show && <NoteForm existing={showForm.note ?? undefined} />}
+			{/* {showForm.show && <NoteForm existing={showForm.note ?? undefined} />}
 
 			{!showForm.show && selected && (
 				<div className="flex-1 flex flex-col gap-10 justify-start items-center max-w-[90%]">
@@ -30,7 +30,7 @@ const NotePreview = () => {
 						{selected.body}
 					</p>
 				</div>
-			)}
+			)} */}
 		</section>
 	);
 };

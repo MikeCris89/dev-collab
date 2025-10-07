@@ -1,27 +1,48 @@
 import clsx from "clsx";
-import { useNotes } from "../context/NotesContext";
+import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import ThemeSwitcher from "./ThemeSwitcher";
-import type { Note } from "@shared/contract";
+import { useProject } from "@/hooks/useProjects";
+import { UserCircle2Icon, UsersRound } from "lucide-react";
+import ProjectSelection from "./ProjectSelection";
+import { useProjects } from "@/hooks/useTeam";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
 	const { logout } = useAuth();
+
 	const {
-		notes,
-		isLoading,
 		selected,
 		setSelected,
-		setShowForm,
-		showForm,
+		// setShowForm,
+		// showForm,
 		showMenu,
 		setShowMenu,
 		toggleMenu,
-	} = useNotes();
+	} = useGlobal();
 
 	const [search, setSearch] = useState<string | null>(null);
+
+	const [showProject, setShowProject] = useState<string | null>(null);
+	const [showFolder, setShowFolder] = useState<string | null>(null);
+
+	const {
+		data: projects = [],
+		isLoading: loadingProjects,
+		error: errorProjects,
+	} = useProjects();
+
+	const {
+		data: project,
+		isLoading: loadingProject,
+		error: errorProject,
+	} = useProject(selected.p);
+
+	useEffect(() => {
+		if (selected.p) setShowProject(selected.p);
+	}, []);
 
 	useEffect(() => {
 		if (!showMenu) return;
@@ -45,16 +66,16 @@ const Sidebar = () => {
 		};
 	}, [showMenu]);
 
-	const filtered: Note[] = useMemo(() => {
-		if (search) {
-			return notes.filter(
-				(el) =>
-					el.title.toLowerCase().includes(search.toLowerCase()) ||
-					el.body.toLowerCase().includes(search.toLowerCase())
-			);
-		}
-		return notes;
-	}, [search, notes]);
+	// const filtered: Note[] = useMemo(() => {
+	// 	if (search) {
+	// 		return notes.filter(
+	// 			(el) =>
+	// 				el.title.toLowerCase().includes(search.toLowerCase()) ||
+	// 				el.body.toLowerCase().includes(search.toLowerCase())
+	// 		);
+	// 	}
+	// 	return notes;
+	// }, [search, notes]);
 
 	return (
 		<section
@@ -64,6 +85,7 @@ const Sidebar = () => {
 				showMenu && "translate-x-0"
 			)}
 		>
+			{/* Mobile Menu Button */}
 			<Button
 				className={clsx(
 					"md:hidden absolute left-full rounded-[0_14px_14px_0] !py-2 !px-0 !min-w-[50px] top-3"
@@ -77,13 +99,24 @@ const Sidebar = () => {
 					🗒️ <span className="text-base">{showMenu ? <i>←</i> : <i>→</i>}</span>
 				</i>
 			</Button>
-			<div>
-				<div className="flex justify-between items-center px-2">
-					<div className="hover:font-bold cursor-pointer " onClick={logout}>
-						Logout
+
+			<Button onClick={logout}>logout</Button>
+
+			{/* Account buttons */}
+			<div className="flex flex-col gap-4 items-stretch px-2">
+				<div className="flex justify-between items-center">
+					<div className="hover:font-bold cursor-pointer flex gap-2">
+						<UserCircle2Icon /> <span>Account</span>
 					</div>
 					<ThemeSwitcher />
 				</div>
+				<Button className="flex justify-between gap-2 p-2 outline rounded-md">
+					<p>Team</p>
+					<UsersRound />
+				</Button>
+			</div>
+
+			{showProject && (
 				<div className="flex flex-col gap-4 p-2 pb-4 w-full border-b-border-medium border-b">
 					<div className="search-container relative">
 						<span className="search-icon">🔍</span>
@@ -95,55 +128,67 @@ const Sidebar = () => {
 					</div>
 
 					<h2 className="text-left font-bold text-lg">My Notes</h2>
+					{/* TODO - ADD NEW FOLDER BTN  */}
 					<Button
 						variant="primary"
-						onClick={() => {
-							setShowForm({ show: true, note: null });
-							setSelected(null);
-							setShowMenu(false);
-						}}
-						disabled={showForm.show}
+						// onClick={() => {
+						// 	setShowForm({ show: true, note: null });
+						// 	setSelected(null);
+						// 	setShowMenu(false);
+						// }}
+						// disabled={showForm.show}
 					>
 						⊕ New Note
 					</Button>
 				</div>
-			</div>
+			)}
 
-			<div className="notes-list flex-1 flex flex-col gap-2 justify-start items-center min-h-0 overflow-y-auto p-1">
-				{(isLoading ? <p>Loading notes...</p> : notes.length > 0) ? (
-					filtered.map((note) => {
-						return (
-							<button
-								key={note.id}
-								className={clsx(
-									"flex flex-col gap-1 justify-center items-start w-full h-[150px] border-b border-b-border-light shadow-sm cursor-pointer group enabled:hover:bg-accent-hover ease-in duration-100 p-2 ",
-									note.id === selected?.id &&
-										"border-l-4 border-l-accent font-bold bg-accent/30 shadow-lg enabled:hover:bg-accent/30"
-								)}
-								onClick={() => {
-									setSelected(note);
-									setTimeout(() => {
-										setShowMenu(false);
-									}, 150);
-								}}
-								disabled={showForm.show}
-							>
-								<h3
-									className={clsx(
-										"text-lg",
-										showForm.show ? "" : "group-hover:font-bold"
-									)}
-								>
-									{note.title}
-								</h3>
-								<small className="line-clamp-2 text-left">{note.body}</small>
-								<small>{new Date(note.createdAt).toLocaleDateString()}</small>
-							</button>
-						);
-					})
+			{/* List */}
+			<div className="sidebar-list flex-1 flex flex-col gap-2 justify-start items-center min-h-0 overflow-y-auto p-1">
+				{/* Loading */}
+
+				{/* Projects */}
+				{!showProject && projects?.length > 0 ? (
+					projects.map((p) => (
+						<ProjectSelection title={p.title} selected={selected.p === p.id} />
+					))
 				) : (
-					<p className="m-auto">No Notes</p>
+					<p className="m-auto">No Projects</p>
 				)}
+
+				{/* Notes */}
+				{/* {filtered.map((note) => {
+					return (
+						<button
+							key={note.id}
+							className={clsx(
+								"flex flex-col gap-1 justify-center items-start w-full h-[150px] border-b border-b-border-light shadow-sm cursor-pointer group enabled:hover:bg-accent-hover ease-in duration-100 p-2 ",
+								note.id === selected?.id &&
+									"border-l-4 border-l-accent font-bold bg-accent/30 shadow-lg enabled:hover:bg-accent/30"
+							)}
+							onClick={() => {
+								setSelected(note);
+								setTimeout(() => {
+									setShowMenu(false);
+								}, 150);
+							}}
+							disabled={showForm.show}
+						>
+							<h3
+								className={clsx(
+									"text-lg",
+									showForm.show ? "" : "group-hover:font-bold"
+								)}
+							>
+								{note.title}
+							</h3>
+							<small className="line-clamp-2 text-left">{note.body}</small>
+							<small>{new Date(note.createdAt).toLocaleDateString()}</small>
+						</button>
+					);
+				})} */}
+
+				<p className="m-auto">No Notes</p>
 			</div>
 		</section>
 	);
