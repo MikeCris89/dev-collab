@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useNotes } from "../context/NotesContext";
-import { useUnsavedChanges } from "../hooks/useUnsavedChanges";
+import { useGlobal } from "../../context/GlobalContext";
+import { useUnsavedChanges } from "../../hooks/useUnsavedChanges";
 import type { Note } from "@shared/contract";
 
 const NoteForm = ({ existing }: { existing?: Note }) => {
-	const { addNote, updateNote, isLoading } = useNotes();
+	// const { addNote, updateNote, isLoading } = useNotes();
 
-	console.log(existing);
+	// console.log(existing);
 
 	const [title, setTitle] = useState<string>(existing?.title ?? "");
 	const [body, setBody] = useState<string>(existing?.body ?? "");
@@ -24,27 +24,23 @@ const NoteForm = ({ existing }: { existing?: Note }) => {
 		e.preventDefault();
 		if (title && body) {
 			const newNote = { title, body };
-			if (existing?.id) {
-				updateNote(existing.id, newNote);
-			} else {
-				addNote(newNote);
-			}
+			// if (existing?.id) {
+			// 	updateNote(existing.id, newNote);
+			// } else {
+			// 	addNote(newNote);
+			// }
 		}
 	};
 
 	return (
-		<form
-			id="note-form"
-			onSubmit={handleSubmit}
-			className="flex-1 flex flex-col gap-10 justify-center items-center h-full w-full "
-		>
+		<form id="note-form" onSubmit={handleSubmit} className="form">
 			<input
 				value={title}
 				placeholder="Title"
 				required
 				onChange={(e) => setTitle(e.target.value)}
 				className="text-[36px] text-accent text-center max-w-[95%]"
-				disabled={isLoading}
+				// disabled={isLoading}
 			/>
 			<textarea
 				value={body}
@@ -52,7 +48,7 @@ const NoteForm = ({ existing }: { existing?: Note }) => {
 				required
 				onChange={(e) => setBody(e.target.value)}
 				className="h-[50%] w-full max-w-[90%] text-center text-balance"
-				disabled={isLoading}
+				// disabled={isLoading}
 			/>
 			{/* <div>
 				<button

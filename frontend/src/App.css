@@ -32,20 +32,24 @@
 	}
 
 	/* Custom scrollbar */
-	.notes-list::-webkit-scrollbar {
+	.sidebar-list::-webkit-scrollbar {
 		width: 6px;
 	}
 
-	.notes-list::-webkit-scrollbar-track {
+	.sidebar-list::-webkit-scrollbar-track {
 		background: transparent;
 	}
 
-	.notes-list::-webkit-scrollbar-thumb {
+	.sidebar-list::-webkit-scrollbar-thumb {
 		background: rgba(78, 205, 196, 0.3);
 		border-radius: 3px;
 	}
 
-	.notes-list::-webkit-scrollbar-thumb:hover {
+	.sidebar-list::-webkit-scrollbar-thumb:hover {
 		background: rgba(78, 205, 196, 0.5);
+	}
+
+	.form {
+		@apply flex-1 flex flex-col gap-10 justify-center items-center h-full w-full;
 	}
 }
