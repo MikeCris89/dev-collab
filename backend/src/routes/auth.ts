@@ -6,6 +6,7 @@ import { ROLES } from "@shared/contract";
 import { userQueries } from "../db/queries/index.js";
 import type { User } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { reqUser } from "src/types/types.js";
 
 // const user = await Promise.resolve({
 // 	id: "1234",
@@ -51,12 +52,13 @@ const getToken = (user: User) => {
 };
 
 router.get("/me", requireAuth, async (req, res) => {
-	const user = (req as any).user;
+	const user = reqUser(req);
+
 	res.json(user);
 });
 
 router.post("/signup", async (req, res) => {
-	const { username, password, firstName, lastName } = req.body;
+	const { username, password, name } = req.body;
 
 	if (!username || !password)
 		throw new BadRequestError("Username and Password required");
@@ -70,8 +72,7 @@ router.post("/signup", async (req, res) => {
 	const user = await userQueries.createUser({
 		username,
 		password: hash,
-		firstName,
-		lastName,
+		name,
 		role: ROLES.admin,
 	});
 

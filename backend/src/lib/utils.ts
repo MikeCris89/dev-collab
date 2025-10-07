@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { BadRequestError } from "./errors.js";
-import { JwtUser } from "@shared/contract";
+import { JwtUser, ROLES, Roles, TeamMember } from "@shared/contract";
+import type { User } from "@prisma/client";
 
 export const testNote = {
 	id: "1",
@@ -20,8 +21,8 @@ export const validateNoteInput: RequestHandler = (req, _res, next) => {
 	// Check for object type and properties
 	if (!note || typeof note !== "object")
 		throw new BadRequestError("Body must be an object.");
-	if (!onlyKeys(note, ["title", "content"]))
-		throw new BadRequestError("Only 'title' and 'content' are allowed.");
+	if (!onlyKeys(note, ["title", "body"]))
+		throw new BadRequestError("Only 'title' and 'body' are allowed.");
 
 	// Check property types and
 	if (typeof note.title !== "string" || note.title.trim().length === 0)
@@ -30,4 +31,11 @@ export const validateNoteInput: RequestHandler = (req, _res, next) => {
 		throw new BadRequestError("Body must be a non-empty string.");
 
 	next();
+};
+
+export const isAdmin = (role: Roles) => role === ROLES.admin;
+
+export const sanitizeTeamUser = (user: User) => {
+	const { password: _p, teamId: _t, ...member } = user;
+	return member;
 };

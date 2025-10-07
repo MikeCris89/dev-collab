@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { CustomError, UnauthorizedError } from "./errors.js";
-import { JwtUser, Roles } from "@shared/contract";
+import { JwtUser, ROLES, Roles } from "@shared/contract";
+import { reqUser } from "src/types/types.js";
 
 export const errorHandler = (
 	err: unknown,
@@ -44,4 +45,12 @@ export const requireAuth: RequestHandler = (req, _res, next) => {
 	} catch (e) {
 		throw new UnauthorizedError("Invalid or Expired Session");
 	}
+};
+
+export const adminOnly: RequestHandler = (req, _res, next) => {
+	const { role } = reqUser(req);
+
+	if (!role || role !== ROLES.admin) throw new UnauthorizedError();
+
+	next();
 };
