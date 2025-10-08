@@ -1,12 +1,9 @@
 import { deleter, fetcher, poster, putter } from "@/lib/api";
 import type {
 	EditUser,
-	Project,
 	ProjectWithUsers,
 	SignupRequest,
 	TeamMember,
-	TeamWithAll,
-	User,
 	UserWithProjects,
 } from "@shared/contract";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,7 +11,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 export const TEAMKEY = "team";
 const BASE = "/team";
 
-export type FullData = {
+export type TeamFull = {
 	users: UserWithProjects[];
 	projects: ProjectWithUsers[];
 };
@@ -25,24 +22,15 @@ export type FullData = {
 export const useTeam = () => {
 	return useQuery({
 		queryKey: [TEAMKEY],
-		queryFn: () => fetcher<FullData>(BASE),
+		queryFn: () => fetcher<TeamFull>(BASE),
 	});
 };
 
-// fetch all projects (no content) - useTeam cache
-export const useProjects = () => {
-	return useQuery({
-		queryKey: [TEAMKEY],
-		queryFn: () => fetcher<FullData>(BASE),
-		select: (data) => data?.projects || [],
-	});
-};
-
-// fetch all team members
+// fetch all team members - useTeam cache
 export const useTeamMembers = () => {
 	return useQuery({
 		queryKey: [TEAMKEY],
-		queryFn: () => fetcher<FullData>(BASE),
+		queryFn: () => fetcher<TeamFull>(BASE),
 		select: (data) => data?.users || [],
 	});
 };

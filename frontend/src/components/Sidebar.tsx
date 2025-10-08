@@ -1,21 +1,23 @@
 import clsx from "clsx";
 import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { useProject } from "@/hooks/useProjects";
 import { UserCircle2Icon, UsersRound } from "lucide-react";
 import ProjectSelection from "./ProjectSelection";
-import { useProjects } from "@/hooks/useTeam";
+import { useProjects } from "@/hooks/useProjects";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
 	const { logout } = useAuth();
+	const navigate = useNavigate();
 
 	const {
 		selected,
-		setSelected,
+		// setSelected,
 		// setShowForm,
 		// showForm,
 		showMenu,
@@ -110,7 +112,10 @@ const Sidebar = () => {
 					</div>
 					<ThemeSwitcher />
 				</div>
-				<Button className="flex justify-between gap-2 p-2 outline rounded-md">
+				<Button
+					className="flex justify-between gap-2 p-2 outline rounded-md"
+					onClick={() => navigate("/team")}
+				>
 					<p>Team</p>
 					<UsersRound />
 				</Button>

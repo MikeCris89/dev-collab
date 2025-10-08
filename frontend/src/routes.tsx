@@ -13,6 +13,10 @@ import { useAuth } from "./context/AuthContext";
 import PublicHome from "./components/pages/PublicHome";
 import Signup from "./components/pages/Signup";
 import { useTeam } from "./hooks/useTeam";
+import GlobalProvider from "./context/GlobalContext";
+import TeamPage from "./components/pages/TeamPage";
+import UserEditForm from "./components/forms/UserEditForm";
+import UserAddForm from "./components/forms/UserAddForm";
 
 const PublicRoutes = () => {
 	const { user } = useAuth();
@@ -37,7 +41,11 @@ const PrivateRoutes = () => {
 
 	useTeam();
 
-	return <Outlet />;
+	return (
+		<GlobalProvider>
+			<Outlet />
+		</GlobalProvider>
+	);
 };
 
 export const router = createBrowserRouter([
@@ -62,6 +70,11 @@ export const router = createBrowserRouter([
 						path: "p/:projectId/f/:folderId/n/:noteId",
 						element: <NotePreview />,
 					},
+					{
+						path: "team",
+						element: <TeamPage />,
+					},
+					{ path: "team/new", element: <UserAddForm /> },
 					{ path: "*", element: <NotFound /> },
 				],
 			},

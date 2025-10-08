@@ -1,3 +1,4 @@
+import { useLocation, useNavigate } from "react-router-dom";
 import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
 
@@ -6,17 +7,40 @@ const Toolbar = () => {
 		selected,
 		// setSelected,
 		// error,
-		// showForm,
-		// setShowForm,
+		showForm,
+		setShowForm,
 		// showMenu,
 		// setShowMenu,
 	} = useGlobal();
 
+	const { pathname } = useLocation();
+	const navigate = useNavigate();
+
+	const isTeam = pathname.includes("/team");
+
 	return (
 		<div
 			id="note-bar"
-			className="flex flex-col-reverse md:flex-row md:justify-between md:items-center w-full bg-bg-elevated border-b border-b-border-light h-fit relative p-1 md:p-3 md:pl-3"
+			className="flex flex-col-reverse md:flex-row md:justify-between items-center w-full bg-bg-elevated border-b border-b-border-light h-[65px] relative p-2 md:p-3 md:pl-3 "
 		>
+			{pathname === "/team" && (
+				<div className="grid grid-cols-3 items-center justify-center w-full h-full">
+					<div></div>
+					<h1>Team</h1>
+					<div>
+						<Button
+							variant="primary"
+							className="m-auto"
+							onClick={() => {
+								setShowForm((prev) => ({ ...prev, form: "user-add-form" }));
+								navigate("/team/new");
+							}}
+						>
+							add
+						</Button>
+					</div>
+				</div>
+			)}
 			{
 				<>
 					{/* {selected.n && (
@@ -37,8 +61,8 @@ const Toolbar = () => {
 						</div>
 					)} */}
 
-					{/* <div className="flex flex-nowrap justify-end gap-3 py-3 md:py-0 h-[65px] md:h-fit">
-						{!showForm.show && selected && (
+					<div className="flex flex-nowrap justify-end gap-3">
+						{/* {!showForm && selected && (
 							<>
 								<Button
 									onClick={() => setShowForm({ show: true, note: selected })}
@@ -47,20 +71,22 @@ const Toolbar = () => {
 								</Button>
 								<Button>🗑️ delete</Button>
 							</>
-						)}
-						{showForm.show && (
+						)} */}
+						{showForm.show && showForm.form && (
 							<>
 								<Button
-									onClick={() => setShowForm({ show: false, note: null })}
+									onClick={() => {
+										navigate(-1);
+									}}
 								>
 									❌ cancel
 								</Button>
-								<Button type="submit" form="note-form" variant="primary">
+								<Button type="submit" form={showForm.form} variant="primary">
 									save
 								</Button>
 							</>
 						)}
-					</div> */}
+					</div>
 				</>
 			}
 		</div>

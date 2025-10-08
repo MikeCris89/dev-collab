@@ -1,9 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 export type SetShowForm = React.Dispatch<React.SetStateAction<ShowForm>>;
 
-export type ShowForm = string | null;
+// export type ShowForm = string | null;
+export type ShowForm = { show: boolean; form: string | null };
 
 interface Selected {
 	p: string | null;
@@ -36,6 +37,8 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 		folderId?: string;
 		noteId?: string;
 	};
+	const { pathname } = useLocation();
+
 	const [selected, setSelected] = useState<Selected>({
 		p: null,
 		f: null,
@@ -43,7 +46,10 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 	});
 	// const [notes, setNotes] = useState<Note[]>([]);
 	// const [selected, setSelected] = useState<Note | null>(null);
-	const [showForm, setShowForm] = useState<ShowForm>(null);
+	const [showForm, setShowForm] = useState<ShowForm>({
+		show: false,
+		form: null,
+	});
 	const [showMenu, setShowMenu] = useState(false);
 
 	useEffect(() => {
@@ -63,6 +69,20 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 		}
 		setSelected(select);
 	}, [params]);
+
+	useEffect(() => {
+		if (
+			(pathname.endsWith("/new") || pathname.endsWith("/edit")) &&
+			!showForm.show
+		)
+			setShowForm((prev) => ({ ...prev, show: true }));
+		else if (
+			!pathname.endsWith("/new") &&
+			!pathname.endsWith("/edit") &&
+			showForm.show
+		)
+			setShowForm((prev) => ({ ...prev, show: false }));
+	}, [pathname]);
 
 	// const [isFetching, setIsFetching] = useState(true);
 	// const [isAdding, setIsAdding] = useState(false);

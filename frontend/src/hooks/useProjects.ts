@@ -4,7 +4,7 @@
 import type { Project, ProjectInput, ProjectWithAll } from "@shared/contract";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleter, fetcher, poster, putter } from "@/lib/api";
-import { TEAMKEY } from "./useTeam";
+import { TEAMKEY, type TeamFull } from "./useTeam";
 
 const KEY = "projects";
 const BASE = "/projects";
@@ -15,6 +15,15 @@ export const useProject = (id: string | null) => {
 		queryKey: [KEY, id],
 		queryFn: () => fetcher<ProjectWithAll>(`${BASE}/${id}`),
 		enabled: !!id,
+	});
+};
+
+// fetch all projects (no content) - useTeam cache
+export const useProjects = () => {
+	return useQuery({
+		queryKey: [TEAMKEY],
+		queryFn: () => fetcher<TeamFull>(BASE),
+		select: (data) => data?.projects || [],
 	});
 };
 
