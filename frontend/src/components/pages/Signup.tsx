@@ -2,6 +2,7 @@ import type { SignupRequest } from "@shared/contract";
 import Button from "../Button";
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import InputWrapper from "../forms/InputWrapper";
 
 const Signup = () => {
 	const { isLoading, signup } = useAuth();
@@ -30,52 +31,47 @@ const Signup = () => {
 				className="flex flex-col gap-4 items-center justify-center w-full max-w-[500px] "
 				autoComplete="off"
 			>
-				<div className="flex flex-col gap-1">
-					<label htmlFor="username" className="self-start">
-						Username
-					</label>
+				<InputWrapper htmlFor="username" label="Username">
 					<input
 						name="username"
 						id="username"
 						required
+						value={userData.username}
 						onChange={handleChange}
 						disabled={isLoading}
 						autoComplete="off"
 						className="w-[250px]"
 					/>
-				</div>
+				</InputWrapper>
 
 				{/* // TODO generate random passwords instead, do not let users create their own passwords */}
-				<div className="flex flex-col gap-1">
-					<label htmlFor="password" className="self-start">
-						Password
-					</label>
+
+				<InputWrapper htmlFor="password" label="Password">
 					<input
 						name="password"
 						id="password"
 						type="password"
+						value={userData.password}
 						required
 						onChange={handleChange}
 						disabled={isLoading}
 						className="w-[250px]"
 					/>
-				</div>
+				</InputWrapper>
 
-				<div className="flex flex-col gap-1">
-					<label htmlFor="name" className="self-start">
-						Name
-					</label>
+				<InputWrapper htmlFor="name" label="Name">
 					<input
 						name="name"
 						id="name"
 						required
+						value={userData.name}
 						onChange={handleChange}
 						disabled={isLoading}
 						autoComplete="off"
 						className="w-[250px]"
 						placeholder="(optional)"
 					/>
-				</div>
+				</InputWrapper>
 
 				<div className="flex gap-2  p-3">
 					<Button type="submit" disabled={isLoading} variant="primary">

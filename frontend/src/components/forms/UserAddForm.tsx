@@ -3,6 +3,7 @@ import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { LIMITS, type SignupRequest } from "@shared/contract";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import InputWrapper from "./InputWrapper";
 
 const UserAddForm = () => {
 	const [userData, setUserData] = useState<SignupRequest>({
@@ -52,68 +53,63 @@ const UserAddForm = () => {
 			className="form"
 			autoComplete="off"
 		>
-			<div className="flex flex-col gap-1">
-				<label htmlFor="username" className="self-start">
-					Username
-				</label>
+			<InputWrapper htmlFor="username" label="Username">
 				<input
 					name="username"
 					id="username"
-					required
+					value={userData.username}
 					onChange={handleChange}
 					disabled={isPending}
 					autoComplete="off"
 					className="w-[250px]"
+					required
 				/>
-			</div>
+			</InputWrapper>
 
 			{/* // TODO generate random passwords instead, do not let users create their own passwords */}
-			<div className="flex flex-col gap-1">
-				<label htmlFor="password" className="self-start">
-					Password
-				</label>
+
+			<InputWrapper htmlFor="password" label="Password">
 				<input
 					name="password"
 					id="password"
 					type="password"
+					value={userData.password}
 					required
 					onChange={handleChange}
 					disabled={isPending}
 					className="w-[250px]"
 				/>
-			</div>
+			</InputWrapper>
 
-			<div className="flex flex-col gap-1">
-				<label htmlFor="name" className="self-start">
-					Name
-				</label>
+			<InputWrapper htmlFor="name" label="Name">
 				<input
 					name="name"
 					id="name"
 					required
+					value={userData.name}
 					onChange={handleChange}
 					disabled={isPending}
 					autoComplete="off"
 					className="w-[250px]"
 					placeholder="(optional)"
 				/>
-			</div>
+			</InputWrapper>
 
-			<div className="flex flex-col gap-1">
-				<label htmlFor="projects" className="self-start">
-					Projects
-				</label>
-				<label htmlFor="selectAll" className="self-start">
-					select all
-				</label>
-				<input
-					type="checkbox"
-					name="selectAll"
-					id="selectAll"
-					onChange={handleChange}
-					disabled={isPending}
-					className="w-[250px]"
-				/>
+			<InputWrapper htmlFor="projects" label="Projects">
+				<InputWrapper
+					htmlFor="selectAll"
+					label="select all"
+					className="flex-row"
+				>
+					<input
+						type="checkbox"
+						name="selectAll"
+						id="selectAll"
+						onChange={handleChange}
+						disabled={isPending}
+						className="w-[250px]"
+					/>
+				</InputWrapper>
 				{
 					<input
 						type="checkbox"
@@ -124,7 +120,7 @@ const UserAddForm = () => {
 						className="w-[250px]"
 					/>
 				}
-			</div>
+			</InputWrapper>
 		</form>
 	);
 };

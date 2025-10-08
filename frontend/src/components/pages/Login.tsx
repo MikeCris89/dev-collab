@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import type { LoginRequest } from "@shared/contract";
 import Button from "../Button";
-import { Link } from "react-router-dom";
+import InputWrapper from "../forms/InputWrapper";
 
 const Login = () => {
 	const [userData, setUserData] = useState<LoginRequest>({
@@ -32,36 +32,33 @@ const Login = () => {
 				className="flex flex-col gap-4 items-center justify-center w-full max-w-[500px] "
 				autoComplete="off"
 			>
-				<div className="flex flex-col gap-1">
-					<label htmlFor="username" className="self-start">
-						Username
-					</label>
+				<InputWrapper htmlFor="username" label="Username">
 					<input
 						name="username"
 						id="username"
+						value={userData.username}
 						onChange={handleChange}
 						className="w-[250px]"
 						disabled={isLoading}
 						autoComplete="off"
 						required
 					/>
-				</div>
+				</InputWrapper>
 
 				{/* // TODO generate random passwords instead, do not let users create their own passwords */}
-				<div className="flex flex-col gap-1">
-					<label htmlFor="password" className="self-start">
-						Password
-					</label>
+
+				<InputWrapper htmlFor="password" label="Password">
 					<input
 						name="password"
 						id="password"
 						type="password"
+						value={userData.password}
 						onChange={handleChange}
 						className="w-[250px]"
 						disabled={isLoading}
 						required
 					/>
-				</div>
+				</InputWrapper>
 
 				<Button
 					type="submit"
