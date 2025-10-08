@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import { EditUser, ROLES } from "@shared/contract";
+import { EditUser, LIMITS, ROLES } from "@shared/contract";
 import express from "express";
-import { adminOnly, requireAuth } from "src/lib/middleware.js";
+import { adminOnly } from "src/lib/middleware.js";
 import { reqUser } from "src/types/types.js";
 import prisma from "../db/client.js";
 import { BadRequestError, UnauthorizedError } from "src/lib/errors.js";
@@ -9,8 +9,6 @@ import { userQueries } from "src/db/queries/users.js";
 import { sanitizeTeamUser } from "src/lib/utils.js";
 
 const router = express.Router();
-
-router.use(requireAuth);
 
 router.get("/", async (req, res) => {
 	const { isAdmin, teamId, sub: userId } = reqUser(req);
@@ -25,12 +23,14 @@ router.get("/", async (req, res) => {
 					name: true,
 					role: true,
 					createdAt: true,
-					projectsUsers: {
-						select: {
-							projectId: true,
-							createdAt: true,
-						},
-					},
+					projectsUsers: isAdmin
+						? {
+								select: {
+									projectId: true,
+									createdAt: true,
+								},
+						  }
+						: false,
 				},
 			},
 			projects: {
@@ -51,6 +51,13 @@ router.get("/", async (req, res) => {
 
 router.post("/", adminOnly, async (req, res) => {
 	const { teamId } = reqUser(req);
+
+	const userCount = await prisma.user.count({
+		where: { teamId },
+	});
+
+	if (userCount >= LIMITS.MAX_USERS_PER_TEAM)
+		throw new BadRequestError("Max Users reached");
 
 	const { username, password, name } = req.body;
 
@@ -95,3 +102,5 @@ router.put("/:id", async (req, res) => {
 
 	res.json(userData);
 });
+
+export default router;

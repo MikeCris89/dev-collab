@@ -1,27 +1,12 @@
 import { LIMITS } from "@shared/contract";
 import express from "express";
-import { adminOnly, requireAuth } from "src/lib/middleware.js";
+import { adminOnly } from "src/lib/middleware.js";
 import { reqUser } from "src/types/types.js";
 import prisma from "../db/client.js";
 import { ProjectInput, ROLES } from "@shared/contract";
 import { BadRequestError, NotFoundError } from "src/lib/errors.js";
 
 const router = express.Router();
-
-router.use(requireAuth);
-
-// router.get("/", async (req, res) => {
-// 	const { teamId, role, sub } = reqUser(req);
-
-// 	const projects = await prisma.project.findMany({
-// 		where:
-// 			role === ROLES.admin
-// 				? { teamId }
-// 				: { teamId, projectsUsers: { some: { userId: sub } } },
-// 	});
-
-// 	res.json(projects);
-// });
 
 router.get("/:id", async (req, res) => {
 	const { teamId, role, sub } = reqUser(req);
@@ -123,3 +108,5 @@ router.delete("/:id", adminOnly, async (req, res) => {
 
 	res.status(204).send();
 });
+
+export default router;

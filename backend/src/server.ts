@@ -6,6 +6,8 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { errorHandler, requireAuth } from "./lib/middleware.js";
 import dotenv from "dotenv";
+import teamRouter from "./routes/team.js";
+import projectRouter from "./routes/projects.js";
 
 dotenv.config({ path: ".env.local" });
 
@@ -26,7 +28,12 @@ app.get("/health", (_req, res) => res.sendStatus(200));
 
 // Routers
 app.use("/api/auth", authRouter);
-app.use("/api/notes", requireAuth, notesRouter);
+
+app.use(requireAuth);
+
+app.use("/api/notes", notesRouter);
+app.use("/api/team", teamRouter);
+app.use("/api/projects", projectRouter);
 
 // Path Not Found
 app.use((_req, res) => res.status(404).json({ message: "Not Found" }));
