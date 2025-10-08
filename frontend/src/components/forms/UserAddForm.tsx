@@ -1,17 +1,26 @@
-import { useCreateTeamMember } from "@/hooks/useTeam";
-import type { SignupRequest } from "@shared/contract";
+import { useCreateTeamMember, useTeamMembers } from "@/hooks/useTeam";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
+import { LIMITS, type SignupRequest } from "@shared/contract";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const UserAddForm = () => {
 	const [userData, setUserData] = useState<SignupRequest>({
 		username: "",
 		password: "",
 		name: "",
+		projectIds: [],
 	});
 
-	const { data: projects, isLoading, error } = use;
+	const navigate = useNavigate();
 
-	const { mutate: addUser, isPending, error } = useCreateTeamMember();
+	// const { data: projects, isLoading, error } = use;
+	const { data: members = [] } = useTeamMembers();
+	const { mutateAsync: addUser, isPending, error } = useCreateTeamMember();
+
+	const isDirty = !!userData.username || !!userData.password || !!userData.name;
+
+	useUnsavedChanges(isDirty);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setUserData((prev) => ({
@@ -20,9 +29,18 @@ const UserAddForm = () => {
 		}));
 	};
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (userData.username && userData.password) addUser(userData);
+		try {
+			const count = members.length;
+			if (count >= LIMITS.MAX_USERS_PER_TEAM)
+				throw new Error("Max Users reached");
+			if (userData.username && userData.password) await addUser(userData);
+			navigate("/team", { replace: true });
+		} catch (e) {
+			if (e instanceof Error) console.log(e.message);
+			else console.log("Error has occured");
+		}
 	};
 
 	const handleSelectAll = () => {};
