@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { useProject } from "@/hooks/useProjects";
 import {
+	ChevronLeft,
 	Folder,
 	Layers,
 	NotepadText,
@@ -13,16 +14,14 @@ import {
 	UsersRound,
 } from "lucide-react";
 import ProjectSelection from "./ProjectSelection";
-import { useTeamProjects } from "@/hooks/useProjects";
+import { useTeamProjects } from "@/hooks/useTeam";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import SidebarList from "./SidebarList";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
 	const { logout } = useAuth();
 	const navigate = useNavigate();
 	const { pathname } = useLocation();
-	const params = useParams();
 
 	const {
 		selected,
@@ -52,12 +51,8 @@ const Sidebar = () => {
 	} = useProject(selected.p);
 
 	useEffect(() => {
-		if (selected.p && !showProject) {
-			if (selected.f && !showFolder) {
-				setShowFolder(selected.f);
-			}
-			setShowProject(selected.p);
-		}
+		setShowProject(selected.p);
+		setShowFolder(selected.f);
 	}, [selected]);
 
 	useEffect(() => {
@@ -82,61 +77,104 @@ const Sidebar = () => {
 		};
 	}, [showMenu]);
 
-	const nav = {
-		p: {
-			title: "Projects",
-			newLabel: "New Project",
-			searchLabel: "Search projects",
-			newFormId: "project-form",
-			newFormUrl: "/p/new",
-			editFormUrl: undefined,
-			current: undefined,
-			currentIcon: undefined,
-			icon: <Layers />,
-		},
-		f: {
-			title: "Folders",
-			newLabel: "New Folder",
-			searchLabel: "Search folders",
-			newFormId: "folder-form",
-			newFormUrl: `${pathname}/f/new`,
-			editFormUrl: showProject ? `/p/${showProject}/edit` : "#",
-			current: showProject
-				? projects.find((p) => p.id === showProject)?.title
-				: "",
-			currentIcon: <Layers />,
-			icon: <Folder />,
-		},
-		n: {
-			title: "Notes",
-			newLabel: "New Note",
-			searchLabel: "Search notes",
-			newFormId: "note-form",
-			newFormUrl: `${pathname}/n/new`,
-			editFormUrl: showFolder ? `${pathname}/f/${showFolder}/edit` : "#",
-			current: showFolder ? "" : "",
-			currentIcon: <Folder />,
-			icon: <NotepadText />,
-		},
-	};
+	const nav = useMemo(
+		() => ({
+			p: {
+				title: "Projects",
+				newLabel: "New Project",
+				searchLabel: "Search projects",
+				newFormId: "project-form",
+				newFormUrl: "/p/new",
+				editFormUrl: undefined,
+				current: undefined,
+				currentIcon: undefined,
+				icon: <Layers />,
+			},
+			f: {
+				title: "Folders",
+				newLabel: "New Folder",
+				searchLabel: "Search folders",
+				newFormId: "folder-form",
+				newFormUrl: `${pathname}/f/new`,
+				editFormUrl: showProject ? `/p/${showProject}/edit` : "#",
+				current: showProject
+					? projects?.find((p) => p.id === selected.p)?.title
+					: undefined,
+				currentIcon: <Layers />,
+				icon: <Folder />,
+			},
+			n: {
+				title: "Notes",
+				newLabel: "New Note",
+				searchLabel: "Search notes",
+				newFormId: "note-form",
+				newFormUrl: `${pathname}/n/new`,
+				editFormUrl: showFolder ? `${pathname}/f/${showFolder}/edit` : "#",
+				current: showFolder ? "" : "",
+				currentIcon: <Folder />,
+				icon: <NotepadText />,
+			},
+		}),
+		[showProject, showFolder, selected, projects]
+	);
+	// const nav2 = {
+	// 	p: {
+	// 		title: "Projects",
+	// 		newLabel: "New Project",
+	// 		searchLabel: "Search projects",
+	// 		newFormId: "project-form",
+	// 		newFormUrl: "/p/new",
+	// 		editFormUrl: undefined,
+	// 		current: undefined,
+	// 		currentIcon: undefined,
+	// 		icon: <Layers />,
+	// 	},
+	// 	f: {
+	// 		title: "Folders",
+	// 		newLabel: "New Folder",
+	// 		searchLabel: "Search folders",
+	// 		newFormId: "folder-form",
+	// 		newFormUrl: `${pathname}/f/new`,
+	// 		editFormUrl: showProject ? `/p/${showProject}/edit` : "#",
+	// 		current: showProject
+	// 			? projects?.find((p) => p.id === selected.p)?.title
+	// 			: undefined,
+	// 		currentIcon: <Layers />,
+	// 		icon: <Folder />,
+	// 	},
+	// 	n: {
+	// 		title: "Notes",
+	// 		newLabel: "New Note",
+	// 		searchLabel: "Search notes",
+	// 		newFormId: "note-form",
+	// 		newFormUrl: `${pathname}/n/new`,
+	// 		editFormUrl: showFolder ? `${pathname}/f/${showFolder}/edit` : "#",
+	// 		current: showFolder ? "" : "",
+	// 		currentIcon: <Folder />,
+	// 		icon: <NotepadText />,
+	// 	},
+	// };
 
 	const page = !showProject ? "p" : !showFolder ? "f" : "n";
 
 	const filtered = useMemo(() => {
 		const data = {
 			p: projects,
-			f: folders,
-			n: notes,
+			f: project?.folders ?? [],
+			n: project?.notes ?? [],
 		};
+
 		if (search) {
 			return data[page].filter(
 				(el) =>
 					el.title?.toLowerCase().includes(search.toLowerCase()) ||
-					el.body?.toLowerCase().includes(search.toLowerCase())
+					("body" in el &&
+						el.body?.toLowerCase().includes(search.toLowerCase()))
 			);
 		}
+
 		return data[page];
-	}, [search, projects, folders, notes]);
+	}, [search, projects, project, showProject, showFolder]);
 
 	return (
 		<section
@@ -166,15 +204,15 @@ const Sidebar = () => {
 
 			{/* Account & Team buttons */}
 			<div className="flex flex-col gap-4 items-stretch px-2 h-fit">
-				<div
+				{/* <div
 					onClick={logout}
 					className="self-start cursor-pointer hover:font-bold"
 				>
 					logout
-				</div>
+				</div> */}
 				<div className="flex justify-between items-center">
-					<div className="hover:font-bold cursor-pointer flex gap-2">
-						<UserCircle2Icon /> <span>Account</span>
+					<div className="flex items-center hover:font-bold cursor-pointer gap-2">
+						<UserCircle2Icon size={18} /> <span>Account</span>
 					</div>
 					<ThemeSwitcher />
 				</div>
@@ -218,6 +256,10 @@ const Sidebar = () => {
 
 			{/* SEARCH BAR & NEW BTN */}
 			<div className="flex flex-col gap-4 p-2 pb-4 w-full border-b-border-medium border-b">
+				{/* <div className="text-left font-bold text-xs flex items-center gap-2 cursor-pointer p-1 group">
+					<ChevronLeft className="group-hover:text-accent" size={16} />
+					all {nav[page].title.toLocaleLowerCase()}
+				</div> */}
 				<div className="search-container relative">
 					<span className="search-icon">🔍</span>
 					<input
@@ -227,41 +269,68 @@ const Sidebar = () => {
 					/>
 				</div>
 
-				<h2 className="text-left font-bold text-lg">{nav[page].current}</h2>
-				<h2 className="text-left font-bold text-lg">{nav[page].title}</h2>
+				<div className="flex items-center justify-between">
+					<h2 className="text-left font-bold text-lg">{nav[page].title}</h2>
 
-				<Button
-					variant="primary"
-					onClick={() => {
-						setShowForm((prev) => ({ ...prev, form: nav[page].newFormId }));
-						// setSelected({
-						// 	p: null,
-						// 	f: null,
-						// 	n: null,
-						// });
-						setShowMenu(false);
-						navigate(nav[page].newFormUrl);
-					}}
-					disabled={showForm.show}
-				>
-					{nav[page].newLabel}
-				</Button>
+					<Button
+						variant="primary"
+						onClick={() => {
+							setShowForm((prev) => ({ ...prev, form: nav[page].newFormId }));
+							// setSelected({
+							// 	p: null,
+							// 	f: null,
+							// 	n: null,
+							// });
+							setShowMenu(false);
+							navigate(nav[page].newFormUrl);
+						}}
+						disabled={showForm.show}
+						className="flex gap-1 items-center"
+					>
+						{nav[page].icon} New
+					</Button>
+				</div>
 			</div>
 
 			{/* List */}
 			<div className="sidebar-list flex-1 flex flex-col gap-2 justify-start items-center min-h-0 overflow-y-auto p-1">
 				{/* Loading */}
 
-				{/* Projects */}
+				{/* SECTION */}
+				{(showProject || showFolder) && (
+					<div
+						className="flex items-center gap-1 text-left font-bold text-sm self-start cursor-pointer hover:text-accent"
+						onClick={() => {
+							if (showFolder) setShowFolder(null);
+							else if (showProject) setShowProject(null);
+						}}
+					>
+						<ChevronLeft size={16} />
+						{nav[page].currentIcon}
+						{nav[page].current}
+					</div>
+				)}
+
+				{/* Item List */}
 				{filtered && filtered?.length > 0 ? (
-					filtered.map((el) => (
-						<ProjectSelection
-							title={el.title}
-							selected={selected[page] === el.id}
-							key={el.id}
-							onClick={() => navigate(`/p/${el.id}`)}
-						/>
-					))
+					filtered.map((el) => {
+						const isSel = selected[page] === el.id;
+
+						return (
+							<ProjectSelection
+								title={el.title}
+								selected={isSel}
+								key={el.id}
+								onClick={() => {
+									if (!isSel) navigate(`/p/${el.id}`);
+									else {
+										if (page === "p") setShowProject(el.id);
+										if (page === "f") setShowFolder(el.id);
+									}
+								}}
+							/>
+						);
+					})
 				) : (
 					<p className="m-auto">
 						No {search ? "search results.." : nav[page].title}
