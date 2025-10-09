@@ -9,8 +9,7 @@ export const useCreateFolder = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({ id, data }: { id: string; data: FolderInput }) =>
-			poster<FolderInput, Folder>(`${BASE}/${id}`, data),
+		mutationFn: (data: FolderInput) => poster<FolderInput, Folder>(BASE, data),
 		onSuccess: (resp) => {
 			queryClient.setQueryData([PROJECTKEY], (old: ProjectWithAll) => ({
 				...old,

@@ -7,7 +7,8 @@ import cookieParser from "cookie-parser";
 import { errorHandler, requireAuth } from "./lib/middleware.js";
 import dotenv from "dotenv";
 import teamRouter from "./routes/team.js";
-import projectRouter from "./routes/projects.js";
+import projectsRouter from "./routes/projects.js";
+import foldersRouter from "./routes/folders.js";
 
 dotenv.config({ path: ".env.local" });
 
@@ -31,9 +32,10 @@ app.use("/api/auth", authRouter);
 
 app.use(requireAuth);
 
-app.use("/api/notes", notesRouter);
 app.use("/api/team", teamRouter);
-app.use("/api/projects", projectRouter);
+app.use("/api/projects", projectsRouter);
+app.use("/api/folders", foldersRouter);
+app.use("/api/notes", notesRouter);
 
 // Path Not Found
 app.use((_req, res) => res.status(404).json({ message: "Not Found" }));
