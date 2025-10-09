@@ -7,6 +7,7 @@ import { userQueries } from "../db/queries/index.js";
 import type { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { reqUser } from "src/types/types.js";
+import prisma from "../db/client.js";
 
 // const user = await Promise.resolve({
 // 	id: "1234",
@@ -53,6 +54,12 @@ const getToken = (user: User) => {
 
 router.get("/me", requireAuth, async (req, res) => {
 	const user = reqUser(req);
+
+	const resp = await prisma.user.findUnique({
+		where: { id: user.sub, teamId: user.teamId },
+	});
+
+	if (!resp) throw new UnauthorizedError("Account not found");
 
 	res.json(user);
 });

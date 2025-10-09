@@ -19,12 +19,12 @@ enum Role {
 }
 
 model User {
-   id String  @id @default(uuid()) @db.Uuid
+   id String  @id @default(cuid(2))
    username String @unique @db.VarChar(20)
    password String @db.VarChar(255)
    name String? @db.VarChar(20) @map("name")
    role Role @default(TEAM)
-   teamId String @db.Uuid @map("team_id") 
+   teamId String @map("team_id") 
    createdAt DateTime @default(now()) @map("created_at")
 
    notes Note[]
@@ -36,7 +36,7 @@ model User {
 }
 
 model Team {
-  id String  @id @default(uuid()) @db.Uuid
+  id String  @id @default(cuid(2)) 
   createdAt DateTime @default(now()) @map("created_at")
 
   users User[]
@@ -44,9 +44,9 @@ model Team {
 }
 
 model Project {
-   id String  @id @default(uuid()) @db.Uuid
+   id String  @id @default(cuid(2)) 
    title String @db.VarChar(50)
-   teamId String @db.Uuid @map("team_id")
+   teamId String  @map("team_id")
    createdAt DateTime @default(now()) @map("created_at")
 
    folders Folder[]
@@ -58,9 +58,9 @@ model Project {
 }
 
 model Folder {
-   id String  @id @default(uuid()) @db.Uuid
+   id String  @id @default(cuid(2)) 
    title String @db.VarChar(50)
-   projectId String @db.Uuid @map("project_id")
+   projectId String  @map("project_id")
    createdAt DateTime @default(now()) @map("created_at")
    
    notes Note[]
@@ -71,12 +71,12 @@ model Folder {
 }
 
 model Note {
-   id String  @id @default(uuid()) @db.Uuid
+   id String  @id @default(cuid(2)) 
    title String @db.VarChar(50)
    body String @db.Text
-   userId String? @db.Uuid @map("user_id")
-   projectId String @db.Uuid @map("project_id")
-   folderId String @db.Uuid @map("folder_id")
+   userId String?  @map("user_id")
+   projectId String  @map("project_id")
+   folderId String  @map("folder_id")
    createdAt DateTime @default(now()) @map("created_at")
    updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -93,10 +93,10 @@ model Note {
 }
 
 model Comment {
-  id String  @id @default(uuid()) @db.Uuid
+  id String  @id @default(cuid(2)) 
   body String @db.Text
-  userId String? @db.Uuid @map("user_id")
-  noteId String @db.Uuid @map("note_id")
+  userId String?  @map("user_id")
+  noteId String  @map("note_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -108,8 +108,8 @@ model Comment {
 }
 
 model ProjectsUser {
-  userId String @db.Uuid @map("user_id")
-  projectId String @db.Uuid @map("project_id")
+  userId String  @map("user_id")
+  projectId String  @map("project_id")
   createdAt DateTime @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
