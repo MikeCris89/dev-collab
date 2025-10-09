@@ -6,13 +6,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleter, fetcher, poster, putter } from "@/lib/api";
 import { TEAMKEY, type TeamFull } from "./useTeam";
 
-const KEY = "projects";
+export const PROJECTKEY = "projects";
 const BASE = "/projects";
 
 // fetch ONE project with folders and notes
 export const useProject = (id: string | null) => {
 	return useQuery({
-		queryKey: [KEY, id],
+		queryKey: [PROJECTKEY, id],
 		queryFn: () => fetcher<ProjectWithAll>(`${BASE}/${id}`),
 		enabled: !!id,
 	});
@@ -73,7 +73,7 @@ export const useDeleteProject = () => {
 			// }));
 			queryClient.invalidateQueries({ queryKey: [TEAMKEY] });
 
-			queryClient.removeQueries({ queryKey: [KEY, id] });
+			queryClient.removeQueries({ queryKey: [PROJECTKEY, id] });
 		},
 	});
 };
