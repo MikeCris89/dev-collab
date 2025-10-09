@@ -1,25 +1,34 @@
 import clsx from "clsx";
 import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { useProject } from "@/hooks/useProjects";
-import { UserCircle2Icon, UsersRound } from "lucide-react";
+import {
+	Folder,
+	Layers,
+	NotepadText,
+	UserCircle2Icon,
+	UsersRound,
+} from "lucide-react";
 import ProjectSelection from "./ProjectSelection";
-import { useProjects } from "@/hooks/useProjects";
-import { useNavigate } from "react-router-dom";
+import { useTeamProjects } from "@/hooks/useProjects";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import SidebarList from "./SidebarList";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
 	const { logout } = useAuth();
 	const navigate = useNavigate();
+	const { pathname } = useLocation();
+	const params = useParams();
 
 	const {
 		selected,
-		// setSelected,
-		// setShowForm,
-		// showForm,
+		setSelected,
+		setShowForm,
+		showForm,
 		showMenu,
 		setShowMenu,
 		toggleMenu,
@@ -34,7 +43,7 @@ const Sidebar = () => {
 		data: projects = [],
 		isLoading: loadingProjects,
 		error: errorProjects,
-	} = useProjects();
+	} = useTeamProjects();
 
 	const {
 		data: project,
@@ -43,8 +52,13 @@ const Sidebar = () => {
 	} = useProject(selected.p);
 
 	useEffect(() => {
-		if (selected.p) setShowProject(selected.p);
-	}, []);
+		if (selected.p && !showProject) {
+			if (selected.f && !showFolder) {
+				setShowFolder(selected.f);
+			}
+			setShowProject(selected.p);
+		}
+	}, [selected]);
 
 	useEffect(() => {
 		if (!showMenu) return;
@@ -68,22 +82,70 @@ const Sidebar = () => {
 		};
 	}, [showMenu]);
 
-	// const filtered: Note[] = useMemo(() => {
-	// 	if (search) {
-	// 		return notes.filter(
-	// 			(el) =>
-	// 				el.title.toLowerCase().includes(search.toLowerCase()) ||
-	// 				el.body.toLowerCase().includes(search.toLowerCase())
-	// 		);
-	// 	}
-	// 	return notes;
-	// }, [search, notes]);
+	const nav = {
+		p: {
+			title: "Projects",
+			newLabel: "New Project",
+			searchLabel: "Search projects",
+			newFormId: "project-form",
+			newFormUrl: "/p/new",
+			editFormUrl: undefined,
+			current: undefined,
+			currentIcon: undefined,
+			icon: <Layers />,
+		},
+		f: {
+			title: "Folders",
+			newLabel: "New Folder",
+			searchLabel: "Search folders",
+			newFormId: "folder-form",
+			newFormUrl: `${pathname}/f/new`,
+			editFormUrl: showProject ? `/p/${showProject}/edit` : "#",
+			current: showProject
+				? projects.find((p) => p.id === showProject)?.title
+				: "",
+			currentIcon: <Layers />,
+			icon: <Folder />,
+		},
+		n: {
+			title: "Notes",
+			newLabel: "New Note",
+			searchLabel: "Search notes",
+			newFormId: "note-form",
+			newFormUrl: `${pathname}/n/new`,
+			editFormUrl: showFolder ? `${pathname}/f/${showFolder}/edit` : "#",
+			current: showFolder ? "" : "",
+			currentIcon: <Folder />,
+			icon: <NotepadText />,
+		},
+	};
+
+	const page = !showProject ? "p" : !showFolder ? "f" : "n";
+
+	const filtered = useMemo(() => {
+		const data = {
+			p: projects,
+			f: folders,
+			n: notes,
+		};
+		if (search) {
+			return data[page].filter(
+				(el) =>
+					el.title?.toLowerCase().includes(search.toLowerCase()) ||
+					el.body?.toLowerCase().includes(search.toLowerCase())
+			);
+		}
+		return data[page];
+	}, [search, projects, folders, notes]);
 
 	return (
 		<section
 			ref={sidebarRef}
 			className={clsx(
-				"absolute left-0 -translate-x-full md:static md:inset-auto  md:translate-x-0  grid grid-rows-[auto_1fr] gap-4 h-screen w-[250px] max-w-screen md:h-full md:w-[300px] bg-bg-surface  p-1 py-4 border-r border-r-border-medium shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] transition-all duration-300 z-50 backdrop-blur-sm ",
+				"absolute left-0 -translate-x-full md:static md:inset-auto  md:translate-x-0",
+				// " grid grid-rows-[auto_1fr]",
+				"flex flex-col",
+				" gap-4 h-screen w-[250px] max-w-screen md:h-full md:w-[300px] bg-bg-surface  p-1 py-4 border-r border-r-border-medium shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] transition-all duration-300 z-50 backdrop-blur-sm ",
 				showMenu && "translate-x-0"
 			)}
 		>
@@ -102,10 +164,14 @@ const Sidebar = () => {
 				</i>
 			</Button>
 
-			<Button onClick={logout}>logout</Button>
-
-			{/* Account buttons */}
-			<div className="flex flex-col gap-4 items-stretch px-2">
+			{/* Account & Team buttons */}
+			<div className="flex flex-col gap-4 items-stretch px-2 h-fit">
+				<div
+					onClick={logout}
+					className="self-start cursor-pointer hover:font-bold"
+				>
+					logout
+				</div>
 				<div className="flex justify-between items-center">
 					<div className="hover:font-bold cursor-pointer flex gap-2">
 						<UserCircle2Icon /> <span>Account</span>
@@ -113,7 +179,10 @@ const Sidebar = () => {
 					<ThemeSwitcher />
 				</div>
 				<Button
-					className="flex justify-between gap-2 p-2 outline rounded-md"
+					className={clsx(
+						"flex justify-between gap-2 p-2 outline rounded-md",
+						pathname.includes("/team") && "bg-neutral-600"
+					)}
 					onClick={() => navigate("/team")}
 				>
 					<p>Team</p>
@@ -121,7 +190,7 @@ const Sidebar = () => {
 				</Button>
 			</div>
 
-			{showProject && (
+			{/* {showProject && (
 				<div className="flex flex-col gap-4 p-2 pb-4 w-full border-b-border-medium border-b">
 					<div className="search-container relative">
 						<span className="search-icon">🔍</span>
@@ -133,7 +202,6 @@ const Sidebar = () => {
 					</div>
 
 					<h2 className="text-left font-bold text-lg">My Notes</h2>
-					{/* TODO - ADD NEW FOLDER BTN  */}
 					<Button
 						variant="primary"
 						// onClick={() => {
@@ -146,23 +214,62 @@ const Sidebar = () => {
 						⊕ New Note
 					</Button>
 				</div>
-			)}
+			)} */}
+
+			{/* SEARCH BAR & NEW BTN */}
+			<div className="flex flex-col gap-4 p-2 pb-4 w-full border-b-border-medium border-b">
+				<div className="search-container relative">
+					<span className="search-icon">🔍</span>
+					<input
+						placeholder={nav[page].searchLabel}
+						className="w-full pl-11"
+						onChange={(e) => setSearch(e.target.value)}
+					/>
+				</div>
+
+				<h2 className="text-left font-bold text-lg">{nav[page].current}</h2>
+				<h2 className="text-left font-bold text-lg">{nav[page].title}</h2>
+
+				<Button
+					variant="primary"
+					onClick={() => {
+						setShowForm((prev) => ({ ...prev, form: nav[page].newFormId }));
+						// setSelected({
+						// 	p: null,
+						// 	f: null,
+						// 	n: null,
+						// });
+						setShowMenu(false);
+						navigate(nav[page].newFormUrl);
+					}}
+					disabled={showForm.show}
+				>
+					{nav[page].newLabel}
+				</Button>
+			</div>
 
 			{/* List */}
 			<div className="sidebar-list flex-1 flex flex-col gap-2 justify-start items-center min-h-0 overflow-y-auto p-1">
 				{/* Loading */}
 
 				{/* Projects */}
-				{!showProject && projects?.length > 0 ? (
-					projects.map((p) => (
-						<ProjectSelection title={p.title} selected={selected.p === p.id} />
+				{filtered && filtered?.length > 0 ? (
+					filtered.map((el) => (
+						<ProjectSelection
+							title={el.title}
+							selected={selected[page] === el.id}
+							key={el.id}
+							onClick={() => navigate(`/p/${el.id}`)}
+						/>
 					))
 				) : (
-					<p className="m-auto">No Projects</p>
+					<p className="m-auto">
+						No {search ? "search results.." : nav[page].title}
+					</p>
 				)}
 
 				{/* Notes */}
-				{/* {filtered.map((note) => {
+				{/* {showProject && filtered.map((note) => {
 					return (
 						<button
 							key={note.id}
@@ -193,7 +300,7 @@ const Sidebar = () => {
 					);
 				})} */}
 
-				<p className="m-auto">No Notes</p>
+				{/* <p className="m-auto">No Notes</p> */}
 			</div>
 		</section>
 	);

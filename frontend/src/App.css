@@ -50,6 +50,14 @@
 	}
 
 	.form {
-		@apply flex-1 flex flex-col gap-10 justify-center items-center h-full w-full;
+		@apply flex-1 flex flex-col gap-10 justify-start items-center h-full w-full p-4;
+	}
+
+	.list-item {
+		@apply flex flex-col gap-1 justify-center items-start w-full h-[150px] border-b-border-b-border-light shadow-sm cursor-pointer group enabled:hover:bg-accent-hover ease-in duration-100 p-2;
+	}
+
+	.list-item.item-selected {
+		@apply border-l-4 border-l-accent font-bold bg-accent/30 shadow-lg enabled:hover:bg-accent/30;
 	}
 }
