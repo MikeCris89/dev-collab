@@ -35,6 +35,15 @@ export const useTeamMembers = () => {
 	});
 };
 
+// fetch all projects (no content) - useTeam cache
+export const useTeamProjects = () => {
+	return useQuery({
+		queryKey: [TEAMKEY],
+		queryFn: () => fetcher<TeamFull>(BASE),
+		select: (data) => data?.projects || [],
+	});
+};
+
 // ==== MUTATIONS ====
 // =======================
 

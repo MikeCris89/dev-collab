@@ -52,6 +52,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 	});
 	const [showMenu, setShowMenu] = useState(false);
 
+	// adjust selected items on change of params
 	useEffect(() => {
 		const select: Selected = {
 			p: null,
@@ -70,6 +71,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 		setSelected(select);
 	}, [params]);
 
+	// Set ShowForm for toolbar action buttons
 	useEffect(() => {
 		if (
 			(pathname.endsWith("/new") || pathname.endsWith("/edit")) &&

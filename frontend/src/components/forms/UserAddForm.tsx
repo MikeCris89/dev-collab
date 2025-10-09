@@ -53,6 +53,7 @@ const UserAddForm = () => {
 			className="form"
 			autoComplete="off"
 		>
+			<h2>Add Team Member</h2>
 			<InputWrapper htmlFor="username" label="Username">
 				<input
 					name="username"

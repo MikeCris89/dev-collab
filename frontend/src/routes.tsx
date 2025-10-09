@@ -7,7 +7,6 @@ import {
 import Home from "./components/pages/Home";
 import Login from "./components/pages/Login";
 import NotePreview from "./components/pages/NotePreview";
-import SelectNote from "./components/pages/SelectNote";
 import NotFound from "./components/pages/NotFound";
 import { useAuth } from "./context/AuthContext";
 import PublicHome from "./components/pages/PublicHome";
@@ -15,8 +14,10 @@ import Signup from "./components/pages/Signup";
 import { useTeam } from "./hooks/useTeam";
 import GlobalProvider from "./context/GlobalContext";
 import TeamPage from "./components/pages/TeamPage";
-import UserEditForm from "./components/forms/UserEditForm";
 import UserAddForm from "./components/forms/UserAddForm";
+import ProjectForm from "./components/forms/ProjectForm";
+import NoteForm from "./components/forms/NoteForm";
+import SelectNote from "./components/pages/SelectNote";
 
 const PublicRoutes = () => {
 	const { user } = useAuth();
@@ -63,18 +64,31 @@ export const router = createBrowserRouter([
 				path: "/",
 				element: <Home />,
 				children: [
-					{ index: true, element: <SelectNote /> },
-					{ path: "p/:projectId" },
-					{ path: "p/:projectId/f/:folderId" },
+					{ index: true, element: <></> },
+					{ path: "p/new", element: <ProjectForm /> },
+					{ path: "p/:projectId", element: <></> },
+					{ path: "p/:projectId/edit", element: <ProjectForm /> },
+					{ path: "p/:projectId/f/new", element: <></> },
+					{ path: "p/:projectId/f/:folderId", element: <SelectNote /> },
+					{ path: "p/:projectId/f/:folderId/edit", element: <></> },
+					{
+						path: "p/:projectId/f/:folderId/n/new",
+						element: <NoteForm />,
+					},
 					{
 						path: "p/:projectId/f/:folderId/n/:noteId",
 						element: <NotePreview />,
+					},
+					{
+						path: "p/:projectId/f/:folderId/n/:noteId/edit",
+						element: <NoteForm />,
 					},
 					{
 						path: "team",
 						element: <TeamPage />,
 					},
 					{ path: "team/new", element: <UserAddForm /> },
+					{ path: "team/:userId/edit", element: <UserAddForm /> },
 					{ path: "*", element: <NotFound /> },
 				],
 			},

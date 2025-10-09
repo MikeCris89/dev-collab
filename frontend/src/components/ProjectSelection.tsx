@@ -13,7 +13,7 @@ const ProjectSelection = ({
 }) => {
 	return (
 		<Button
-			className={clsx("list-item ", selected && "item-selected")}
+			className={clsx("list-item ", selected && "item-selected ")}
 			onClick={onClick}
 		>
 			<div className="flex items-center gap-2 w-full h-4 p-1">

@@ -18,15 +18,6 @@ export const useProject = (id: string | null) => {
 	});
 };
 
-// fetch all projects (no content) - useTeam cache
-export const useProjects = () => {
-	return useQuery({
-		queryKey: [TEAMKEY],
-		queryFn: () => fetcher<TeamFull>(BASE),
-		select: (data) => data?.projects || [],
-	});
-};
-
 // ==== MUTATIONS ====
 // =======================
 
