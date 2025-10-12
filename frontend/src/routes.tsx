@@ -17,8 +17,9 @@ import TeamPage from "./components/pages/TeamPage";
 import UserAddForm from "./components/forms/UserAddForm";
 import ProjectForm from "./components/forms/ProjectForm";
 import NoteForm from "./components/forms/NoteForm";
-import SelectNote from "./components/pages/SelectNote";
+import SelectNote from "./components/pages/NoneSelected";
 import FolderForm from "./components/forms/FolderForm";
+import NoneSelected from "./components/pages/NoneSelected";
 
 const PublicRoutes = () => {
 	const { user } = useAuth();
@@ -65,12 +66,12 @@ export const router = createBrowserRouter([
 				path: "/",
 				element: <Home />,
 				children: [
-					{ index: true, element: <></> },
+					{ index: true, element: <NoneSelected /> },
 					{ path: "p/new", element: <ProjectForm /> },
-					{ path: "p/:projectId", element: <></> },
+					{ path: "p/:projectId", element: <NoneSelected /> },
 					{ path: "p/:projectId/edit", element: <ProjectForm /> },
 					{ path: "p/:projectId/f/new", element: <FolderForm /> },
-					{ path: "p/:projectId/f/:folderId", element: <SelectNote /> },
+					{ path: "p/:projectId/f/:folderId", element: <NoneSelected /> },
 					{ path: "p/:projectId/f/:folderId/edit", element: <></> },
 					{
 						path: "p/:projectId/f/:folderId/n/new",
