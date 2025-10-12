@@ -18,6 +18,7 @@ import UserAddForm from "./components/forms/UserAddForm";
 import ProjectForm from "./components/forms/ProjectForm";
 import NoteForm from "./components/forms/NoteForm";
 import SelectNote from "./components/pages/SelectNote";
+import FolderForm from "./components/forms/FolderForm";
 
 const PublicRoutes = () => {
 	const { user } = useAuth();
@@ -68,7 +69,7 @@ export const router = createBrowserRouter([
 					{ path: "p/new", element: <ProjectForm /> },
 					{ path: "p/:projectId", element: <></> },
 					{ path: "p/:projectId/edit", element: <ProjectForm /> },
-					{ path: "p/:projectId/f/new", element: <></> },
+					{ path: "p/:projectId/f/new", element: <FolderForm /> },
 					{ path: "p/:projectId/f/:folderId", element: <SelectNote /> },
 					{ path: "p/:projectId/f/:folderId/edit", element: <></> },
 					{

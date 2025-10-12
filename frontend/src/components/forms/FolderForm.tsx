@@ -1,12 +1,22 @@
 import { useState } from "react";
 import InputWrapper from "./InputWrapper";
+import { useCreateFolder } from "@/hooks/useFolders";
+import { useNavigate, useParams } from "react-router-dom";
 
 const FolderForm = () => {
 	const [title, setTitle] = useState("");
+	const { projectId } = useParams() as { projectId?: string };
+	const navigate = useNavigate();
 
-	const handleSubmit = (e: React.FormEvent) => {
+	if (!projectId) throw new Error("Something went wrong.");
+
+	const { mutateAsync: addFolder, isPending, error } = useCreateFolder();
+
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (title) {
+			const resp = await addFolder({ title, projectId });
+			console.log(resp);
 		}
 	};
 
@@ -19,12 +29,13 @@ const FolderForm = () => {
 					name="title"
 					value={title}
 					onChange={(e) => setTitle(e.target.value)}
-					disabled={}
+					disabled={isPending}
 					autoComplete="off"
 					className="w-[250px]"
 					required
 				/>
 			</InputWrapper>
+			{error && <p>{error.message}</p>}
 		</form>
 	);
 };

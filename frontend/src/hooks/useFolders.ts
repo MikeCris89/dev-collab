@@ -13,7 +13,7 @@ export const useCreateFolder = () => {
 		onSuccess: (resp) => {
 			queryClient.setQueryData([PROJECTKEY], (old: ProjectWithAll) => ({
 				...old,
-				folders: [...old.folders, resp],
+				folders: [...(old.folders ?? []), resp],
 			}));
 		},
 	});

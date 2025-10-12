@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
+import clsx from "clsx";
 
 const Toolbar = () => {
 	const {
@@ -21,47 +22,54 @@ const Toolbar = () => {
 	return (
 		<div
 			id="note-bar"
-			className="flex flex-col-reverse md:flex-row md:justify-between items-center w-full bg-bg-elevated border-b border-b-border-light h-[65px] relative p-2 md:p-3 md:pl-3 "
+			className={clsx(
+				// "flex flex-col-reverse md:flex-row md:justify-between ",
+				"grid grid-cols-3 justify-center items-center",
+				" w-full bg-bg-elevated border-b border-b-border-light h-[80px] relative "
+			)}
 		>
-			{pathname === "/team" && (
+			{/* {pathname === "/team" && (
 				<div className="grid grid-cols-3 items-center justify-center w-full h-full">
-					<div></div>
-					<h1>Team</h1>
-					<div>
-						<Button
-							variant="primary"
-							className="m-auto"
-							onClick={() => {
-								setShowForm((prev) => ({ ...prev, form: "user-add-form" }));
-								navigate("/team/new");
-							}}
-						>
-							add
-						</Button>
-					</div>
+					<div></div> */}
+			<div></div>
+			{pathname.includes("/team") && <h1 className="p-0 m-0">Team</h1>}
+			{pathname === "/team" && (
+				<div>
+					<Button
+						variant="primary"
+						className="m-auto"
+						onClick={() => {
+							setShowForm((prev) => ({ ...prev, form: "user-add-form" }));
+							navigate("/team/new");
+						}}
+					>
+						add
+					</Button>
 				</div>
 			)}
+			{/* </div>
+			)} */}
 			{
 				<>
-					{/* {selected.n && (
+					{selected.n && (
 						<div className="flex justify-between w-full md:flex-col md:justify-start md:w-fit text-left">
 							<p className="text-xs text-text-muted font-bold md:p-1 m-0 text-balance">
 								created: <br />
-								{selected
+								{/* {selected
 									? new Date(selected.n.createdAt).toLocaleString()
-									: " - "}
+									: " - "} */}
 							</p>
 
 							<p className="text-right md:text-left text-text-muted text-xs text-balance md:p-1 m-0">
 								last updated: <br />
-								{selected
+								{/* {selected
 									? new Date(selected.n.updatedAt).toLocaleString()
-									: " - "}
+									: " - "} */}
 							</p>
 						</div>
-					)} */}
+					)}
 
-					<div className="flex flex-nowrap justify-end gap-3">
+					<div className="flex flex-nowrap justify-end gap-3 col-start-3">
 						{/* {!showForm && selected && (
 							<>
 								<Button
