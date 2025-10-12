@@ -13,9 +13,9 @@ import {
 	UserCircle2Icon,
 	UsersRound,
 } from "lucide-react";
-import ProjectSelection from "./ProjectSelection";
+import ListItem from "./ListItem";
 import { useTeamProjects } from "@/hooks/useTeam";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
@@ -83,6 +83,7 @@ const Sidebar = () => {
 				title: "Projects",
 				newLabel: "New Project",
 				searchLabel: "Search projects",
+				selectUrl: `/p`,
 				newFormId: "project-form",
 				newFormUrl: "/p/new",
 				editFormUrl: undefined,
@@ -94,6 +95,7 @@ const Sidebar = () => {
 				title: "Folders",
 				newLabel: "New Folder",
 				searchLabel: "Search folders",
+				selectUrl: `/p/${showProject}/f`,
 				newFormId: "folder-form",
 				newFormUrl: `${pathname}/f/new`,
 				editFormUrl: showProject ? `/p/${showProject}/edit` : "#",
@@ -107,10 +109,13 @@ const Sidebar = () => {
 				title: "Notes",
 				newLabel: "New Note",
 				searchLabel: "Search notes",
+				selectUrl: `/p/${showProject}/f/${showFolder}/n`,
 				newFormId: "note-form",
 				newFormUrl: `${pathname}/n/new`,
 				editFormUrl: showFolder ? `${pathname}/f/${showFolder}/edit` : "#",
-				current: showFolder ? "" : "",
+				current: showFolder
+					? project?.folders.find((f) => f.id === showFolder)?.title
+					: "",
 				currentIcon: <Folder />,
 				icon: <NotepadText />,
 			},
@@ -293,13 +298,13 @@ const Sidebar = () => {
 			</div>
 
 			{/* List */}
-			<div className="sidebar-list flex-1 flex flex-col gap-2 justify-start items-center min-h-0 overflow-y-auto p-1">
+			<div className="sidebar-list flex-1 flex flex-col gap-4 justify-start items-center min-h-0 overflow-y-auto p-1">
 				{/* Loading */}
 
 				{/* SECTION */}
 				{(showProject || showFolder) && (
 					<div
-						className="flex items-center gap-1 text-left font-bold text-sm self-start cursor-pointer hover:text-accent"
+						className="flex items-center gap-1 text-left font-bold text-sm self-start cursor-pointer hover:text-accent mb-2"
 						onClick={() => {
 							if (showFolder) setShowFolder(null);
 							else if (showProject) setShowProject(null);
@@ -317,17 +322,18 @@ const Sidebar = () => {
 						const isSel = selected[page] === el.id;
 
 						return (
-							<ProjectSelection
+							<ListItem
 								title={el.title}
 								selected={isSel}
 								key={el.id}
 								onClick={() => {
-									if (!isSel) navigate(`/p/${el.id}`);
+									if (!isSel) navigate(`${nav[page].selectUrl}/${el.id}`);
 									else {
 										if (page === "p") setShowProject(el.id);
 										if (page === "f") setShowFolder(el.id);
 									}
 								}}
+								icon={nav[page].icon}
 							/>
 						);
 					})
@@ -336,7 +342,6 @@ const Sidebar = () => {
 						No {search ? "search results.." : nav[page].title}
 					</p>
 				)}
-
 				{/* Notes */}
 				{/* {showProject && filtered.map((note) => {
 					return (
