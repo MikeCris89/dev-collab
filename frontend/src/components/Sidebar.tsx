@@ -2,25 +2,15 @@ import clsx from "clsx";
 import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useAuth } from "../context/AuthContext";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { useProject } from "@/hooks/useProjects";
-import {
-	ChevronLeft,
-	Folder,
-	Layers,
-	NotepadText,
-	UserCircle2Icon,
-	UsersRound,
-} from "lucide-react";
+import { ChevronLeft, UserCircle2Icon, UsersRound } from "lucide-react";
 import ListItem from "./ListItem";
 import { useTeamProjects } from "@/hooks/useTeam";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FORMS } from "@shared/contract";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
-	const { logout } = useAuth();
 	const navigate = useNavigate();
 	const { pathname } = useLocation();
 
@@ -32,12 +22,10 @@ const Sidebar = () => {
 		showMenu,
 		setShowMenu,
 		toggleMenu,
+		nav,
 	} = useGlobal();
 
 	const [search, setSearch] = useState<string | null>(null);
-
-	// const [showProject, setShowProject] = useState<string | null>(null);
-	// const [showFolder, setShowFolder] = useState<string | null>(null);
 
 	const {
 		data: projects = [],
@@ -50,14 +38,6 @@ const Sidebar = () => {
 		isLoading: loadingProject,
 		error: errorProject,
 	} = useProject(selected.p);
-
-	// useEffect(() => {
-	// 	const page = !showProject ? "p" : !showFolder ? "f" : "n";
-	// 	setSelected((prev) => ({
-	// 		...prev,
-	// 		page,
-	// 	}));
-	// }, [showProject, showFolder, setSelected]);
 
 	useEffect(() => {
 		if (!showMenu) return;
@@ -80,90 +60,6 @@ const Sidebar = () => {
 			document.removeEventListener("mousedown", listener);
 		};
 	}, [showMenu]);
-
-	// const nav = useMemo(
-	// 	() => ({
-	// 		p: {
-	// 			title: "Projects",
-	// 			newLabel: "New Project",
-	// 			searchLabel: "Search projects",
-	// 			noneLabel: "project",
-	// 			selectUrl: `/p`,
-	// 			newFormId: "project-form",
-	// 			newFormUrl: "/p/new",
-	// 			editFormUrl: undefined,
-	// 			parent: undefined,
-	// 			parentIcon: undefined,
-	// 			icon: <Layers />,
-	// 		},
-	// 		f: {
-	// 			title: "Folders",
-	// 			newLabel: "New Folder",
-	// 			searchLabel: "Search folders",
-	// 			noneLabel: "folder",
-	// 			selectUrl: `/p/${showProject}/f`,
-	// 			newFormId: "folder-form",
-	// 			newFormUrl: `p/${showProject}/f/new`,
-	// 			editFormUrl: showProject ? `/p/${showProject}/edit` : "#",
-	// 			parentIcon: <Layers />,
-	// 			icon: <Folder />,
-	// 		},
-	// 		n: {
-	// 			title: "Notes",
-	// 			newLabel: "New Note",
-	// 			searchLabel: "Search notes",
-	// 			noneLabel: "note",
-	// 			selectUrl: `/p/${showProject}/f/${showFolder}/n`,
-	// 			newFormId: "note-form",
-	// 			newFormUrl: `/p/${showProject}/f/${showFolder}/n/new`,
-	// 			editFormUrl: showFolder
-	// 				? `/p/${showProject}/f/${showFolder}/edit`
-	// 				: "#",
-	// 			parentIcon: <Folder />,
-	// 			icon: <NotepadText />,
-	// 		},
-	// 	}),
-	// 	[showProject, showFolder]
-	// );
-
-	const nav = useMemo(
-		() => ({
-			p: {
-				title: "Projects",
-				newLabel: "New Project",
-				searchLabel: "Search projects",
-				selectUrl: `/p`,
-				newFormId: FORMS.p,
-				newFormUrl: "/p/new",
-				editFormUrl: undefined,
-				parentIcon: undefined,
-				icon: <Layers />,
-			},
-			f: {
-				title: "Folders",
-				newLabel: "New Folder",
-				searchLabel: "Search folders",
-				selectUrl: `/p/${selected.p}/f`,
-				newFormId: FORMS.f,
-				newFormUrl: `/p/${selected.p}/f/new`,
-				editFormUrl: selected.p ? `/p/${selected.p}/edit` : "",
-				parentIcon: <Layers />,
-				icon: <Folder />,
-			},
-			n: {
-				title: "Notes",
-				newLabel: "New Note",
-				searchLabel: "Search notes",
-				selectUrl: `/p/${selected.p}/f/${selected.f}/n`,
-				newFormId: FORMS.n,
-				newFormUrl: `/p/${selected.p}/f/${selected.f}/n/new`,
-				editFormUrl: selected.f ? `/p/${selected.p}/f/${selected.f}/edit` : "",
-				parentIcon: <Folder />,
-				icon: <NotepadText />,
-			},
-		}),
-		[selected]
-	);
 
 	const page = selected.page;
 
@@ -201,7 +97,6 @@ const Sidebar = () => {
 			ref={sidebarRef}
 			className={clsx(
 				"absolute left-0 -translate-x-full md:static md:inset-auto  md:translate-x-0",
-				// " grid grid-rows-[auto_1fr]",
 				"flex flex-col",
 				" gap-4 h-screen w-[250px] max-w-screen md:h-full md:w-[300px] bg-bg-surface  p-1 py-4 border-r border-r-border-medium shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] transition-all duration-300 z-50 backdrop-blur-sm ",
 				showMenu && "translate-x-0"
@@ -224,12 +119,6 @@ const Sidebar = () => {
 
 			{/* Account & Team buttons */}
 			<div className="flex flex-col gap-4 items-stretch px-2 h-fit">
-				{/* <div
-					onClick={logout}
-					className="self-start cursor-pointer hover:font-bold"
-				>
-					logout
-				</div> */}
 				<div className="flex justify-between items-center">
 					<div className="flex items-center hover:font-bold cursor-pointer gap-2">
 						<UserCircle2Icon size={18} /> <span>Account</span>
@@ -247,32 +136,6 @@ const Sidebar = () => {
 					<UsersRound />
 				</Button>
 			</div>
-
-			{/* {showProject && (
-				<div className="flex flex-col gap-4 p-2 pb-4 w-full border-b-border-medium border-b">
-					<div className="search-container relative">
-						<span className="search-icon">🔍</span>
-						<input
-							placeholder="Search notes…"
-							className="w-full pl-11"
-							onChange={(e) => setSearch(e.target.value)}
-						/>
-					</div>
-
-					<h2 className="text-left font-bold text-lg">My Notes</h2>
-					<Button
-						variant="primary"
-						// onClick={() => {
-						// 	setShowForm({ show: true, note: null });
-						// 	setSelected(null);
-						// 	setShowMenu(false);
-						// }}
-						// disabled={showForm.show}
-					>
-						⊕ New Note
-					</Button>
-				</div>
-			)} */}
 
 			{/* SEARCH BAR & NEW BTN */}
 			<div className="flex flex-col gap-4 p-2 pb-4 w-full border-b-border-medium border-b">
@@ -342,7 +205,7 @@ const Sidebar = () => {
 											navigate(`/p/${selected.p}/f/${selected.f}/n/${el.id}`);
 											setShowMenu(false);
 										}
-									}, 150);
+									}, 250);
 								}}
 								icon={nav[page].icon}
 							/>
@@ -384,8 +247,6 @@ const Sidebar = () => {
 						</button>
 					);
 				})} */}
-
-				{/* <p className="m-auto">No Notes</p> */}
 			</div>
 		</section>
 	);

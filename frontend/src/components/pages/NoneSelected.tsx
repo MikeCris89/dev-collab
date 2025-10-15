@@ -3,16 +3,15 @@ import clsx from "clsx";
 import { useGlobal } from "../../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { Edit3, FolderEditIcon, Layers2 } from "lucide-react";
-import { FORMS } from "@shared/contract";
 
-const nav = {
-	p: { label: "Project", icon: <Layers2 size={32} opacity={0.5} /> },
-	f: { label: "Folder", icon: <FolderEditIcon size={32} opacity={0.5} /> },
-	n: { label: "Note", icon: <Edit3 size={32} opacity={0.5} /> },
+const info = {
+	p: { label: "Project", icon: <Layers2 size={38} opacity={0.5} /> },
+	f: { label: "Folder", icon: <FolderEditIcon size={38} opacity={0.5} /> },
+	n: { label: "Note", icon: <Edit3 size={38} opacity={0.5} /> },
 };
 
 const NoneSelected = () => {
-	const { setShowMenu, selected, setShowForm } = useGlobal();
+	const { setShowMenu, selected, setShowForm, nav } = useGlobal();
 	const navigate = useNavigate();
 	const page = selected.page;
 
@@ -24,26 +23,22 @@ const NoneSelected = () => {
 				)}
 			>
 				{/* <Edit3 size={32} className="opacity-50" /> */}
-				{nav[page].icon}
+				{info[page].icon}
 			</div>
 			<h3 className="text-text-muted text-4xl">
-				No {nav[page].label} selected
+				No {info[page].label} selected
 			</h3>
 			<p className="text-text-muted">Select one from the list or Create New:</p>
 			<Button
 				variant="primary"
 				onClick={() => {
-					let formUrl = `/p/${selected.p ? selected.p + "/f/" : ""}${
-						selected.f ? selected.f + "/n/" : ""
-					}`;
-
-					setShowForm((prev) => ({ ...prev, form: FORMS[page] }));
+					setShowForm((prev) => ({ ...prev, form: nav[page].newFormId }));
 					setShowMenu(false);
-					navigate(formUrl + "new");
+					navigate(nav[page].newFormUrl);
 				}}
 				className="w-[150px]"
 			>
-				New {nav[page].label}
+				New {info[page].label}
 			</Button>
 		</div>
 	);

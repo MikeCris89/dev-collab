@@ -17,7 +17,6 @@ import TeamPage from "./components/pages/TeamPage";
 import UserAddForm from "./components/forms/UserAddForm";
 import ProjectForm from "./components/forms/ProjectForm";
 import NoteForm from "./components/forms/NoteForm";
-import SelectNote from "./components/pages/NoneSelected";
 import FolderForm from "./components/forms/FolderForm";
 import NoneSelected from "./components/pages/NoneSelected";
 
