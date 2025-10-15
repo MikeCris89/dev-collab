@@ -63,6 +63,7 @@ interface GlobalCtx {
 	showMenu: boolean;
 	setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
 	setShowForm: SetShowForm;
+	closeForm: () => void;
 	toggleMenu: () => void;
 	nav: Nav;
 }
@@ -100,6 +101,8 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 		)
 			setShowForm((prev) => ({ ...prev, show: false }));
 	}, [pathname]);
+
+	const closeForm = () => setShowForm({ show: false, form: null });
 
 	const toggleMenu = () => {
 		setShowMenu((prev) => !prev);
@@ -151,6 +154,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				setSelected,
 				showForm,
 				setShowForm,
+				closeForm,
 				showMenu,
 				setShowMenu,
 				toggleMenu,

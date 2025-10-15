@@ -58,6 +58,6 @@
 	}
 
 	.list-item.item-selected {
-		@apply border-l-4 border-l-accent font-bold bg-accent/30! shadow-lg enabled:hover:bg-accent/30!;
+		@apply border-l-4 border-l-accent font-bold bg-accent/30! shadow-lg enabled:hover:bg-accent/30! ease-out duration-100;
 	}
 }

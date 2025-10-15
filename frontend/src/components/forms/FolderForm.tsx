@@ -2,10 +2,12 @@ import { useState } from "react";
 import InputWrapper from "./InputWrapper";
 import { useCreateFolder } from "@/hooks/useFolders";
 import { useNavigate, useParams } from "react-router-dom";
+import { useGlobal } from "@/context/GlobalContext";
 
 const FolderForm = () => {
+	const { setSelected, closeForm } = useGlobal();
 	const [title, setTitle] = useState("");
-	const { projectId } = useParams() as { projectId?: string };
+	const { projectId } = useParams();
 	const navigate = useNavigate();
 
 	if (!projectId) throw new Error("Something went wrong.");
@@ -17,6 +19,9 @@ const FolderForm = () => {
 		if (title) {
 			const resp = await addFolder({ title, projectId });
 			console.log(resp);
+			setSelected((prev) => ({ ...prev, f: resp.id }));
+			closeForm();
+			navigate("/");
 		}
 	};
 

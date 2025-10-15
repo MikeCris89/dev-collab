@@ -4,9 +4,6 @@ import { useUnsavedChanges } from "../../hooks/useUnsavedChanges";
 import type { Note } from "@shared/contract";
 
 const NoteForm = ({ existing }: { existing?: Note }) => {
-	// const { addNote, updateNote, isLoading } = useNotes();
-
-	// console.log(existing);
 
 	const [title, setTitle] = useState<string>(existing?.title ?? "");
 	const [body, setBody] = useState<string>(existing?.body ?? "");
@@ -50,18 +47,7 @@ const NoteForm = ({ existing }: { existing?: Note }) => {
 				className="h-[50%] w-full max-w-[90%] text-center text-balance"
 				// disabled={isLoading}
 			/>
-			{/* <div>
-				<button
-					type="button"
-					onClick={() => setShowForm({ show: false, note: null })}
-					disabled={isLoading}
-				>
-					cancel
-				</button>
-				<button type="submit" disabled={isLoading}>
-					submit
-				</button>
-			</div> */}
+		
 		</form>
 	);
 };
