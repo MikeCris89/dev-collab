@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { useGlobal } from "../../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { Edit3, FolderEditIcon, Layers2 } from "lucide-react";
+import { FORMS } from "@shared/contract";
 
 const nav = {
 	p: { label: "Project", icon: <Layers2 size={32} opacity={0.5} /> },
@@ -14,8 +15,6 @@ const NoneSelected = () => {
 	const { setShowMenu, selected, setShowForm } = useGlobal();
 	const navigate = useNavigate();
 	const page = selected.page;
-
-	console.log(page);
 
 	return (
 		<div className="h-full w-full flex flex-col justify-center items-center gap-3">
@@ -34,9 +33,13 @@ const NoneSelected = () => {
 			<Button
 				variant="primary"
 				onClick={() => {
-					setShowForm((prev) => ({ ...prev, form: nav[page].newFormId }));
+					let formUrl = `/p/${selected.p ? selected.p + "/f/" : ""}${
+						selected.f ? selected.f + "/n/" : ""
+					}`;
+
+					setShowForm((prev) => ({ ...prev, form: FORMS[page] }));
 					setShowMenu(false);
-					navigate(nav[page].newFormUrl);
+					navigate(formUrl + "new");
 				}}
 				className="w-[150px]"
 			>

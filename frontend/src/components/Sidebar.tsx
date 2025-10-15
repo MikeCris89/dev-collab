@@ -16,6 +16,7 @@ import {
 import ListItem from "./ListItem";
 import { useTeamProjects } from "@/hooks/useTeam";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FORMS } from "@shared/contract";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
@@ -35,8 +36,8 @@ const Sidebar = () => {
 
 	const [search, setSearch] = useState<string | null>(null);
 
-	const [showProject, setShowProject] = useState<string | null>(null);
-	const [showFolder, setShowFolder] = useState<string | null>(null);
+	// const [showProject, setShowProject] = useState<string | null>(null);
+	// const [showFolder, setShowFolder] = useState<string | null>(null);
 
 	const {
 		data: projects = [],
@@ -50,10 +51,13 @@ const Sidebar = () => {
 		error: errorProject,
 	} = useProject(selected.p);
 
-	useEffect(() => {
-		setShowProject(selected.p);
-		setShowFolder(selected.f);
-	}, [selected]);
+	// useEffect(() => {
+	// 	const page = !showProject ? "p" : !showFolder ? "f" : "n";
+	// 	setSelected((prev) => ({
+	// 		...prev,
+	// 		page,
+	// 	}));
+	// }, [showProject, showFolder, setSelected]);
 
 	useEffect(() => {
 		if (!showMenu) return;
@@ -77,6 +81,51 @@ const Sidebar = () => {
 		};
 	}, [showMenu]);
 
+	// const nav = useMemo(
+	// 	() => ({
+	// 		p: {
+	// 			title: "Projects",
+	// 			newLabel: "New Project",
+	// 			searchLabel: "Search projects",
+	// 			noneLabel: "project",
+	// 			selectUrl: `/p`,
+	// 			newFormId: "project-form",
+	// 			newFormUrl: "/p/new",
+	// 			editFormUrl: undefined,
+	// 			parent: undefined,
+	// 			parentIcon: undefined,
+	// 			icon: <Layers />,
+	// 		},
+	// 		f: {
+	// 			title: "Folders",
+	// 			newLabel: "New Folder",
+	// 			searchLabel: "Search folders",
+	// 			noneLabel: "folder",
+	// 			selectUrl: `/p/${showProject}/f`,
+	// 			newFormId: "folder-form",
+	// 			newFormUrl: `p/${showProject}/f/new`,
+	// 			editFormUrl: showProject ? `/p/${showProject}/edit` : "#",
+	// 			parentIcon: <Layers />,
+	// 			icon: <Folder />,
+	// 		},
+	// 		n: {
+	// 			title: "Notes",
+	// 			newLabel: "New Note",
+	// 			searchLabel: "Search notes",
+	// 			noneLabel: "note",
+	// 			selectUrl: `/p/${showProject}/f/${showFolder}/n`,
+	// 			newFormId: "note-form",
+	// 			newFormUrl: `/p/${showProject}/f/${showFolder}/n/new`,
+	// 			editFormUrl: showFolder
+	// 				? `/p/${showProject}/f/${showFolder}/edit`
+	// 				: "#",
+	// 			parentIcon: <Folder />,
+	// 			icon: <NotepadText />,
+	// 		},
+	// 	}),
+	// 	[showProject, showFolder]
+	// );
+
 	const nav = useMemo(
 		() => ({
 			p: {
@@ -84,83 +133,49 @@ const Sidebar = () => {
 				newLabel: "New Project",
 				searchLabel: "Search projects",
 				selectUrl: `/p`,
-				newFormId: "project-form",
+				newFormId: FORMS.p,
 				newFormUrl: "/p/new",
 				editFormUrl: undefined,
-				current: undefined,
-				currentIcon: undefined,
+				parentIcon: undefined,
 				icon: <Layers />,
 			},
 			f: {
 				title: "Folders",
 				newLabel: "New Folder",
 				searchLabel: "Search folders",
-				selectUrl: `/p/${showProject}/f`,
-				newFormId: "folder-form",
-				newFormUrl: `${pathname}/f/new`,
-				editFormUrl: showProject ? `/p/${showProject}/edit` : "#",
-				current: showProject
-					? projects?.find((p) => p.id === selected.p)?.title
-					: undefined,
-				currentIcon: <Layers />,
+				selectUrl: `/p/${selected.p}/f`,
+				newFormId: FORMS.f,
+				newFormUrl: `/p/${selected.p}/f/new`,
+				editFormUrl: selected.p ? `/p/${selected.p}/edit` : "",
+				parentIcon: <Layers />,
 				icon: <Folder />,
 			},
 			n: {
 				title: "Notes",
 				newLabel: "New Note",
 				searchLabel: "Search notes",
-				selectUrl: `/p/${showProject}/f/${showFolder}/n`,
-				newFormId: "note-form",
-				newFormUrl: `${pathname}/n/new`,
-				editFormUrl: showFolder ? `${pathname}/f/${showFolder}/edit` : "#",
-				current: showFolder
-					? project?.folders.find((f) => f.id === showFolder)?.title
-					: "",
-				currentIcon: <Folder />,
+				selectUrl: `/p/${selected.p}/f/${selected.f}/n`,
+				newFormId: FORMS.n,
+				newFormUrl: `/p/${selected.p}/f/${selected.f}/n/new`,
+				editFormUrl: selected.f ? `/p/${selected.p}/f/${selected.f}/edit` : "",
+				parentIcon: <Folder />,
 				icon: <NotepadText />,
 			},
 		}),
-		[showProject, showFolder, selected, projects]
+		[selected]
 	);
-	// const nav2 = {
-	// 	p: {
-	// 		title: "Projects",
-	// 		newLabel: "New Project",
-	// 		searchLabel: "Search projects",
-	// 		newFormId: "project-form",
-	// 		newFormUrl: "/p/new",
-	// 		editFormUrl: undefined,
-	// 		current: undefined,
-	// 		currentIcon: undefined,
-	// 		icon: <Layers />,
-	// 	},
-	// 	f: {
-	// 		title: "Folders",
-	// 		newLabel: "New Folder",
-	// 		searchLabel: "Search folders",
-	// 		newFormId: "folder-form",
-	// 		newFormUrl: `${pathname}/f/new`,
-	// 		editFormUrl: showProject ? `/p/${showProject}/edit` : "#",
-	// 		current: showProject
-	// 			? projects?.find((p) => p.id === selected.p)?.title
-	// 			: undefined,
-	// 		currentIcon: <Layers />,
-	// 		icon: <Folder />,
-	// 	},
-	// 	n: {
-	// 		title: "Notes",
-	// 		newLabel: "New Note",
-	// 		searchLabel: "Search notes",
-	// 		newFormId: "note-form",
-	// 		newFormUrl: `${pathname}/n/new`,
-	// 		editFormUrl: showFolder ? `${pathname}/f/${showFolder}/edit` : "#",
-	// 		current: showFolder ? "" : "",
-	// 		currentIcon: <Folder />,
-	// 		icon: <NotepadText />,
-	// 	},
-	// };
 
-	const page = !showProject ? "p" : !showFolder ? "f" : "n";
+	const page = selected.page;
+
+	const parentTitle: string | null = useMemo(
+		() =>
+			page === "f"
+				? projects.find((p) => p.id === selected.p)?.title || null
+				: page === "n"
+				? project?.folders.find((f) => f.id === selected.f)?.title || null
+				: null,
+		[selected, projects, project]
+	);
 
 	const filtered = useMemo(() => {
 		const data = {
@@ -179,7 +194,7 @@ const Sidebar = () => {
 		}
 
 		return data[page];
-	}, [search, projects, project, showProject, showFolder]);
+	}, [search, projects, project, selected.page]);
 
 	return (
 		<section
@@ -261,19 +276,6 @@ const Sidebar = () => {
 
 			{/* SEARCH BAR & NEW BTN */}
 			<div className="flex flex-col gap-4 p-2 pb-4 w-full border-b-border-medium border-b">
-				{/* <div className="text-left font-bold text-xs flex items-center gap-2 cursor-pointer p-1 group">
-					<ChevronLeft className="group-hover:text-accent" size={16} />
-					all {nav[page].title.toLocaleLowerCase()}
-				</div> */}
-				<div className="search-container relative">
-					<span className="search-icon">🔍</span>
-					<input
-						placeholder={nav[page].searchLabel}
-						className="w-full pl-11"
-						onChange={(e) => setSearch(e.target.value)}
-					/>
-				</div>
-
 				<div className="flex items-center justify-between">
 					<h2 className="text-left font-bold text-lg">{nav[page].title}</h2>
 
@@ -281,11 +283,6 @@ const Sidebar = () => {
 						variant="primary"
 						onClick={() => {
 							setShowForm((prev) => ({ ...prev, form: nav[page].newFormId }));
-							// setSelected({
-							// 	p: null,
-							// 	f: null,
-							// 	n: null,
-							// });
 							setShowMenu(false);
 							navigate(nav[page].newFormUrl);
 						}}
@@ -295,24 +292,33 @@ const Sidebar = () => {
 						{nav[page].icon} New
 					</Button>
 				</div>
+				<div className="search-container relative">
+					<span className="search-icon">🔍</span>
+					<input
+						placeholder={nav[page].searchLabel}
+						className="w-full pl-11 py-2 rounded-3xl"
+						onChange={(e) => setSearch(e.target.value)}
+					/>
+				</div>
 			</div>
 
 			{/* List */}
 			<div className="sidebar-list flex-1 flex flex-col gap-4 justify-start items-center min-h-0 overflow-y-auto p-1">
 				{/* Loading */}
 
-				{/* SECTION */}
-				{(showProject || showFolder) && (
+				{/* SECTION / back btn */}
+				{(selected.p || selected.f) && (
 					<div
 						className="flex items-center gap-1 text-left font-bold text-sm self-start cursor-pointer hover:text-accent mb-2"
 						onClick={() => {
-							if (showFolder) setShowFolder(null);
-							else if (showProject) setShowProject(null);
+							if (selected.f) setSelected((prev) => ({ ...prev, f: null }));
+							else if (selected.p)
+								setSelected((prev) => ({ ...prev, p: null }));
 						}}
 					>
 						<ChevronLeft size={16} />
-						{nav[page].currentIcon}
-						{nav[page].current}
+						{nav[page].parentIcon}
+						{parentTitle}
 					</div>
 				)}
 
@@ -327,11 +333,16 @@ const Sidebar = () => {
 								selected={isSel}
 								key={el.id}
 								onClick={() => {
-									if (!isSel) navigate(`${nav[page].selectUrl}/${el.id}`);
-									else {
-										if (page === "p") setShowProject(el.id);
-										if (page === "f") setShowFolder(el.id);
-									}
+									setTimeout(() => {
+										if (page === "p")
+											setSelected((prev) => ({ ...prev, p: el.id }));
+										if (page === "f")
+											setSelected((prev) => ({ ...prev, f: el.id }));
+										if (page === "n" && selected.p && selected.f) {
+											navigate(`/p/${selected.p}/f/${selected.f}/n/${el.id}`);
+											setShowMenu(false);
+										}
+									}, 150);
 								}}
 								icon={nav[page].icon}
 							/>
