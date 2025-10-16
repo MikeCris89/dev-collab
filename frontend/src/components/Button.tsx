@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { NavLink } from "react-router-dom";
 
 const Button = ({
 	variant = "default",
@@ -8,6 +9,7 @@ const Button = ({
 	children,
 	onClick,
 	className,
+	href,
 }: React.PropsWithChildren<{
 	variant?: "default" | "primary" | "menu";
 	type?: "button" | "submit" | "reset";
@@ -15,7 +17,10 @@ const Button = ({
 	disabled?: boolean;
 	onClick?: () => void;
 	className?: string;
+	href?: string;
 }>) => {
+	const initStyle = "text-center min-w-[75px] py-2 px-1 md:py-3 md:px-4";
+
 	const variants: { default: string; primary: string; menu: string } = {
 		default: clsx(
 			"bg-bg-surface/60 text-[14px] outline-1 outline-border-light ",
@@ -38,19 +43,32 @@ const Button = ({
 		),
 	};
 	return (
-		<button
-			type={type}
-			className={clsx(
-				"text-center min-w-[75px] py-2 px-1 md:py-3 md:px-4",
-				variants[variant],
-				className
+		<>
+			{href ? (
+				<NavLink
+					to={href}
+					className={clsx(
+						"decoration-0 hover:no-underline text-text-muted rounded-md",
+						initStyle,
+						variants[variant],
+						className
+					)}
+					onClick={onClick}
+				>
+					{children}
+				</NavLink>
+			) : (
+				<button
+					type={type}
+					className={clsx(initStyle, variants[variant], className)}
+					disabled={disabled}
+					onClick={onClick}
+					form={form}
+				>
+					{children}
+				</button>
 			)}
-			disabled={disabled}
-			onClick={onClick}
-			form={form}
-		>
-			{children}
-		</button>
+		</>
 	);
 };
 

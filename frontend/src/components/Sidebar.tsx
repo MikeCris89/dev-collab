@@ -7,12 +7,13 @@ import { useProject } from "@/hooks/useProjects";
 import { ChevronLeft, UserCircle2Icon, UsersRound } from "lucide-react";
 import ListItem from "./ListItem";
 import { useTeamProjects } from "@/hooks/useTeam";
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
 	const navigate = useNavigate();
 	const { pathname } = useLocation();
+	const { projectId, folderId, noteId } = useParams();
 
 	const {
 		selected,
@@ -77,7 +78,7 @@ const Sidebar = () => {
 		const data = {
 			p: projects,
 			f: project?.folders ?? [],
-			n: project?.notes ?? [],
+			n: project?.folders?.find((f) => f.id === selected.f)?.notes ?? [],
 		};
 
 		if (search) {
@@ -125,16 +126,17 @@ const Sidebar = () => {
 					</div>
 					<ThemeSwitcher />
 				</div>
-				<Button
+				<NavLink
 					className={clsx(
 						"flex justify-between gap-2 p-2 outline rounded-md",
 						pathname.includes("/team") && "bg-neutral-600"
 					)}
-					onClick={() => navigate("/team")}
+					// onClick={() => navigate("/team")}
+					to="/team"
 				>
 					<p>Team</p>
 					<UsersRound />
-				</Button>
+				</NavLink>
 			</div>
 
 			{/* SEARCH BAR & NEW BTN */}
@@ -188,13 +190,22 @@ const Sidebar = () => {
 				{/* Item List */}
 				{filtered && filtered?.length > 0 ? (
 					filtered.map((el) => {
-						const isSel = selected[page] === el.id;
+						const navSel = selected[page] === el.id;
+						const paramSel =
+							el.id === projectId || el.id === noteId || el.id === folderId;
+
+						const isSel = navSel || paramSel;
 
 						return (
 							<ListItem
 								title={el.title}
 								selected={isSel}
 								key={el.id}
+								href={
+									page === "n" && selected.p && selected.f
+										? `/p/${selected.p}/f/${selected.f}/n/${el.id}`
+										: "/"
+								}
 								onClick={() => {
 									setTimeout(() => {
 										if (page === "p")
@@ -202,10 +213,12 @@ const Sidebar = () => {
 										if (page === "f")
 											setSelected((prev) => ({ ...prev, f: el.id }));
 										if (page === "n" && selected.p && selected.f) {
-											navigate(`/p/${selected.p}/f/${selected.f}/n/${el.id}`);
+											// navigate(`/p/${selected.p}/f/${selected.f}/n/${el.id}`, {
+											// 	state: pathname,
+											// });
 											setShowMenu(false);
 										}
-									}, 250);
+									}, 200);
 								}}
 								icon={nav[page].icon}
 							/>

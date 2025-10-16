@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
 import clsx from "clsx";
+import { FORMS } from "@shared/contract";
 
 const Toolbar = () => {
 	const {
@@ -14,10 +15,12 @@ const Toolbar = () => {
 		// setShowMenu,
 	} = useGlobal();
 
-	const { pathname } = useLocation();
+	const location = useLocation();
 	const navigate = useNavigate();
 
-	const isTeam = pathname.includes("/team");
+	const { pathname } = location;
+
+	// const isTeam = pathname.includes("/team");
 
 	return (
 		<div
@@ -70,21 +73,23 @@ const Toolbar = () => {
 					)}
 
 					<div className="flex flex-nowrap justify-end gap-3 col-start-3">
-						{/* {!showForm && selected && (
+						{!showForm.show && selected.n && (
 							<>
 								<Button
-									onClick={() => setShowForm({ show: true, note: selected })}
+									onClick={() => setShowForm({ show: true, form: FORMS.n })}
 								>
 									✏️ edit
 								</Button>
 								<Button>🗑️ delete</Button>
 							</>
-						)} */}
+						)}
 						{showForm.show && showForm.form && (
 							<>
 								<Button
 									onClick={() => {
-										navigate(-1);
+										navigate(location.state ? location.state : "/", {
+											replace: true,
+										});
 									}}
 								>
 									❌ cancel
