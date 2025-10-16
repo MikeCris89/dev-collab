@@ -16,6 +16,12 @@ export type Note = {
 export type NoteInput = {
 	title: string;
 	body: string;
+	folderId: string;
+};
+
+export type NoteCreate = {
+	title: string;
+	body: string;
 	userId: string | null;
 	projectId: string;
 	folderId: string;

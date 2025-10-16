@@ -15,8 +15,8 @@
 	"license": "ISC",
 	"type": "module",
 	"dependencies": {
+		"@prisma/client": "^6.17.1",
 		"@shared/contract": "file:../contract",
-		"@prisma/client": "^6.15.0",
 		"@types/pg": "^8.15.5",
 		"bcrypt": "^6.0.0",
 		"cookie-parser": "^1.4.7",
@@ -35,7 +35,7 @@
 		"@types/jsonwebtoken": "^9.0.10",
 		"@types/morgan": "^1.9.10",
 		"@types/node": "^24.3.0",
-		"prisma": "^6.16.2",
+		"prisma": "^6.17.1",
 		"tsx": "^4.20.4",
 		"typescript": "^5.9.2"
 	}

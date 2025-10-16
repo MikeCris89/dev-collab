@@ -50,7 +50,6 @@ model Project {
    createdAt DateTime @default(now()) @map("created_at")
 
    folders Folder[]
-   notes Note[]
    projectsUsers ProjectsUser[]
 
    team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
@@ -76,7 +75,6 @@ model Note {
    title String @db.VarChar(50)
    body String @db.Text
    userId String?  @map("user_id")
-   projectId String  @map("project_id")
    folderId String  @map("folder_id")
    createdAt DateTime @default(now()) @map("created_at")
    updatedAt DateTime @updatedAt @map("updated_at")
@@ -84,11 +82,9 @@ model Note {
    comments Comment[]
 
    user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
-   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-   folder Folder @relation(fields: [folderId, projectId], references: [id, projectId], onDelete: Cascade)
+   folder Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
-   @@index([projectId, folderId])
-   @@index([projectId, updatedAt])
+   @@index([folderId])
    @@index([userId])
 
 }
