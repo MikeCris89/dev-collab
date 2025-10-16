@@ -1,39 +1,80 @@
 import { RequestHandler } from "express";
 import { BadRequestError } from "./errors.js";
-import { JwtUser, ROLES, Roles, TeamMember } from "@shared/contract";
+import { LIMITS } from "@shared/contract";
 import type { User } from "@prisma/client";
 
-export const testNote = {
-	id: "1",
-	title: "Hello",
-	body: "World",
-	createdAt: new Date().toISOString(),
-	updatedAt: new Date().toISOString(),
-};
-
-export const onlyKeys = (obj: object, allowed: string[]) =>
-	Object.keys(obj).every((k) => allowed.includes(k));
-
-// Validation
+// Note Validation
 export const validateNoteInput: RequestHandler = (req, _res, next) => {
 	const note = req.body;
+	const { title, body, folderId } = note;
 
 	// Check for object type and properties
 	if (!note || typeof note !== "object")
 		throw new BadRequestError("Body must be an object.");
-	if (!onlyKeys(note, ["title", "body"]))
-		throw new BadRequestError("Only 'title' and 'body' are allowed.");
 
 	// Check property types and
-	if (typeof note.title !== "string" || note.title.trim().length === 0)
+	if (typeof title !== "string" || title.trim().length === 0)
 		throw new BadRequestError("title must be a non-empty string.");
-	if (typeof note.body !== "string" || note.body.trim().length === 0)
+	if (typeof body !== "string" || body.trim().length === 0)
 		throw new BadRequestError("Body must be a non-empty string.");
+
+	if (!folderId) throw new BadRequestError(" Missing note input values");
+
+	if (title.length > LIMITS.TITLE_MAX_LENGTH)
+		throw new BadRequestError(
+			`Title must be ${LIMITS.TITLE_MAX_LENGTH} characters or less`
+		);
+
+	if (body.length > LIMITS.NOTE_BODY_MAX_LENGTH) {
+		throw new BadRequestError(
+			`Body must be ${LIMITS.NOTE_BODY_MAX_LENGTH} characters or less`
+		);
+	}
 
 	next();
 };
 
-export const isAdmin = (role: Roles) => role === ROLES.admin;
+// Folder Validation
+export const validateFolderInput: RequestHandler = (req, _res, next) => {
+	const folder = req.body;
+	const { title } = folder;
+
+	// Check for object type and properties
+	if (!folder || typeof folder !== "object")
+		throw new BadRequestError("Body must be an object.");
+
+	// Check property types and
+	if (typeof title !== "string" || title.trim().length === 0)
+		throw new BadRequestError("Title must be a non-empty string.");
+
+	if (title.length > LIMITS.TITLE_MAX_LENGTH)
+		throw new BadRequestError(
+			`Title must be ${LIMITS.TITLE_MAX_LENGTH} characters or less`
+		);
+
+	next();
+};
+
+// Project Validation
+export const validateProjectInput: RequestHandler = (req, _res, next) => {
+	const project = req.body;
+	const { title } = project;
+
+	// Check for object type and properties
+	if (!project || typeof project !== "object")
+		throw new BadRequestError("Body must be an object.");
+
+	// Check property types and
+	if (typeof title !== "string" || title.trim().length === 0)
+		throw new BadRequestError("Title must be a non-empty string.");
+
+	if (title.length > LIMITS.TITLE_MAX_LENGTH)
+		throw new BadRequestError(
+			`Title must be ${LIMITS.TITLE_MAX_LENGTH} characters or less`
+		);
+
+	next();
+};
 
 export const sanitizeTeamUser = (user: User) => {
 	const { password: _p, teamId: _t, ...member } = user;

@@ -1,4 +1,4 @@
-import { Folder } from "./folder.js";
+import { Folder, FolderWithNotes } from "./folder.js";
 import { Note } from "./note.js";
 import { ProjectsUser } from "./projects-user.js";
 
@@ -27,6 +27,5 @@ export type ProjectWithUsers = Project & {
 };
 
 export type ProjectWithAll = Project & {
-	folders: Folder[];
-	notes: Note[];
+	folders: FolderWithNotes[];
 };

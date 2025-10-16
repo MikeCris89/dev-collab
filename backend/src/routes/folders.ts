@@ -1,70 +1,76 @@
-import { FolderInput } from "@shared/contract";
+import { FolderInput, LIMITS } from "@shared/contract";
 import express from "express";
 import { adminOnly } from "src/lib/middleware.js";
 import prisma from "../db/client.js";
-import { BadRequestError } from "src/lib/errors.js";
+import { BadRequestError, NotFoundError } from "src/lib/errors.js";
 import { reqUser } from "src/types/types.js";
+import { validateFolderInput } from "src/lib/utils.js";
+
 const router = express.Router();
 
 router.use(adminOnly);
 
-router.post("/", async (req, res) => {
+router.use(async (req, _res, next) => {
 	const { teamId } = reqUser(req);
+	const { projectId } = req.params;
+
+	if (!projectId) throw new BadRequestError("Missing Project ID");
+
+	const valid = await prisma.project.findFirst({
+		where: { id: projectId, teamId },
+	});
+
+	if (!valid) throw new NotFoundError("Project not found");
+
+	next();
+});
+
+router.delete("/:projectId/folders/:id", async (req, res) => {
+	const { id, projectId } = req.params;
+
+	await prisma.folder.delete({
+		where: { id, projectId },
+	});
+
+	res.status(204).send();
+});
+
+router.use(validateFolderInput);
+
+router.post("/:projectId/folders", async (req, res) => {
+	const { projectId } = req.params;
 	const body: FolderInput = req.body;
+	const { title } = body;
 
-	const { title, projectId } = body;
+	const count = await prisma.folder.count({
+		where: { projectId },
+	});
 
-	if (!title || !projectId)
-		throw new BadRequestError("Title and Project ID are required");
-
-	if (title.length > 50)
-		throw new BadRequestError("Title must be 50 characters or less");
+	if (count > LIMITS.MAX_FOLDERS_PER_PROJECT)
+		throw new BadRequestError(
+			`Maximum of ${LIMITS.MAX_FOLDERS_PER_PROJECT} per project.`
+		);
 
 	const resp = await prisma.folder.create({
 		data: {
 			title,
-			project: {
-				connect: {
-					id_teamId: {
-						id: projectId,
-						teamId,
-					},
-				},
-			},
+			projectId,
 		},
 	});
 
 	res.json(resp);
 });
 
-router.put("/:id", async (req, res) => {
-	const { teamId } = reqUser(req);
+router.put("/:projectId/folders/:id", async (req, res) => {
 	const body: FolderInput = req.body;
-	const { id } = req.params;
+	const { id, projectId } = req.params;
 
-	const { title, projectId } = body;
-
-	if (!title || !projectId)
-		throw new BadRequestError("Title and Project ID are required");
-
-	if (body.title.length > 50)
-		throw new BadRequestError("Title must be 50 characters or less");
-
-	const resp = await prisma.folder.updateMany({
-		where: { id, projectId, project: { is: { teamId } } },
+	const resp = await prisma.folder.update({
+		where: { id, projectId },
 		data: body,
 	});
-	if (resp.count !== 1) throw new Error("Not found/forbidden");
 
 	res.json(resp);
-});
-
-router.delete("/:id", async (req, res) => {
-	const { id } = req.params;
-	await prisma.folder.delete({
-		where: { id },
-	});
-	res.status(204).send();
 });
 
 export default router;

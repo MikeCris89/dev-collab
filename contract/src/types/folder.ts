@@ -10,7 +10,6 @@ export type Folder = {
 
 export type FolderInput = {
 	title: string;
-	projectId: string;
 };
 
 export type FolderWithProject = Folder & {

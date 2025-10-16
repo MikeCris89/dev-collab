@@ -5,6 +5,7 @@ import { reqUser } from "src/types/types.js";
 import prisma from "../db/client.js";
 import { ProjectInput, ROLES } from "@shared/contract";
 import { BadRequestError, NotFoundError } from "src/lib/errors.js";
+import { validateProjectInput } from "src/lib/utils.js";
 
 const router = express.Router();
 
@@ -20,8 +21,11 @@ router.get("/:id", async (req, res) => {
 
 		select: {
 			id: true,
-			folders: true,
-			notes: true,
+			folders: {
+				include: {
+					notes: true,
+				},
+			},
 		},
 	});
 
@@ -32,7 +36,25 @@ router.get("/:id", async (req, res) => {
 	res.json(project);
 });
 
-router.post("/", adminOnly, async (req, res) => {
+// Admin Only Actions
+
+router.use(adminOnly);
+
+router.delete("/:id", async (req, res) => {
+	const { teamId } = reqUser(req);
+
+	const { id } = req.params;
+
+	await prisma.project.delete({
+		where: { id, teamId },
+	});
+
+	res.status(204).send();
+});
+
+router.use(validateProjectInput);
+
+router.post("/", async (req, res) => {
 	const { teamId } = reqUser(req);
 
 	const projectCount = await prisma.project.count({
@@ -45,14 +67,6 @@ router.post("/", adminOnly, async (req, res) => {
 		);
 
 	const body: ProjectInput = req.body;
-
-	if (!body.title || body.title.trim() === "") {
-		throw new BadRequestError("Title is required");
-	}
-
-	if (body.title.length > 50) {
-		throw new BadRequestError("Title must be 50 characters or less");
-	}
 
 	// Create project - apply project permission for users
 	const resp = await prisma.project.create({
@@ -68,19 +82,11 @@ router.post("/", adminOnly, async (req, res) => {
 	res.json(resp);
 });
 
-router.put("/:id", adminOnly, async (req, res) => {
+router.put("/:id", async (req, res) => {
 	const { teamId } = reqUser(req);
 	const { id } = req.params as { id: string };
 
 	const body: ProjectInput = req.body;
-
-	if (!body.title || body.title.trim() === "") {
-		throw new BadRequestError("Title is required");
-	}
-
-	if (body.title.length > 50) {
-		throw new BadRequestError("Title must be 50 characters or less");
-	}
 
 	const resp = await prisma.project.update({
 		where: { id, teamId },
@@ -95,18 +101,6 @@ router.put("/:id", adminOnly, async (req, res) => {
 	});
 
 	res.json(resp);
-});
-
-router.delete("/:id", adminOnly, async (req, res) => {
-	const { teamId } = reqUser(req);
-
-	const { id } = req.params as { id: string };
-
-	await prisma.project.deleteMany({
-		where: { id, teamId },
-	});
-
-	res.status(204).send();
 });
 
 export default router;

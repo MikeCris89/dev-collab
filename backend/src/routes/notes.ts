@@ -1,80 +1,67 @@
-import express, { Request, Response } from "express";
-import { NotFoundError } from "../lib/errors.js";
-import { testNote, validateNoteInput } from "../lib/utils.js";
-import notesTestData from "../../../fixtures/notes.json" with {type: "json"};
-import { JwtUser, Note, NoteInput } from "@shared/contract";
-
-const testNotes: Note[] = notesTestData;
+import express from "express";
+import { BadRequestError, NotFoundError } from "../lib/errors.js";
+import { validateNoteInput } from "../lib/utils.js";
+import { NoteInput } from "@shared/contract";
+import { reqUser } from "src/types/types.js";
+import prisma from "../db/client.js";
 
 const router = express.Router();
 
-router.get("/", async (req: Request, res: Response<Note[]>) => {
-	const user = req.user as JwtUser;
+router.use(async (req, _res, next) => {
+	const { teamId } = reqUser(req);
+	const { folderId } = req.params;
 
-	// TODO fetch notes from db
-	const data = await Promise.resolve(testNotes ?? undefined);
-	if (!data) throw new NotFoundError();
+	if (!folderId) throw new BadRequestError("Missing folder ID");
 
-	res.json(data[user.sub] ?? []);
+	const valid = await prisma.folder.findFirst({
+		where: { id: folderId, project: { teamId } },
+	});
+
+	if (!valid) throw new NotFoundError("Folder not found");
+
+	next();
 });
 
-router.get("/:id",  async (req: Request, res: Response<Note>) => {
-	const user = req.user as JwtUser;
-	const { id } = req.params;
+router.delete("/:folderId/notes/:id", async (req, res) => {
+	const { id, folderId } = req.params;
 
-	// TODO find note by id
-	const notes = await Promise.resolve(testNotes);
-	if (!notes) throw new NotFoundError();
-	
-	const data = notes[user.sub]?.find(el => el.id === id);
-	if (!data) throw new NotFoundError();
-
-	res.json();
-});
-
-router.post(
-	"/",
-	validateNoteInput,
-	async (req: Request, res: Response<Note>) => {
-		const user = req.user as JwtUser;
-		const body = req.body as NoteInput;
-
-		// TODO create note
-		const newNote: Note = {
-			id: String(Math.random() * 100),
-			...body,
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString(),
-		}
-		const data = await Promise.resolve(newNote);
-		if (!data) throw new NotFoundError();
-
-		res.setHeader("Location", `/api/notes/${data.id}`);
-		res.status(201).json(data);
-	}
-);
-
-router.put(
-	"/:id",
-	validateNoteInput,
-	async (req: Request, res: Response<Note>) => {
-		const user = req.user as JwtUser;
-		const body = req.body as NoteInput;
-		const { id } = req.params;
-
-		// TODO update note
-		const data = await Promise.resolve(testNote);
-		if (!data) throw new NotFoundError();
-
-		res.json(data);
-	}
-);
-
-router.delete("/:id", (req, res) => {
-	const user = req.user as JwtUser;
-	const { id } = req.params;
+	await prisma.note.delete({
+		where: { id, folderId },
+	});
 
 	res.status(204).end();
+});
+
+router.use(validateNoteInput);
+
+router.post("/:folderId/notes", async (req, res) => {
+	const { sub: userId } = reqUser(req);
+	const { folderId } = req.params;
+	const { title, body } = req.body as NoteInput;
+
+	const resp = await prisma.note.create({
+		data: {
+			title,
+			body,
+			userId,
+			folderId,
+		},
+	});
+
+	res.status(201).json(resp);
+});
+
+router.put("/:folderId/notes/:id", async (req, res) => {
+	const { sub: userId } = reqUser(req);
+	const { id, folderId } = req.params;
+	const body = req.body as NoteInput;
+
+	const resp = await prisma.note.update({
+		where: { id, userId, folderId },
+		data: body,
+	});
+
+	res.json(resp);
 });
 
 export default router;

@@ -10,6 +10,11 @@ export type Comment = {
 	updatedAt: string;
 };
 
+export type CommentInput = {
+	body: string;
+	userId: string;
+};
+
 export type CommentWithUser = Comment & {
 	user: User | null;
 };

@@ -7,7 +7,7 @@ export const LIMITS = {
 	MAX_COMMENTS_PER_NOTE: 50,
 
 	// Content limits
-	NOTE_TITLE_MAX_LENGTH: 100,
+	TITLE_MAX_LENGTH: 50,
 	NOTE_BODY_MAX_LENGTH: 50000, // ~10k words
 	COMMENT_MAX_LENGTH: 1000,
 } as const;

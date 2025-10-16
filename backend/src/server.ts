@@ -34,8 +34,9 @@ app.use(requireAuth);
 
 app.use("/api/team", teamRouter);
 app.use("/api/projects", projectsRouter);
-app.use("/api/folders", foldersRouter);
-app.use("/api/notes", notesRouter);
+app.use("/api/projects", foldersRouter);
+app.use("/api/folders", notesRouter);
+// app.use("/api/notes", commentsRouter);
 
 // Path Not Found
 app.use((_req, res) => res.status(404).json({ message: "Not Found" }));

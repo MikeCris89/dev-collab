@@ -7,7 +7,6 @@ export type Note = {
 	title: string;
 	body: string;
 	userId: string | null;
-	projectId: string;
 	folderId: string;
 	createdAt: string;
 	updatedAt: string;
@@ -16,23 +15,14 @@ export type Note = {
 export type NoteInput = {
 	title: string;
 	body: string;
-	folderId: string;
 };
 
-export type NoteCreate = {
-	title: string;
-	body: string;
+export type NoteCreate = NoteInput & {
 	userId: string | null;
-	projectId: string;
-	folderId: string;
 };
 
 export type NoteWithUser = Note & {
 	user: User | null;
-};
-
-export type NoteWithProject = Note & {
-	project: Project;
 };
 
 export type NoteWithFolder = Note & {
@@ -45,7 +35,6 @@ export type NoteWithComments = Note & {
 
 export type NoteWithAll = Note & {
 	user: User | null;
-	project: Project;
 	folder: Folder;
 	comments: Comment[];
 };
