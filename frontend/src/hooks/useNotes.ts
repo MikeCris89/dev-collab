@@ -9,17 +9,27 @@ export const useCreateNote = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({ data, folderId }: { data: NoteInput; folderId: string }) =>
-			poster<NoteInput, Note>(`${BASE}/${folderId}`, data),
-		onSuccess: (resp) => {
-			queryClient.setQueryData([PROJECTKEY], (old: ProjectWithAll) => {
-				return {
-					...old,
-					folders: old.folders.map((f) =>
-						f.id === resp.folderId ? { ...f, notes: [...f.notes, resp] } : f
-					),
-				};
-			});
+		mutationFn: ({
+			data,
+			folderId,
+			projectId,
+		}: {
+			data: NoteInput;
+			folderId: string;
+			projectId: string;
+		}) => poster<NoteInput, Note>(`${BASE}/${folderId}`, data),
+		onSuccess: (resp, { projectId }) => {
+			queryClient.setQueryData(
+				[PROJECTKEY, projectId],
+				(old: ProjectWithAll) => {
+					return {
+						...old,
+						folders: old.folders.map((f) =>
+							f.id === resp.folderId ? { ...f, notes: [...f.notes, resp] } : f
+						),
+					};
+				}
+			);
 		},
 	});
 };

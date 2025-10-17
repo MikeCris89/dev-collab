@@ -44,7 +44,6 @@ const Sidebar = () => {
 		if (!showMenu) return;
 		// Return if not in mobile view
 		if (document.documentElement.clientWidth >= 768) {
-			console.log("HERE");
 			setShowMenu(false);
 			return;
 		}
@@ -126,17 +125,17 @@ const Sidebar = () => {
 					</div>
 					<ThemeSwitcher />
 				</div>
-				<NavLink
+				<Button
 					className={clsx(
-						"flex justify-between gap-2 p-2 outline rounded-md",
+						"flex justify-between gap-2",
 						pathname.includes("/team") && "bg-neutral-600"
 					)}
 					// onClick={() => navigate("/team")}
-					to="/team"
+					href="/team"
 				>
 					<p>Team</p>
 					<UsersRound />
-				</NavLink>
+				</Button>
 			</div>
 
 			{/* SEARCH BAR & NEW BTN */}
@@ -199,12 +198,12 @@ const Sidebar = () => {
 						return (
 							<ListItem
 								title={el.title}
-								selected={isSel}
+								selected={paramSel}
 								key={el.id}
 								href={
 									page === "n" && selected.p && selected.f
 										? `/p/${selected.p}/f/${selected.f}/n/${el.id}`
-										: "/"
+										: undefined
 								}
 								onClick={() => {
 									setTimeout(() => {

@@ -25,21 +25,23 @@ const Button = ({
 	const variants: { default: string; primary: string; menu: string } = {
 		default: clsx(
 			"bg-bg-surface/60 text-[14px] outline-1 outline-border-light ",
+			"hover:outline-border-medium hover:bg-border-light",
+			// "focus:outline-border-medium focus:bg-border-light",
 			"enabled:hover:outline-border-medium enabled:hover:bg-border-light",
-			"enabled:focus:outline-border-medium enabled:focus:bg-border-light",
+			// "enabled:focus:outline-border-medium enabled:focus:bg-border-light",
 			"enabled:active:outline-border-medium enabled:active:bg-border-light",
 			""
 		),
 		primary: clsx(
 			"text-[16px] text-white bg-accent focus:bg-accent font-bold",
 			"enabled:hover:bg-accent hover:shadow-[0_2px_20px] enabled:hover:shadow-accent enabled:hover:-translate-y-0.5 ",
-			"enabled:focus:bg-accent ",
+			// "enabled:focus:bg-accent ",
 			"enabled:active:bg-accent active:shadow-[0_2px_20px] enabled:active:shadow-accent enabled:active:-translate-y-0.5 "
 		),
 		menu: clsx(
 			"text-[16px] text-white bg-accent focus:bg-accent font-bold text-center",
 			"enabled:hover:bg-accent hover:shadow-[0_2px_20px] enabled:hover:shadow-accent ",
-			"enabled:focus:bg-accent ",
+			// "enabled:focus:bg-accent ",
 			"enabled:active:bg-accent active:shadow-[0_2px_20px] enabled:active:shadow-accent "
 		),
 	};
@@ -49,7 +51,7 @@ const Button = ({
 				<NavLink
 					to={href}
 					className={clsx(
-						"decoration-0 hover:no-underline text-text-muted rounded-md",
+						"hover:no-underline text-text-muted rounded-md",
 						initStyle,
 						variants[variant],
 						className

@@ -80,6 +80,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 	});
 	const [showMenu, setShowMenu] = useState(false);
 
+	// set selected.page based on selected id's
 	useEffect(() => {
 		let page: "p" | "f" | "n" = "p";
 		if (selected.p) page = "f";

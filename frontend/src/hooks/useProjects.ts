@@ -4,7 +4,7 @@
 import type { Project, ProjectInput, ProjectWithAll } from "@shared/contract";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleter, fetcher, poster, putter } from "@/lib/api";
-import { TEAMKEY, type TeamFull } from "./useTeam";
+import { TEAMKEY } from "./useTeam";
 
 export const PROJECTKEY = "projects";
 const BASE = "/projects";
@@ -15,6 +15,37 @@ export const useProject = (id: string | null) => {
 		queryKey: [PROJECTKEY, id],
 		queryFn: () => fetcher<ProjectWithAll>(`${BASE}/${id}`),
 		enabled: !!id,
+	});
+};
+
+// select all notes from folder in project cache
+export const useFolderNotes = (
+	projectId: string | undefined,
+	folderId: string | undefined
+) => {
+	return useQuery({
+		queryKey: [PROJECTKEY, projectId],
+		queryFn: () => fetcher<ProjectWithAll>(`${BASE}/${projectId}`),
+		select: (data) =>
+			data?.folders?.find((f) => f.id === folderId)?.notes ?? [],
+		enabled: !!projectId && !!folderId,
+	});
+};
+
+// select one note from folder in project cache
+export const useNote = (
+	projectId: string | undefined,
+	folderId: string | undefined,
+	noteId: string | undefined
+) => {
+	return useQuery({
+		queryKey: [PROJECTKEY, projectId],
+		queryFn: () => fetcher<ProjectWithAll>(`${BASE}/${projectId}`),
+		select: (data) =>
+			data?.folders
+				?.find((f) => f.id === folderId)
+				?.notes?.find((n) => n.id === noteId) ?? null,
+		enabled: !!projectId && !!folderId && !!noteId,
 	});
 };
 

@@ -42,7 +42,7 @@ const NoteForm = ({ existing }: { existing?: Note }) => {
 			if (existing?.id) {
 				resp = await updateNote({ id: existing.id, data: newNote, folderId });
 			} else {
-				resp = await addNote({ data: newNote, folderId });
+				resp = await addNote({ data: newNote, folderId, projectId });
 			}
 			navigate(`/p/${projectId}/f/${folderId}/n/${resp.id}`, { replace: true });
 		}

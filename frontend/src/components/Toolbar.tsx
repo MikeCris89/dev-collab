@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
 import clsx from "clsx";
@@ -19,6 +19,7 @@ const Toolbar = () => {
 	const navigate = useNavigate();
 
 	const { pathname } = location;
+	const { noteId } = useParams();
 
 	// const isTeam = pathname.includes("/team");
 
@@ -73,10 +74,13 @@ const Toolbar = () => {
 					)}
 
 					<div className="flex flex-nowrap justify-end gap-3 col-start-3">
-						{!showForm.show && selected.n && (
+						{!showForm.show && noteId && (
 							<>
 								<Button
-									onClick={() => setShowForm({ show: true, form: FORMS.n })}
+									onClick={() => {
+										setShowForm((prev) => ({ ...prev, form: FORMS.n }));
+										navigate(`${pathname}/edit`, { state: { from: pathname } });
+									}}
 								>
 									✏️ edit
 								</Button>
@@ -87,7 +91,7 @@ const Toolbar = () => {
 							<>
 								<Button
 									onClick={() => {
-										navigate(location.state ? location.state : "/", {
+										navigate(location.state?.from ?? "/", {
 											replace: true,
 										});
 									}}

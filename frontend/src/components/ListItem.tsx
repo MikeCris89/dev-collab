@@ -1,8 +1,7 @@
 import clsx from "clsx";
-import { ChevronRight, Layers } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import Button from "./Button";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const ListItem = ({
 	title,
@@ -19,19 +18,26 @@ const ListItem = ({
 }) => {
 	const [isSel, setIsSel] = useState(selected);
 
+	useEffect(() => {
+		setIsSel(selected);
+	}, [selected]);
+
 	return (
 		<Button
-			className={clsx("list-item", (selected || isSel) && "item-selected ")}
+			className={clsx(
+				"list-item",
+				(selected || isSel) && "item-selected flex-nowrap"
+			)}
 			onClick={() => {
 				setIsSel(true);
 				onClick();
 			}}
 			href={href}
 		>
-			<div className="flex justify-between items-center gap-2 w-full h-6 p-2">
-				<div className="flex gap-2">
+			<div className="flex justify-between items-center gap-2 w-full h-6 ">
+				<div className="flex justify-start gap-2 flex-1">
 					{icon}
-					<p>{title}</p>
+					<p className="text-left line-clamp-1 text-ellipsis flex-1">{title}</p>
 				</div>
 				<ChevronRight />
 			</div>
