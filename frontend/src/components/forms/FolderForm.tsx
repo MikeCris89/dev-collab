@@ -1,7 +1,7 @@
 import { useState } from "react";
 import InputWrapper from "./InputWrapper";
 import { useCreateFolder } from "@/hooks/useFolders";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGlobal } from "@/context/GlobalContext";
 
 const FolderForm = () => {
@@ -9,6 +9,7 @@ const FolderForm = () => {
 	const [title, setTitle] = useState("");
 	const { projectId } = useParams();
 	const navigate = useNavigate();
+	const location = useLocation();
 
 	if (!projectId) throw new Error("Something went wrong.");
 
@@ -17,11 +18,11 @@ const FolderForm = () => {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (title) {
-			const resp = await addFolder({ title, projectId });
+			const resp = await addFolder({ data: { title }, projectId });
 			console.log(resp);
 			setSelected((prev) => ({ ...prev, f: resp.id }));
 			closeForm();
-			navigate("/");
+			navigate(location.state?.from || "/", { replace: true });
 		}
 	};
 

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 const Button = ({
 	variant = "default",
@@ -19,6 +19,7 @@ const Button = ({
 	className?: string;
 	href?: string;
 }>) => {
+	const { pathname } = useLocation();
 	const initStyle = "text-center min-w-[75px] py-2 px-1 md:py-3 md:px-4";
 
 	const variants: { default: string; primary: string; menu: string } = {
@@ -54,6 +55,7 @@ const Button = ({
 						className
 					)}
 					onClick={onClick}
+					state={{ from: pathname }}
 				>
 					{children}
 				</NavLink>

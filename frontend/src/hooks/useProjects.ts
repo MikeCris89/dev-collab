@@ -26,16 +26,16 @@ export const useCreateProject = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (data: ProjectInput) =>
-			poster<ProjectInput, Project>(BASE, data),
+		mutationFn: ({
+			data,
+			projectId,
+		}: {
+			data: ProjectInput;
+			projectId: string;
+		}) => poster<ProjectInput, Project>(`${BASE}/${projectId}`, data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [TEAMKEY] });
 		},
-		// onSuccess: (response) => {
-		// 	queryClient.setQueryData([TEAMKEY], (old: FullData) => {
-		// 		return { users: old.users, projects: [...old.projects, response] };
-		// 	});
-		// },
 	});
 };
 
@@ -49,14 +49,6 @@ export const useUpdateProject = () => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [TEAMKEY] });
 		},
-		// onSuccess: (resp, vars) => {
-		// 	queryClient.setQueryData([TEAMKEY], (old: FullData) => {
-		// 		return {
-		// 			...old,
-		// 			projects: old.projects.map((f) => (f.id === vars.id ? resp : f)),
-		// 		};
-		// 	});
-		// },
 	});
 };
 
@@ -67,10 +59,6 @@ export const useDeleteProject = () => {
 	return useMutation({
 		mutationFn: (id: string) => deleter(`${BASE}/${id}`),
 		onSuccess: (_, id) => {
-			// queryClient.setQueryData([TEAMKEY], (old: FullData) => ({
-			// 	users: old.users,
-			// 	projects: old.projects.filter((f) => f.id !== id),
-			// }));
 			queryClient.invalidateQueries({ queryKey: [TEAMKEY] });
 
 			queryClient.removeQueries({ queryKey: [PROJECTKEY, id] });

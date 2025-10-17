@@ -9,7 +9,13 @@ export const useCreateFolder = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (data: FolderInput) => poster<FolderInput, Folder>(BASE, data),
+		mutationFn: ({
+			data,
+			projectId,
+		}: {
+			data: FolderInput;
+			projectId: string;
+		}) => poster<FolderInput, Folder>(`${BASE}/${projectId}/folders`, data),
 		onSuccess: (resp) => {
 			queryClient.setQueryData([PROJECTKEY], (old: ProjectWithAll) => ({
 				...old,
@@ -23,8 +29,15 @@ export const useEditFolder = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({ id, data }: { id: string; data: FolderInput }) =>
-			putter<FolderInput, Folder>(`${BASE}/${id}`, data),
+		mutationFn: ({
+			id,
+			data,
+			projectId,
+		}: {
+			id: string;
+			data: FolderInput;
+			projectId: string;
+		}) => putter<FolderInput, Folder>(`${BASE}/${projectId}/${id}`, data),
 		onSuccess: (resp) => {
 			queryClient.setQueryData([PROJECTKEY], (old: ProjectWithAll) => ({
 				...old,
@@ -37,8 +50,9 @@ export const useDeleteFolder = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (id: string) => deleter(`${BASE}/${id}`),
-		onSuccess: (_, id) => {
+		mutationFn: ({ id, projectId }: { id: string; projectId: string }) =>
+			deleter(`${BASE}/${projectId}/${id}`),
+		onSuccess: (_, { id }) => {
 			queryClient.setQueryData([PROJECTKEY], (old: ProjectWithAll) => ({
 				...old,
 				folders: old.folders.filter((f) => f.id !== id),
