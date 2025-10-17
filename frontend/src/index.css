@@ -16,15 +16,11 @@
 		-moz-osx-font-smoothing: grayscale;
 	}
 
-	a {
+	/* a {
 		font-weight: 500;
 		color: #646cff;
 		text-decoration: none;
-	}
-
-	a:hover {
-		@apply font-bold underline;
-	}
+	} */
 
 	body {
 		@apply p-0 m-0 w-[100vw] h-[100dvh] box-border bg-bg-main transition-colors duration-300 text-text-primary;

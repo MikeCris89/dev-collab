@@ -1,17 +1,17 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "../Sidebar";
-import CustomErrorBoundary from "../CustomErrorBoundary";
 import Toolbar from "../Toolbar";
+import InnerErrorBoundary from "../InnerErrorBoundary";
 
 const Home = () => {
 	return (
 		<div className="flex justify-between items-center h-full w-full ">
 			<Sidebar />
 			<div className="flex-1 flex flex-col items-stretch h-full w-full">
-				<CustomErrorBoundary>
+				<InnerErrorBoundary>
 					<Toolbar />
 					<Outlet />
-				</CustomErrorBoundary>
+				</InnerErrorBoundary>
 			</div>
 		</div>
 	);

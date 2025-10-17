@@ -54,10 +54,10 @@
 	}
 
 	.list-item {
-		@apply flex flex-col gap-1 justify-center items-start w-full  border-b-border-light shadow-sm cursor-pointer  enabled:hover:bg-accent-hover! ease-out duration-100 p-2;
+		@apply flex flex-col gap-1 justify-center items-start w-full  border-b-border-light shadow-sm cursor-pointer  enabled:hover:bg-accent-hover! hover:bg-accent-hover!  ease-out duration-100;
 	}
 
 	.list-item.item-selected {
-		@apply border-l-4 border-l-accent font-bold bg-accent/30! shadow-lg enabled:hover:bg-accent/30! ease-out duration-100;
+		@apply border-l-4 border-l-accent bg-accent/30! shadow-lg enabled:hover:bg-accent/30! ease-out duration-100;
 	}
 }

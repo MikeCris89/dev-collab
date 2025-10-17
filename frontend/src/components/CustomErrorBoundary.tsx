@@ -1,4 +1,5 @@
 import { ErrorBoundary } from "react-error-boundary";
+import { useLocation } from "react-router-dom";
 
 export function CustomErrorBoundary({
 	children,
