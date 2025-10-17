@@ -25,11 +25,12 @@ router.use(async (req, _res, next) => {
 	next();
 });
 
-router.delete("/:projectId/folders/:id", async (req, res) => {
-	const { id, projectId } = req.params;
+// DELETE
+router.delete("/:projectId/:folderId", async (req, res) => {
+	const { folderId, projectId } = req.params;
 
 	await prisma.folder.delete({
-		where: { id, projectId },
+		where: { id: folderId, projectId },
 	});
 
 	res.status(204).send();
@@ -37,7 +38,7 @@ router.delete("/:projectId/folders/:id", async (req, res) => {
 
 router.use(validateFolderInput);
 
-router.post("/:projectId/folders", async (req, res) => {
+router.post("/:projectId", async (req, res) => {
 	const { projectId } = req.params;
 	const body: FolderInput = req.body;
 	const { title } = body;
@@ -46,7 +47,7 @@ router.post("/:projectId/folders", async (req, res) => {
 		where: { projectId },
 	});
 
-	if (count > LIMITS.MAX_FOLDERS_PER_PROJECT)
+	if (count >= LIMITS.MAX_FOLDERS_PER_PROJECT)
 		throw new BadRequestError(
 			`Maximum of ${LIMITS.MAX_FOLDERS_PER_PROJECT} per project.`
 		);
@@ -58,15 +59,15 @@ router.post("/:projectId/folders", async (req, res) => {
 		},
 	});
 
-	res.json(resp);
+	res.status(201).json(resp);
 });
 
-router.put("/:projectId/folders/:id", async (req, res) => {
+router.put("/:projectId/:folderId", async (req, res) => {
 	const body: FolderInput = req.body;
-	const { id, projectId } = req.params;
+	const { folderId, projectId } = req.params;
 
 	const resp = await prisma.folder.update({
-		where: { id, projectId },
+		where: { id: folderId, projectId },
 		data: body,
 	});
 

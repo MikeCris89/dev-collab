@@ -9,15 +9,15 @@ import { validateProjectInput } from "src/lib/utils.js";
 
 const router = express.Router();
 
-router.get("/:id", async (req, res) => {
+router.get("/:projectId", async (req, res) => {
 	const { teamId, role, sub } = reqUser(req);
-	const { id } = req.params;
+	const { projectId } = req.params;
 
 	const project = await prisma.project.findFirst({
 		where:
 			role === ROLES.admin
-				? { id, teamId }
-				: { id, teamId, projectsUsers: { some: { userId: sub } } },
+				? { id: projectId, teamId }
+				: { id: projectId, teamId, projectsUsers: { some: { userId: sub } } },
 
 		select: {
 			id: true,
@@ -40,13 +40,12 @@ router.get("/:id", async (req, res) => {
 
 router.use(adminOnly);
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:projectId", async (req, res) => {
 	const { teamId } = reqUser(req);
-
-	const { id } = req.params;
+	const { projectId } = req.params;
 
 	await prisma.project.delete({
-		where: { id, teamId },
+		where: { id: projectId, teamId },
 	});
 
 	res.status(204).send();
@@ -82,14 +81,14 @@ router.post("/", async (req, res) => {
 	res.json(resp);
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:projectId", async (req, res) => {
 	const { teamId } = reqUser(req);
-	const { id } = req.params as { id: string };
+	const { projectId } = req.params;
 
 	const body: ProjectInput = req.body;
 
 	const resp = await prisma.project.update({
-		where: { id, teamId },
+		where: { id: projectId, teamId },
 		data: {
 			title: body.title,
 			projectsUsers: {

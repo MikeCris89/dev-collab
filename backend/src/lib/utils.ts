@@ -6,7 +6,7 @@ import type { User } from "@prisma/client";
 // Note Validation
 export const validateNoteInput: RequestHandler = (req, _res, next) => {
 	const note = req.body;
-	const { title, body, folderId } = note;
+	const { title, body } = note;
 
 	// Check for object type and properties
 	if (!note || typeof note !== "object")
@@ -15,10 +15,9 @@ export const validateNoteInput: RequestHandler = (req, _res, next) => {
 	// Check property types and
 	if (typeof title !== "string" || title.trim().length === 0)
 		throw new BadRequestError("title must be a non-empty string.");
+
 	if (typeof body !== "string" || body.trim().length === 0)
 		throw new BadRequestError("Body must be a non-empty string.");
-
-	if (!folderId) throw new BadRequestError(" Missing note input values");
 
 	if (title.length > LIMITS.TITLE_MAX_LENGTH)
 		throw new BadRequestError(

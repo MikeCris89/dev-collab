@@ -1,15 +1,22 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 import { BadRequestError, NotFoundError } from "../lib/errors.js";
 import { validateNoteInput } from "../lib/utils.js";
 import { NoteInput } from "@shared/contract";
 import { reqUser } from "src/types/types.js";
 import prisma from "../db/client.js";
 
+type NoteParams = {
+	folderId: string;
+	noteId: string;
+};
+
 const router = express.Router();
 
-router.use(async (req, _res, next) => {
+const validateFolder: RequestHandler = async (req, _res, next) => {
 	const { teamId } = reqUser(req);
 	const { folderId } = req.params;
+
+	console.log("FOLDER_ID", folderId, req.params);
 
 	if (!folderId) throw new BadRequestError("Missing folder ID");
 
@@ -20,13 +27,13 @@ router.use(async (req, _res, next) => {
 	if (!valid) throw new NotFoundError("Folder not found");
 
 	next();
-});
+};
 
-router.delete("/:folderId/notes/:id", async (req, res) => {
-	const { id, folderId } = req.params;
+router.delete("/:folderId/:noteId", validateFolder, async (req, res) => {
+	const { noteId, folderId } = req.params as NoteParams;
 
 	await prisma.note.delete({
-		where: { id, folderId },
+		where: { id: noteId, folderId },
 	});
 
 	res.status(204).end();
@@ -34,10 +41,10 @@ router.delete("/:folderId/notes/:id", async (req, res) => {
 
 router.use(validateNoteInput);
 
-router.post("/:folderId/notes", async (req, res) => {
+router.post("/:folderId", validateFolder, async (req, res) => {
 	const { sub: userId } = reqUser(req);
-	const { folderId } = req.params;
-	const { title, body } = req.body as NoteInput;
+	const { folderId } = req.params as { folderId: string };
+	const { title, body }: NoteInput = req.body;
 
 	const resp = await prisma.note.create({
 		data: {
@@ -51,13 +58,13 @@ router.post("/:folderId/notes", async (req, res) => {
 	res.status(201).json(resp);
 });
 
-router.put("/:folderId/notes/:id", async (req, res) => {
+router.put("/:folderId/:noteId", validateFolder, async (req, res) => {
 	const { sub: userId } = reqUser(req);
-	const { id, folderId } = req.params;
-	const body = req.body as NoteInput;
+	const { noteId, folderId } = req.params as NoteParams;
+	const body: NoteInput = req.body;
 
 	const resp = await prisma.note.update({
-		where: { id, userId, folderId },
+		where: { id: noteId, userId, folderId },
 		data: body,
 	});
 
