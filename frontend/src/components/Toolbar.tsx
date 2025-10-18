@@ -95,10 +95,28 @@ const Toolbar = () => {
 						{showForm && (
 							<>
 								<Button
+									// onClick={() => {
+									// 	// navigate(location.state?.from ?? "/", {
+									// 	// 	replace: true,
+									// 	// });
+									// 	navigate(pathname, {
+									// 		replace: true,
+									// 	});
+									// }}
 									onClick={() => {
-										navigate(location.state?.from ?? "/", {
-											replace: true,
-										});
+										const from = location.state?.from;
+										// console.log("FROM: ", from);
+										// console.log("path: ", pathname);
+										// if (from && from !== pathname && from !== "/") {
+										// 	console.log(1);
+										// 	// Go back to where we came from
+										// 	navigate(from, { replace: true });
+										// } else
+										if (!from) {
+											navigate("/");
+										} else {
+											navigate(-1);
+										}
 									}}
 								>
 									❌ cancel

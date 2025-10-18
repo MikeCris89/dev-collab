@@ -5,8 +5,11 @@
 import GlobalProvider from "@/context/GlobalContext";
 // import FormRenderer from "../forms/FormRenderer";
 import Layout from "../Layout";
+import { useTeam } from "@/hooks/useTeam";
 
 const Home = () => {
+	useTeam();
+
 	// const { showMenu, selected } = useGlobal();
 	// const [searchParams] = useSearchParams();
 	// const action = searchParams.get("action");

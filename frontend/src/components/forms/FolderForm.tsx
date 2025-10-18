@@ -15,6 +15,8 @@ const FolderForm = () => {
 
 	const { mutateAsync: addFolder, isPending, error } = useCreateFolder();
 
+	if (error) throw new Error(`Error adding folder: ${error.message}`);
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (title) {
@@ -41,7 +43,7 @@ const FolderForm = () => {
 					required
 				/>
 			</InputWrapper>
-			{error && <p>{error.message}</p>}
+			{/* {error && <p>{error.message}</p>} */}
 		</form>
 	);
 };

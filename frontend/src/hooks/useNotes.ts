@@ -9,15 +9,11 @@ export const useCreateNote = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({
-			data,
-			folderId,
-			projectId,
-		}: {
+		mutationFn: (args: {
 			data: NoteInput;
 			folderId: string;
 			projectId: string;
-		}) => poster<NoteInput, Note>(`${BASE}/${folderId}`, data),
+		}) => poster<NoteInput, Note>(`${BASE}/${args.folderId}`, args.data),
 		onSuccess: (resp, { projectId }) => {
 			queryClient.setQueryData(
 				[PROJECTKEY, projectId],

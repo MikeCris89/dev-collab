@@ -11,22 +11,16 @@ import NotFound from "./components/pages/NotFound";
 import { useAuth } from "./context/AuthContext";
 import PublicHome from "./components/pages/PublicHome";
 import Signup from "./components/pages/Signup";
-import { useTeam } from "./hooks/useTeam";
 import GlobalProvider from "./context/GlobalContext";
 import TeamPage from "./components/pages/TeamPage";
-import UserAddForm from "./components/forms/UserAddForm";
-import ProjectForm from "./components/forms/ProjectForm";
-import NoteForm from "./components/forms/NoteForm";
-import FolderForm from "./components/forms/FolderForm";
 import NoneSelected from "./components/pages/NoneSelected";
-import FormRenderer from "./components/forms/FormRenderer";
 
 const PublicRoutes = () => {
 	const { user } = useAuth();
 	const location = useLocation();
 
 	if (user) {
-		return <Navigate to={location.state?.from?.pathname ?? "/"} replace />;
+		return <Navigate to={location.state?.from ?? "/"} replace />;
 	}
 
 	return <PublicHome />;
@@ -41,8 +35,6 @@ const PrivateRoutes = () => {
 	if (!user) {
 		return <Navigate to="/login" state={{ from: location }} replace />;
 	}
-
-	useTeam();
 
 	return (
 		<GlobalProvider>
@@ -68,6 +60,7 @@ export const router = createBrowserRouter([
 				children: [
 					{ index: true, element: <NoneSelected /> },
 					// { path: "p/new", element: <ProjectForm /> },
+					{ path: "p/", element: <NoneSelected /> },
 					{ path: "p/:projectId", element: <NoneSelected /> },
 					// { path: "p/:projectId/edit", element: <ProjectForm /> },
 					// { path: "p/:projectId/f/new", element: <FolderForm /> },
@@ -80,7 +73,7 @@ export const router = createBrowserRouter([
 					// },
 					{
 						path: "p/:projectId/f/:folderId/n",
-						element: <NotePreview />,
+						element: <NoneSelected />,
 					},
 					{
 						path: "p/:projectId/f/:folderId/n/:noteId",

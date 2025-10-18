@@ -204,7 +204,7 @@ const Sidebar = () => {
 								href={
 									page === "n" && selected.p && selected.f
 										? `/p/${selected.p}/f/${selected.f}/n/${el.id}`
-										: paramSel || noteId
+										: paramSel || !!noteId
 										? undefined
 										: "/"
 								}
@@ -215,9 +215,6 @@ const Sidebar = () => {
 										if (page === "f")
 											setSelected((prev) => ({ ...prev, f: el.id }));
 										if (page === "n" && selected.p && selected.f) {
-											// navigate(`/p/${selected.p}/f/${selected.f}/n/${el.id}`, {
-											// 	state: pathname,
-											// });
 											setShowMenu(false);
 										}
 									}, 200);

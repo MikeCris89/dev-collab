@@ -25,7 +25,8 @@ const NoteForm = () => {
 		error: errUpdating,
 	} = useUpdateNote();
 
-	if (!projectId || !folderId) throw new Error("Something went wrong.");
+	if (!projectId || !folderId)
+		throw new Error(`Missing ID's. PID: ${projectId} FID: ${folderId}`);
 
 	// Calculate if dirty based on comparison to original values
 	const isDirty = !existing

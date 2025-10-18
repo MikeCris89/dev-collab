@@ -1,7 +1,7 @@
 import { FORMS } from "@shared/contract";
 import { Folder, Layers, NotepadText } from "lucide-react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 interface NavEntry {
 	title: string;
@@ -52,7 +52,6 @@ interface GlobalCtx {
 export const GlobalContext = createContext<GlobalCtx | undefined>(undefined);
 
 const GlobalProvider = ({ children }: React.PropsWithChildren) => {
-	const { pathname } = useLocation();
 	const { projectId, folderId, noteId } = useParams();
 
 	const [selected, setSelected] = useState<Selected>({ ...selectInit });
@@ -67,7 +66,6 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 		let page: "p" | "f" | "n" = "p";
 		if (projectId) page = "f";
 		if (folderId) page = "n";
-		console.log("GLOBAL USEEFFECT ", projectId, folderId, page);
 		if (selected.page !== page)
 			setSelected({
 				p: projectId ?? null,
