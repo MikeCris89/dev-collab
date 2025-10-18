@@ -1,5 +1,6 @@
 import { ErrorBoundary } from "react-error-boundary";
 import { useLocation } from "react-router-dom";
+import Button from "./Button";
 
 export function InnerErrorBoundary({
 	children,
@@ -7,15 +8,16 @@ export function InnerErrorBoundary({
 	children: React.ReactNode;
 }) {
 	const { pathname } = useLocation();
+	const isDev = process.env.NODE_ENV !== "production";
 
 	return (
 		<ErrorBoundary
 			resetKeys={[pathname]}
 			fallbackRender={({ error, resetErrorBoundary }) => (
-				<div className="h-full w-full p-4">
+				<div className="flex flex-col items-center h-full w-full p-4">
 					<h2>Something went wrong</h2>
-					<pre>{error.message}</pre>
-					<button onClick={resetErrorBoundary}>Retry</button>
+					{isDev && <pre>Dev msg: {error.message}</pre>}
+					<Button onClick={resetErrorBoundary}>Retry</Button>
 				</div>
 			)}
 		>

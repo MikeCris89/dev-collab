@@ -19,6 +19,7 @@ import ProjectForm from "./components/forms/ProjectForm";
 import NoteForm from "./components/forms/NoteForm";
 import FolderForm from "./components/forms/FolderForm";
 import NoneSelected from "./components/pages/NoneSelected";
+import FormRenderer from "./components/forms/FormRenderer";
 
 const PublicRoutes = () => {
 	const { user } = useAuth();
@@ -66,30 +67,36 @@ export const router = createBrowserRouter([
 				element: <Home />,
 				children: [
 					{ index: true, element: <NoneSelected /> },
-					{ path: "p/new", element: <ProjectForm /> },
+					// { path: "p/new", element: <ProjectForm /> },
 					{ path: "p/:projectId", element: <NoneSelected /> },
-					{ path: "p/:projectId/edit", element: <ProjectForm /> },
-					{ path: "p/:projectId/f/new", element: <FolderForm /> },
+					// { path: "p/:projectId/edit", element: <ProjectForm /> },
+					// { path: "p/:projectId/f/new", element: <FolderForm /> },
+					{ path: "p/:projectId/f", element: <NoneSelected /> },
 					{ path: "p/:projectId/f/:folderId", element: <NoneSelected /> },
-					{ path: "p/:projectId/f/:folderId/edit", element: <></> },
+					// { path: "p/:projectId/f/:folderId/edit", element: <></> },
+					// {
+					// 	path: "p/:projectId/f/:folderId/n/new",
+					// 	element: <NoteForm />,
+					// },
 					{
-						path: "p/:projectId/f/:folderId/n/new",
-						element: <NoteForm />,
+						path: "p/:projectId/f/:folderId/n",
+						element: <NotePreview />,
 					},
 					{
 						path: "p/:projectId/f/:folderId/n/:noteId",
 						element: <NotePreview />,
 					},
-					{
-						path: "p/:projectId/f/:folderId/n/:noteId/edit",
-						element: <NoteForm />,
-					},
+					// {
+					// 	path: "p/:projectId/f/:folderId/n/:noteId/edit",
+					// 	element: <NoteForm />,
+					// },
 					{
 						path: "team",
 						element: <TeamPage />,
 					},
-					{ path: "team/new", element: <UserAddForm /> },
-					{ path: "team/:userId/edit", element: <UserAddForm /> },
+					// { path: "team/new", element: <UserAddForm /> },
+					// { path: "team/:userId/edit", element: <UserAddForm /> },
+
 					{ path: "*", element: <NotFound /> },
 				],
 			},

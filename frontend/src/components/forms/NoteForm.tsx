@@ -3,11 +3,13 @@ import { useUnsavedChanges } from "../../hooks/useUnsavedChanges";
 import type { Note } from "@shared/contract";
 import { useCreateNote, useUpdateNote } from "@/hooks/useNotes";
 import { useNavigate, useParams } from "react-router-dom";
+import { useNote } from "@/hooks/useProjects";
 
-const NoteForm = ({ existing }: { existing?: Note }) => {
-	const { projectId, folderId } = useParams();
+const NoteForm = () => {
+	const { projectId, folderId, noteId } = useParams();
 	const navigate = useNavigate();
 
+	const { data: existing } = useNote(projectId, folderId, noteId);
 	const [title, setTitle] = useState<string>(existing?.title ?? "");
 	const [body, setBody] = useState<string>(existing?.body ?? "");
 

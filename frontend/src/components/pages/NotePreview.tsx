@@ -1,20 +1,26 @@
 import { useParams } from "react-router-dom";
 import { useGlobal } from "../../context/GlobalContext";
 import { useNote } from "@/hooks/useProjects";
+import Loading from "../Loading";
+import useGetSearchParams from "@/hooks/useGetSearchParams";
 
 const NotePreview = () => {
-	const { selected, setSelected, showForm } = useGlobal();
+	const { selected, setSelected } = useGlobal();
 	const { projectId, folderId, noteId } = useParams();
+	const [action, formId] = useGetSearchParams(["action", "formId"]);
+	const showForm = !!action && !!formId;
 
-	const { data: note } = useNote(projectId, folderId, noteId);
+	const { data: note, isLoading, error } = useNote(projectId, folderId, noteId);
+
+	if (error) throw new Error(`Error getting noteId: ${noteId}`);
+
+	if (isLoading) return <Loading />;
 
 	if (!note) throw new Error("Note not found");
 
-	console.log(showForm, selected);
-
 	return (
 		<section className="flex-1 flex flex-col gap-3 justify-start items-center h-full w-full border-r border-r-border-medium">
-			{!showForm.show && selected && (
+			{!showForm && selected && (
 				<div className="flex-1 flex flex-col gap-10 justify-start items-center max-w-[90%]">
 					<div
 						className="text-[16px] self-end cursor-pointer p-2 hover:font-bold transition-none"

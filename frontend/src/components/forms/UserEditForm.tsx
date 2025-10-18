@@ -1,11 +1,18 @@
-import { useEditTeamMember } from "@/hooks/useTeam";
-import type { TeamMember } from "@shared/contract";
+import { useEditTeamMember, useTeamMember } from "@/hooks/useTeam";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
-const UserEditForm = ({ existing }: { existing: TeamMember }) => {
+const UserEditForm = () => {
+	const [searchParams] = useSearchParams();
+	const memberId = searchParams.get("memberId");
+
+	const { data: existing } = useTeamMember(memberId);
+
 	const [name, setName] = useState<string>(existing?.name ?? "");
 
 	const { isPending, error, mutate: editUser } = useEditTeamMember();
+
+	if (!existing) throw new Error();
 
 	const submitHandler = async (e: React.FormEvent) => {
 		e.preventDefault();

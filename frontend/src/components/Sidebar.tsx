@@ -18,8 +18,8 @@ const Sidebar = () => {
 	const {
 		selected,
 		setSelected,
-		setShowForm,
-		showForm,
+		// setShowForm,
+		// showForm,
 		showMenu,
 		setShowMenu,
 		toggleMenu,
@@ -146,12 +146,13 @@ const Sidebar = () => {
 					<Button
 						variant="primary"
 						onClick={() => {
-							setShowForm((prev) => ({ ...prev, form: nav[page].newFormId }));
+							// setShowForm((prev) => ({ ...prev, form: nav[page].newFormId }));
 							setShowMenu(false);
-							navigate(nav[page].newFormUrl);
+							// navigate(nav[page].formUrl);
 						}}
-						disabled={showForm.show}
+						// disabled={showForm.show}
 						className="flex gap-1 items-center"
+						href={`${nav[page].formUrl}?action=add&formId=${nav[page].formId}`}
 					>
 						{nav[page].icon} New
 					</Button>
@@ -203,7 +204,9 @@ const Sidebar = () => {
 								href={
 									page === "n" && selected.p && selected.f
 										? `/p/${selected.p}/f/${selected.f}/n/${el.id}`
-										: undefined
+										: paramSel || noteId
+										? undefined
+										: "/"
 								}
 								onClick={() => {
 									setTimeout(() => {

@@ -5,13 +5,13 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGlobal } from "@/context/GlobalContext";
 
 const FolderForm = () => {
-	const { setSelected, closeForm } = useGlobal();
+	const { setSelected } = useGlobal();
 	const [title, setTitle] = useState("");
 	const { projectId } = useParams();
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	if (!projectId) throw new Error("Something went wrong.");
+	if (!projectId) throw new Error("Project ID Missing.");
 
 	const { mutateAsync: addFolder, isPending, error } = useCreateFolder();
 
@@ -21,7 +21,7 @@ const FolderForm = () => {
 			const resp = await addFolder({ data: { title }, projectId });
 			console.log(resp);
 			setSelected((prev) => ({ ...prev, f: resp.id }));
-			closeForm();
+			// closeForm();
 			navigate(location.state?.from || "/", { replace: true });
 		}
 	};

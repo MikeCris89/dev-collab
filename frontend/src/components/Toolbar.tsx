@@ -3,14 +3,15 @@ import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
 import clsx from "clsx";
 import { FORMS } from "@shared/contract";
+import useGetSearchParams from "@/hooks/useGetSearchParams";
 
 const Toolbar = () => {
 	const {
 		selected,
 		// setSelected,
 		// error,
-		showForm,
-		setShowForm,
+		// showForm,
+		// setShowForm,
 		// showMenu,
 		// setShowMenu,
 	} = useGlobal();
@@ -20,8 +21,9 @@ const Toolbar = () => {
 
 	const { pathname } = location;
 	const { noteId } = useParams();
+	const [action, formId] = useGetSearchParams(["action", "formId"]);
 
-	// const isTeam = pathname.includes("/team");
+	const showForm = !!action && !!formId;
 
 	return (
 		<div
@@ -43,9 +45,10 @@ const Toolbar = () => {
 						variant="primary"
 						className="m-auto"
 						onClick={() => {
-							setShowForm((prev) => ({ ...prev, form: "user-add-form" }));
-							navigate("/team/new");
+							// setShowForm((prev) => ({ ...prev, form: "user-add-form" }));
+							// navigate(`/team?action=add&formId=${FORMS.userAdd}`);
 						}}
+						href={`${pathname}?action=add&formId=${FORMS.userAdd}`}
 					>
 						add
 					</Button>
@@ -74,12 +77,14 @@ const Toolbar = () => {
 					)}
 
 					<div className="flex flex-nowrap justify-end gap-3 col-start-3">
-						{!showForm.show && noteId && (
+						{!showForm && noteId && (
 							<>
 								<Button
 									onClick={() => {
-										setShowForm((prev) => ({ ...prev, form: FORMS.n }));
-										navigate(`${pathname}/edit`, { state: { from: pathname } });
+										// setShowForm((prev) => ({ ...prev, form: FORMS.n }));
+										navigate(`${pathname}?action=edit&formId=${FORMS.n}`, {
+											state: { from: pathname },
+										});
 									}}
 								>
 									✏️ edit
@@ -87,7 +92,7 @@ const Toolbar = () => {
 								<Button>🗑️ delete</Button>
 							</>
 						)}
-						{showForm.show && showForm.form && (
+						{showForm && (
 							<>
 								<Button
 									onClick={() => {
@@ -98,7 +103,7 @@ const Toolbar = () => {
 								>
 									❌ cancel
 								</Button>
-								<Button type="submit" form={showForm.form} variant="primary">
+								<Button type="submit" form={formId} variant="primary">
 									save
 								</Button>
 							</>

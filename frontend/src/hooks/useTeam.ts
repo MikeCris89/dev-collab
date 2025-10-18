@@ -19,6 +19,7 @@ export type TeamFull = {
 // ==== QUERIES ====
 // =======================
 
+// fetch all users and projects from team
 export const useTeam = () => {
 	return useQuery({
 		queryKey: [TEAMKEY],
@@ -41,6 +42,16 @@ export const useTeamProjects = () => {
 		queryKey: [TEAMKEY],
 		queryFn: () => fetcher<TeamFull>(BASE),
 		select: (data) => data?.projects || [],
+	});
+};
+
+// select one team member from useTeam cache
+export const useTeamMember = (memberId: string | null) => {
+	return useQuery({
+		queryKey: [TEAMKEY],
+		queryFn: () => fetcher<TeamFull>(BASE),
+		select: (data) => data?.users.find((u) => u.id === memberId) || null,
+		enabled: !!memberId,
 	});
 };
 
