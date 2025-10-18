@@ -11,7 +11,7 @@ const info = {
 };
 
 const NoneSelected = () => {
-	const { setShowMenu, selected, setShowForm, nav } = useGlobal();
+	const { setShowMenu, selected, nav } = useGlobal();
 	const navigate = useNavigate();
 	const page = selected.page;
 
@@ -32,9 +32,11 @@ const NoneSelected = () => {
 			<Button
 				variant="primary"
 				onClick={() => {
-					setShowForm((prev) => ({ ...prev, form: nav[page].newFormId }));
+					// setShowForm((prev) => ({ ...prev, form: nav[page].newFormId }));
 					setShowMenu(false);
-					navigate(nav[page].newFormUrl);
+					navigate(
+						`${nav[page].formUrl}?action=add&formId=${nav[page].formId}`
+					);
 				}}
 				className="w-[150px]"
 			>

@@ -1,14 +1,10 @@
-import { useParams } from "react-router-dom";
-import { useGlobal } from "../../context/GlobalContext";
+import { useNavigate, useParams } from "react-router-dom";
 import { useNote } from "@/hooks/useProjects";
 import Loading from "../Loading";
-import useGetSearchParams from "@/hooks/useGetSearchParams";
 
 const NotePreview = () => {
-	const { selected, setSelected } = useGlobal();
 	const { projectId, folderId, noteId } = useParams();
-	const [action, formId] = useGetSearchParams(["action", "formId"]);
-	const showForm = !!action && !!formId;
+	const navigate = useNavigate();
 
 	const { data: note, isLoading, error } = useNote(projectId, folderId, noteId);
 
@@ -19,23 +15,22 @@ const NotePreview = () => {
 	if (!note) throw new Error("Note not found");
 
 	return (
-		<section className="flex-1 flex flex-col gap-3 justify-start items-center h-full w-full border-r border-r-border-medium">
-			{!showForm && selected && (
-				<div className="flex-1 flex flex-col gap-10 justify-start items-center max-w-[90%]">
+		<section className="flex-1 flex flex-col gap-3 justify-start items-center h-full w-full border-r border-r-border-medium overflow-hidden">
+			<div className="flex-1 flex flex-col gap-5 justify-start items-center w-full p-3 overflow-y-auto">
+				<div className="flex flex-col-reverse md:grid md:grid-cols-[1fr_2fr_1fr] items-center w-full">
+					<div></div>
+					<h1 className="text-center ">{note.title}</h1>
 					<div
-						className="text-[16px] self-end cursor-pointer p-2 hover:font-bold transition-none"
-						onClick={() => setSelected((prev) => ({ ...prev, n: null }))}
+						className="text-[16px] cursor-pointer hover:font-bold transition-none p-1 text-right text-nowrap self-end md:self-center"
+						onClick={() => navigate("/")}
 					>
-						X
+						x close
 					</div>
-					<div className="flex justify-center  h-[20%] w-full">
-						<h1 className="m-auto ">{note.title}</h1>
-					</div>
-					<p className="card w-full max-w-[600px] min-h-[100px] p-6 text-center text-balance whitespace-pre-line">
-						{note.body}
-					</p>
 				</div>
-			)}
+				<p className="sidebar-list flex-1 card w-full p-6 text-center text-balance whitespace-pre-line text-2xl overflow-y-auto">
+					{note.body}
+				</p>
+			</div>
 		</section>
 	);
 };

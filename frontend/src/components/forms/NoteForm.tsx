@@ -55,13 +55,13 @@ const NoteForm = () => {
 	const error = errAdding || errUpdating;
 
 	return (
-		<form id="note-form" onSubmit={handleSubmit} className="form">
+		<form id="note-form" onSubmit={handleSubmit} className="form h-full">
 			<input
 				value={title}
 				placeholder="Title"
 				required
 				onChange={(e) => setTitle(e.target.value)}
-				className="text-[36px] text-accent text-center max-w-[95%]"
+				className="text-[36px] text-accent text-center max-w-[90%]"
 				disabled={isLoading}
 			/>
 			<textarea
@@ -69,7 +69,7 @@ const NoteForm = () => {
 				placeholder="body"
 				required
 				onChange={(e) => setBody(e.target.value)}
-				className="h-[50%] w-full max-w-[90%] text-center text-balance"
+				className="flex-1 h-full w-full max-w-[95%] text-center text-xl text-balance"
 				disabled={isLoading}
 			/>
 			{error && (

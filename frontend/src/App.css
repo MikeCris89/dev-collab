@@ -33,7 +33,7 @@
 
 	/* Custom scrollbar */
 	.sidebar-list::-webkit-scrollbar {
-		width: 6px;
+		width: 4px;
 	}
 
 	.sidebar-list::-webkit-scrollbar-track {

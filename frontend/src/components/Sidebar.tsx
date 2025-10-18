@@ -7,24 +7,15 @@ import { useProject } from "@/hooks/useProjects";
 import { ChevronLeft, UserCircle2Icon, UsersRound } from "lucide-react";
 import ListItem from "./ListItem";
 import { useTeamProjects } from "@/hooks/useTeam";
-import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
-	const navigate = useNavigate();
 	const { pathname } = useLocation();
 	const { projectId, folderId, noteId } = useParams();
 
-	const {
-		selected,
-		setSelected,
-		// setShowForm,
-		// showForm,
-		showMenu,
-		setShowMenu,
-		toggleMenu,
-		nav,
-	} = useGlobal();
+	const { selected, setSelected, showMenu, setShowMenu, toggleMenu, nav } =
+		useGlobal();
 
 	const [search, setSearch] = useState<string | null>(null);
 
@@ -59,7 +50,7 @@ const Sidebar = () => {
 		return () => {
 			document.removeEventListener("mousedown", listener);
 		};
-	}, [showMenu]);
+	}, [showMenu, setShowMenu]);
 
 	const page = selected.page;
 
@@ -70,7 +61,7 @@ const Sidebar = () => {
 				: page === "n"
 				? project?.folders.find((f) => f.id === selected.f)?.title || null
 				: null,
-		[selected, projects, project]
+		[selected, projects, project, page]
 	);
 
 	const filtered = useMemo(() => {
@@ -190,15 +181,17 @@ const Sidebar = () => {
 				{/* Item List */}
 				{filtered && filtered?.length > 0 ? (
 					filtered.map((el) => {
-						const navSel = selected[page] === el.id;
+						// const navSel = selected[page] === el.id;
 						const paramSel =
 							el.id === projectId || el.id === noteId || el.id === folderId;
 
-						const isSel = navSel || paramSel;
+						// const isSel = navSel || paramSel;
 
 						return (
 							<ListItem
 								title={el.title}
+								createdAt={el.createdAt}
+								body={"body" in el ? el.body : undefined}
 								selected={paramSel}
 								key={el.id}
 								href={
@@ -220,6 +213,7 @@ const Sidebar = () => {
 									}, 200);
 								}}
 								icon={nav[page].icon}
+								page={page}
 							/>
 						);
 					})

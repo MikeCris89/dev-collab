@@ -1,6 +1,6 @@
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import clsx from "clsx";
-import { NavLink, useLocation, useSearchParams } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 const Button = ({
 	variant = "default",
@@ -24,7 +24,8 @@ const Button = ({
 	const [action, formId] = useGetSearchParams(["action", "formId"]);
 	const showForm = !!action && !!formId;
 
-	const initStyle = "text-center min-w-[75px] py-2 px-1 md:py-3 md:px-4";
+	const initStyle =
+		"text-center min-w-[75px] py-2 px-3 md:py-3 md:px-4 text-nowrap flex-nowrap";
 
 	const variants: { default: string; primary: string; menu: string } = {
 		default: clsx(

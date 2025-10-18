@@ -25,11 +25,7 @@ const FormRenderer = () => {
 
 	const FormComponent = formReg[formId];
 
-	return (
-		<div>
-			<FormComponent />
-		</div>
-	);
+	return <FormComponent />;
 };
 
 export default FormRenderer;
