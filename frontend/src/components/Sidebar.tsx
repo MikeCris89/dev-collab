@@ -4,10 +4,18 @@ import Button from "./Button";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { useProject } from "@/hooks/useProjects";
-import { ChevronLeft, UserCircle2Icon, UsersRound } from "lucide-react";
+import {
+	ChevronLeft,
+	Edit2,
+	Trash2,
+	UserCircle2Icon,
+	UsersRound,
+} from "lucide-react";
 import ListItem from "./ListItem";
 import { useTeamProjects } from "@/hooks/useTeam";
-import { useLocation, useParams } from "react-router-dom";
+import { NavLink, useLocation, useParams } from "react-router-dom";
+
+const actionIconStyle = "cursor-pointer hover: ";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
@@ -56,12 +64,12 @@ const Sidebar = () => {
 
 	const parentTitle: string | null = useMemo(
 		() =>
-			page === "f"
+			selected.page === "f"
 				? projects.find((p) => p.id === selected.p)?.title || null
-				: page === "n"
+				: selected.page === "n"
 				? project?.folders.find((f) => f.id === selected.f)?.title || null
 				: null,
-		[selected, projects, project, page]
+		[selected, projects, project]
 	);
 
 	const filtered = useMemo(() => {
@@ -72,7 +80,7 @@ const Sidebar = () => {
 		};
 
 		if (search) {
-			return data[page].filter(
+			return data[selected.page].filter(
 				(el) =>
 					el.title?.toLowerCase().includes(search.toLowerCase()) ||
 					("body" in el &&
@@ -80,8 +88,8 @@ const Sidebar = () => {
 			);
 		}
 
-		return data[page];
-	}, [search, projects, project, selected.page]);
+		return data[selected.page];
+	}, [search, projects, project, selected]);
 
 	return (
 		<section
@@ -89,7 +97,7 @@ const Sidebar = () => {
 			className={clsx(
 				"absolute left-0 -translate-x-full md:static md:inset-auto  md:translate-x-0",
 				"flex flex-col",
-				" gap-4 h-screen w-[250px] max-w-screen md:h-full md:w-[300px] bg-bg-surface  p-1 py-4 border-r border-r-border-medium shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] transition-all duration-300 z-50 backdrop-blur-sm ",
+				" h-screen w-[250px] max-w-screen md:h-full md:w-[300px] bg-bg-surface  p-1 py-4 border-r border-r-border-medium shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] transition-all duration-300 z-50 backdrop-blur-sm ",
 				showMenu && "translate-x-0"
 			)}
 		>
@@ -109,14 +117,31 @@ const Sidebar = () => {
 			</Button>
 
 			{/* Account & Team buttons */}
-			<div className="flex flex-col gap-4 items-stretch px-2 h-fit">
-				<div className="flex justify-between items-center">
-					<div className="flex items-center hover:font-bold cursor-pointer gap-2">
-						<UserCircle2Icon size={18} /> <span>Account</span>
-					</div>
-					<ThemeSwitcher />
-				</div>
-				<Button
+			{/* <div className="flex flex-col gap-4 items-stretch px-2 h-fit"> */}
+			<div className="flex justify-between items-center w-full p-2 mb-2">
+				<NavLink
+					className={clsx(
+						"flex items-center hover:text-accent gap-2 p-2 rounded-md",
+						pathname.includes("/account") && "bg-accent-hover text-accent"
+					)}
+					to="/account"
+				>
+					<UserCircle2Icon size={22} /> <span>Account</span>
+				</NavLink>
+				<NavLink
+					className={clsx(
+						"flex items-center gap-2 hover:text-accent p-2 rounded-md ",
+						pathname.includes("/team") && "bg-accent-hover text-accent"
+					)}
+					to="/team"
+					// onClick={() => navigate("/team")}
+					// href="/team"
+				>
+					<UsersRound size={22} />
+					<span>Team</span>
+				</NavLink>
+			</div>
+			{/* <Button
 					className={clsx(
 						"flex justify-between gap-2",
 						pathname.includes("/team") && "bg-neutral-600"
@@ -126,8 +151,8 @@ const Sidebar = () => {
 				>
 					<p>Team</p>
 					<UsersRound />
-				</Button>
-			</div>
+				</Button> */}
+			{/* </div> */}
 
 			{/* SEARCH BAR & NEW BTN */}
 			<div className="flex flex-col gap-4 p-2 pb-4 w-full border-b-border-medium border-b">
@@ -158,25 +183,37 @@ const Sidebar = () => {
 				</div>
 			</div>
 
-			{/* List */}
-			<div className="sidebar-list flex-1 flex flex-col gap-4 justify-start items-center min-h-0 overflow-y-auto p-1">
-				{/* Loading */}
-
-				{/* SECTION / back btn */}
+			{/* SECTION / back btn */}
+			<div className="flex justify-between items-center w-full p-2 h-14">
 				{(selected.p || selected.f) && (
-					<div
-						className="flex items-center gap-1 text-left font-bold text-sm self-start cursor-pointer hover:text-accent mb-2"
-						onClick={() => {
-							if (selected.f) setSelected((prev) => ({ ...prev, f: null }));
-							else if (selected.p)
-								setSelected((prev) => ({ ...prev, p: null }));
-						}}
-					>
-						<ChevronLeft size={16} />
-						{nav[page].parentIcon}
-						{parentTitle}
-					</div>
+					<>
+						<div
+							className="flex items-center gap-1 text-left font-bold text-sm  cursor-pointer hover:text-accent"
+							onClick={() => {
+								if (selected.f) setSelected((prev) => ({ ...prev, f: null }));
+								else if (selected.p)
+									setSelected((prev) => ({ ...prev, p: null }));
+							}}
+						>
+							<ChevronLeft size={16} />
+							{nav[page].parentIcon}
+							{parentTitle}
+						</div>
+						<div className="flex gap-6 items-center justify-end">
+							<i className="cursor-pointer hover:text-accent">
+								<Edit2 size={20} />
+							</i>
+							<i className="cursor-pointer hover:text-red-500">
+								<Trash2 size={20} />
+							</i>
+						</div>
+					</>
 				)}
+			</div>
+
+			{/* List */}
+			<div className="sidebar-list flex-1 flex flex-col gap-4 justify-start items-center min-h-0 overflow-y-auto overflow-x-hidden p-1 h-full">
+				{/* Loading */}
 
 				{/* Item List */}
 				{filtered && filtered?.length > 0 ? (

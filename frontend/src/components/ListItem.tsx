@@ -44,20 +44,15 @@ const ListItem = ({
 		>
 			<div
 				className={clsx(
-					"flex justify-between items-center gap-2 w-full h-6 ",
-					isNote && "h-14"
+					"flex justify-start items-center gap-2 w-full "
+					// isNote ? "h-20" : "h-6"
 				)}
 			>
-				<div className="flex justify-start items-center gap-2 flex-1">
-					{icon}
-					{/* // <div className="">
-						// 	<h3 className={clsx("text-2xl")}>{title}</h3>
-						// 	<small>{new Date(createdAt).toLocaleDateString()}</small>
-						// </div> */}
-
+				<div className="flex justify-start items-center gap-2">
+					<i className="shrink-0">{icon}</i>
 					<p
 						className={clsx(
-							"text-left line-clamp-1 text-ellipsis flex-1",
+							"text-left line-clamp-1 text-ellipsis",
 							isNote && "text-3xl"
 						)}
 					>

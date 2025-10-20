@@ -14,6 +14,7 @@ import Signup from "./components/pages/Signup";
 import GlobalProvider from "./context/GlobalContext";
 import TeamPage from "./components/pages/TeamPage";
 import NoneSelected from "./components/pages/NoneSelected";
+import Account from "./components/pages/Account";
 
 const PublicRoutes = () => {
 	const { user } = useAuth();
@@ -83,6 +84,7 @@ export const router = createBrowserRouter([
 					// 	path: "p/:projectId/f/:folderId/n/:noteId/edit",
 					// 	element: <NoteForm />,
 					// },
+					{ path: "account", element: <Account /> },
 					{
 						path: "team",
 						element: <TeamPage />,

@@ -1,15 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useBlocker } from "react-router-dom";
 
 export function useUnsavedChanges(isDirty: boolean) {
+	const allowNav = useRef(false);
 	// Block in-app navigation
-	const blocker = useBlocker(isDirty);
+	const blocker = useBlocker(isDirty && !allowNav.current);
 
 	useEffect(() => {
 		if (!isDirty) return;
 		if (blocker.state === "blocked") {
 			const ok = window.confirm("You have unsaved changes. Leave anyway?");
-			ok ? blocker.proceed() : blocker.reset();
+			if (ok) blocker.proceed();
+			else blocker.reset();
 		}
 	}, [isDirty, blocker]);
 
@@ -18,9 +20,14 @@ export function useUnsavedChanges(isDirty: boolean) {
 		if (!isDirty) return;
 		const onBeforeUnload = (e: BeforeUnloadEvent) => {
 			e.preventDefault();
-			e.returnValue = ""; // required by Chrome
 		};
 		window.addEventListener("beforeunload", onBeforeUnload);
 		return () => window.removeEventListener("beforeunload", onBeforeUnload);
 	}, [isDirty]);
+
+	const allowNavigation = () => {
+		allowNav.current = true;
+	};
+
+	return allowNavigation;
 }

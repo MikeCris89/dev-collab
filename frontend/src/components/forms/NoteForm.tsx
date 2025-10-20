@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUnsavedChanges } from "../../hooks/useUnsavedChanges";
-import type { Note } from "@shared/contract";
+import { LIMITS, type Note } from "@shared/contract";
 import { useCreateNote, useUpdateNote } from "@/hooks/useNotes";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNote } from "@/hooks/useProjects";
+import useGetSearchParams from "@/hooks/useGetSearchParams";
 
 const NoteForm = () => {
 	const { projectId, folderId, noteId } = useParams();
 	const navigate = useNavigate();
+	const [action] = useGetSearchParams(["action"]);
+	const isEdit = action === "edit";
 
 	const { data: existing } = useNote(projectId, folderId, noteId);
 	const [title, setTitle] = useState<string>(existing?.title ?? "");
@@ -28,21 +31,24 @@ const NoteForm = () => {
 	if (!projectId || !folderId)
 		throw new Error(`Missing ID's. PID: ${projectId} FID: ${folderId}`);
 
+	if (isEdit && !existing) throw new Error("Existing note data missing");
+	if (!isEdit && existing) throw new Error("Existing note found for new entry");
+
 	// Calculate if dirty based on comparison to original values
-	const isDirty = !existing
-		? title.trim() !== "" || body.trim() !== ""
-		: title !== existing.title || body !== existing.body;
+	const isDirty = existing
+		? title !== existing.title || body !== existing.body
+		: title.trim() !== "" || body.trim() !== "";
 
 	// Block navigation for unsaved changes
-	useUnsavedChanges(isDirty);
+	const allowNavigation = useUnsavedChanges(isDirty);
 
 	const handleSubmit = async (e: React.FormEvent) => {
-		console.log("saving form");
 		e.preventDefault();
 		if (title && body) {
 			const newNote = { title, body };
 			let resp: Note;
-			if (existing?.id) {
+			allowNavigation();
+			if (isEdit && existing?.id) {
 				resp = await updateNote({ id: existing.id, data: newNote, folderId });
 			} else {
 				resp = await addNote({ data: newNote, folderId, projectId });
@@ -63,6 +69,7 @@ const NoteForm = () => {
 				onChange={(e) => setTitle(e.target.value)}
 				className="text-[36px] text-accent text-center max-w-[90%]"
 				disabled={isLoading}
+				maxLength={LIMITS.TITLE_MAX_LENGTH}
 			/>
 			<textarea
 				value={body}
