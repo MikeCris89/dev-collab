@@ -5,6 +5,7 @@ import type {
 	LoginRequest,
 	SignupRequest,
 	User,
+	UserAuth,
 } from "@shared/contract";
 import type { AxiosError } from "axios";
 
@@ -12,7 +13,7 @@ interface AuthCtx {
 	isLoading: boolean;
 	error: string | null;
 	setError: React.Dispatch<React.SetStateAction<string | null>>;
-	user: User | null;
+	user: UserAuth | null;
 	signup: (userData: SignupRequest) => Promise<void>;
 	login: (userData: LoginRequest) => Promise<void>;
 	logout: () => Promise<void>;
@@ -24,7 +25,7 @@ export const AuthContext = createContext<AuthCtx | undefined>(undefined);
 const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const [user, setUser] = useState<User | null>(null);
+	const [user, setUser] = useState<UserAuth | null>(null);
 
 	const refresh = async () => {
 		try {

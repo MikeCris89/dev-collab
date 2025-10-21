@@ -57,13 +57,8 @@ export const useCreateProject = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({
-			data,
-			projectId,
-		}: {
-			data: ProjectInput;
-			projectId: string;
-		}) => poster<ProjectInput, Project>(`${BASE}/${projectId}`, data),
+		mutationFn: ({ data }: { data: ProjectInput }) =>
+			poster<ProjectInput, Project>(`${BASE}`, data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [TEAMKEY] });
 		},

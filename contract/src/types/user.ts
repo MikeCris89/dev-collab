@@ -13,6 +13,13 @@ export type User = {
 	createdAt: string;
 };
 
+export type UserAuth = {
+	sub: string;
+	isAdmin: boolean;
+	teamId: string;
+	role: Roles;
+};
+
 export type EditUser = {
 	name?: string;
 	projectIds?: string[];

@@ -17,15 +17,14 @@ const NotePreview = () => {
 	return (
 		<section className="flex-1 flex flex-col gap-3 justify-start items-center h-full w-full border-r border-r-border-medium overflow-hidden">
 			<div className="flex-1 flex flex-col gap-5 justify-start items-center w-full p-3 overflow-y-auto">
-				<div className="flex flex-col-reverse md:grid md:grid-cols-[1fr_2fr_1fr] items-center w-full">
-					<div></div>
-					<h1 className="text-center ">{note.title}</h1>
+				<div className="flex flex-col  w-full ">
 					<div
-						className="text-[16px] cursor-pointer hover:font-bold transition-none p-1 text-right text-nowrap self-end md:self-center"
+						className="text-[16px] cursor-pointer hover:font-bold transition-none p-1 text-right text-nowrap self-end "
 						onClick={() => navigate("/")}
 					>
 						x close
 					</div>
+					<h1 className="flex-1 text-center ">{note.title}</h1>
 				</div>
 				<p className="sidebar-list flex-1 card w-full p-6 text-center text-balance whitespace-pre-line text-2xl overflow-y-auto">
 					{note.body}

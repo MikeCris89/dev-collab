@@ -49,7 +49,12 @@ const NoteForm = () => {
 			let resp: Note;
 			allowNavigation();
 			if (isEdit && existing?.id) {
-				resp = await updateNote({ id: existing.id, data: newNote, folderId });
+				resp = await updateNote({
+					noteId: existing.id,
+					data: newNote,
+					folderId,
+					projectId,
+				});
 			} else {
 				resp = await addNote({ data: newNote, folderId, projectId });
 			}

@@ -18,6 +18,7 @@ export const useCreateNote = () => {
 			queryClient.setQueryData(
 				[PROJECTKEY, projectId],
 				(old: ProjectWithAll) => {
+					console.log("USE NOTES: ", old.folders);
 					return {
 						...old,
 						folders: old.folders.map((f) =>
@@ -35,18 +36,34 @@ export const useUpdateNote = () => {
 
 	return useMutation({
 		mutationFn: ({
-			id,
+			noteId,
 			data,
 			folderId,
+			projectId,
 		}: {
-			id: string;
+			noteId: string;
 			data: NoteInput;
 			folderId: string;
-		}) => putter<NoteInput, Note>(`${BASE}/${folderId}/${id}`, data),
-		onSuccess: (resp) => {
-			queryClient.setQueryData([PROJECTKEY], (old: Note[]) => {
-				return old.map((n) => (n.id === resp.id ? resp : n));
-			});
+			projectId: string;
+		}) => putter<NoteInput, Note>(`${BASE}/${folderId}/${noteId}`, data),
+		onSuccess: (resp, { folderId, projectId }) => {
+			queryClient.setQueryData(
+				[PROJECTKEY, projectId],
+				(old: ProjectWithAll) => {
+					const folder = old.folders.find((f) => f.id === folderId);
+					if (!folder) throw new Error("useUpdateNote: folder not found");
+					const newFolder = {
+						...folder,
+						notes: folder.notes.map((n) => (n.id === resp.id ? resp : n)),
+					};
+					return {
+						...old,
+						folders: old.folders.map((f) =>
+							f.id === folderId ? newFolder : f
+						),
+					};
+				}
+			);
 		},
 	});
 };
