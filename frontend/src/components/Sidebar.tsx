@@ -2,7 +2,6 @@ import clsx from "clsx";
 import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
 import { useEffect, useMemo, useRef, useState } from "react";
-import ThemeSwitcher from "./ThemeSwitcher";
 import { useProject } from "@/hooks/useProjects";
 import {
 	ChevronLeft,
@@ -14,8 +13,7 @@ import {
 import ListItem from "./ListItem";
 import { useTeamProjects } from "@/hooks/useTeam";
 import { NavLink, useLocation, useParams } from "react-router-dom";
-
-const actionIconStyle = "cursor-pointer hover: ";
+import Loading from "./Loading";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
@@ -91,6 +89,17 @@ const Sidebar = () => {
 		return data[selected.page];
 	}, [search, projects, project, selected]);
 
+	const isLoading = loadingProject || loadingProjects;
+
+	if (!isLoading && (errorProject || errorProjects))
+		throw new Error(
+			errorProjects?.message ??
+				errorProject?.message ??
+				"Error fetching project data"
+		);
+
+	const parent = page === "f" ? "p" : "f";
+
 	return (
 		<section
 			ref={sidebarRef}
@@ -105,8 +114,6 @@ const Sidebar = () => {
 			<Button
 				className={clsx(
 					"md:hidden absolute left-full rounded-[0_14px_14px_0] !py-2 !px-0 !min-w-[50px] top-3"
-
-					// `top-[${noteBarRef.current ?? 150}px]`
 				)}
 				variant="menu"
 				onClick={toggleMenu}
@@ -117,7 +124,6 @@ const Sidebar = () => {
 			</Button>
 
 			{/* Account & Team buttons */}
-			{/* <div className="flex flex-col gap-4 items-stretch px-2 h-fit"> */}
 			<div className="flex justify-between items-center w-full p-2 mb-2">
 				<NavLink
 					className={clsx(
@@ -134,25 +140,11 @@ const Sidebar = () => {
 						pathname.includes("/team") && "bg-accent-hover text-accent"
 					)}
 					to="/team"
-					// onClick={() => navigate("/team")}
-					// href="/team"
 				>
 					<UsersRound size={22} />
 					<span>Team</span>
 				</NavLink>
 			</div>
-			{/* <Button
-					className={clsx(
-						"flex justify-between gap-2",
-						pathname.includes("/team") && "bg-neutral-600"
-					)}
-					// onClick={() => navigate("/team")}
-					href="/team"
-				>
-					<p>Team</p>
-					<UsersRound />
-				</Button> */}
-			{/* </div> */}
 
 			{/* SEARCH BAR & NEW BTN */}
 			<div className="flex flex-col gap-4 p-2 pb-4 w-full border-b-border-medium border-b">
@@ -162,11 +154,8 @@ const Sidebar = () => {
 					<Button
 						variant="primary"
 						onClick={() => {
-							// setShowForm((prev) => ({ ...prev, form: nav[page].newFormId }));
 							setShowMenu(false);
-							// navigate(nav[page].formUrl);
 						}}
-						// disabled={showForm.show}
 						className="flex gap-1 items-center"
 						href={`${nav[page].formUrl}?action=add&formId=${nav[page].formId}`}
 					>
@@ -188,7 +177,7 @@ const Sidebar = () => {
 				{(selected.p || selected.f) && (
 					<>
 						<div
-							className="flex items-center gap-1 text-left font-bold text-sm  cursor-pointer hover:text-accent"
+							className="flex items-center gap-1 text-left font-bold text-sm  cursor-pointer hover:text-accent text-balance"
 							onClick={() => {
 								if (selected.f) setSelected((prev) => ({ ...prev, f: null }));
 								else if (selected.p)
@@ -199,10 +188,15 @@ const Sidebar = () => {
 							{nav[page].parentIcon}
 							{parentTitle}
 						</div>
+						{/* Edit / Delete Btns */}
 						<div className="flex gap-6 items-center justify-end">
-							<i className="cursor-pointer hover:text-accent">
+							<NavLink
+								className="cursor-pointer hover:text-accent"
+								to={`${nav[parent].formEditUrl}?action=edit&formId=${nav[parent].formId}`}
+								onClick={() => setShowMenu(false)}
+							>
 								<Edit2 size={20} />
-							</i>
+							</NavLink>
 							<i className="cursor-pointer hover:text-red-500">
 								<Trash2 size={20} />
 							</i>
@@ -213,10 +207,10 @@ const Sidebar = () => {
 
 			{/* List */}
 			<div className="sidebar-list flex-1 flex flex-col gap-4 justify-start items-center min-h-0 overflow-y-auto overflow-x-hidden p-1 h-full">
-				{/* Loading */}
-
-				{/* Item List */}
-				{filtered && filtered?.length > 0 ? (
+				{/* Loading - Item List */}
+				{isLoading ? (
+					<Loading />
+				) : !isLoading && filtered && filtered?.length > 0 ? (
 					filtered.map((el) => {
 						// const navSel = selected[page] === el.id;
 						const paramSel =
@@ -259,37 +253,6 @@ const Sidebar = () => {
 						No {search ? "search results.." : nav[page].title}
 					</p>
 				)}
-				{/* Notes */}
-				{/* {showProject && filtered.map((note) => {
-					return (
-						<button
-							key={note.id}
-							className={clsx(
-								"flex flex-col gap-1 justify-center items-start w-full h-[150px] border-b border-b-border-light shadow-sm cursor-pointer group enabled:hover:bg-accent-hover ease-in duration-100 p-2 ",
-								note.id === selected?.id &&
-									"border-l-4 border-l-accent font-bold bg-accent/30 shadow-lg enabled:hover:bg-accent/30"
-							)}
-							onClick={() => {
-								setSelected(note);
-								setTimeout(() => {
-									setShowMenu(false);
-								}, 150);
-							}}
-							disabled={showForm.show}
-						>
-							<h3
-								className={clsx(
-									"text-lg",
-									showForm.show ? "" : "group-hover:font-bold"
-								)}
-							>
-								{note.title}
-							</h3>
-							<small className="line-clamp-2 text-left">{note.body}</small>
-							<small>{new Date(note.createdAt).toLocaleDateString()}</small>
-						</button>
-					);
-				})} */}
 			</div>
 		</section>
 	);

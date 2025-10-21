@@ -36,6 +36,16 @@ export const useTeamMembers = () => {
 	});
 };
 
+// select one team member from useTeam cache
+export const useTeamMember = (memberId: string | null) => {
+	return useQuery({
+		queryKey: [TEAMKEY],
+		queryFn: () => fetcher<TeamFull>(BASE),
+		select: (data) => data?.users.find((u) => u.id === memberId) || null,
+		enabled: !!memberId,
+	});
+};
+
 // fetch all projects (no content) - useTeam cache
 export const useTeamProjects = () => {
 	return useQuery({
@@ -45,13 +55,13 @@ export const useTeamProjects = () => {
 	});
 };
 
-// select one team member from useTeam cache
-export const useTeamMember = (memberId: string | null) => {
+// fetch one project (no content) - useTeam cache
+export const useTeamProject = (projectId: string | null) => {
 	return useQuery({
 		queryKey: [TEAMKEY],
 		queryFn: () => fetcher<TeamFull>(BASE),
-		select: (data) => data?.users.find((u) => u.id === memberId) || null,
-		enabled: !!memberId,
+		select: (data) => data?.projects.find((p) => p.id === projectId),
+		enabled: !!projectId,
 	});
 };
 

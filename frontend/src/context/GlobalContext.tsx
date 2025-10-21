@@ -10,6 +10,7 @@ interface NavEntry {
 	selectUrl: string;
 	formId: string;
 	formUrl: string;
+	formEditUrl: string;
 	parentIcon: React.ReactNode | undefined;
 	icon: React.ReactNode;
 }
@@ -113,6 +114,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				selectUrl: `/p`,
 				formId: FORMS.p,
 				formUrl: "/p",
+				formEditUrl: `/p/${selected.p}`,
 				parentIcon: undefined,
 				icon: <Layers />,
 			},
@@ -123,6 +125,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				selectUrl: `/p/${selected.p}/f`,
 				formId: FORMS.f,
 				formUrl: `/p/${selected.p}/f`,
+				formEditUrl: `/p/${selected.p}/f/${selected.f}`,
 				parentIcon: <Layers />,
 				icon: <Folder />,
 			},
@@ -133,6 +136,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				selectUrl: `/p/${selected.p}/f/${selected.f}/n`,
 				formId: FORMS.n,
 				formUrl: `/p/${selected.p}/f/${selected.f}/n`,
+				formEditUrl: `/p/${selected.p}/f/${selected.f}/n/${selected.n}`,
 				parentIcon: <Folder />,
 				icon: <NotepadText />,
 			},

@@ -48,22 +48,26 @@ const ListItem = ({
 					// isNote ? "h-20" : "h-6"
 				)}
 			>
-				<div className="flex justify-start items-center gap-2">
+				<div className="flex-1 flex justify-start items-center gap-2">
 					<i className="shrink-0">{icon}</i>
 					<p
 						className={clsx(
-							"text-left line-clamp-1 text-ellipsis",
-							isNote && "text-3xl"
+							" text-left line-clamp-2 text-ellipsis text-base text-balance",
+							isNote && ""
 						)}
 					>
 						{title}
 					</p>
 				</div>
-				{!isNote && <ChevronRight />}
+				<i className="shrink-0">{!isNote && <ChevronRight />}</i>
 			</div>
 			{isNote && (
 				<>
-					{body && <small className="line-clamp-2 text-left">{body}</small>}
+					{body && (
+						<small className="line-clamp-2 text-left text-balance">
+							{body}
+						</small>
+					)}
 					<small className="float-left">
 						{new Date(createdAt).toLocaleDateString()}
 					</small>
