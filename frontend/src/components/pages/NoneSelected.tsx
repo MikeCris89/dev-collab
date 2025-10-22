@@ -28,12 +28,12 @@ const NoneSelected = () => {
 
 	return (
 		<>
-			{title && (
+			{/* {title && (
 				<h1 className="text-3xl flex gap-2 items-center mx-auto">
 					{nav[page].parentIcon}
 					{title}
 				</h1>
-			)}
+			)} */}
 			<div className="h-full w-full flex flex-col justify-center items-center gap-3">
 				<div
 					className={clsx(

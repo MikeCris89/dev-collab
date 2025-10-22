@@ -25,7 +25,7 @@ const Button = ({
 	const showForm = !!action && !!formId;
 
 	const initStyle =
-		"text-center min-w-[75px] py-2 px-3 md:py-3 md:px-4  flex-nowrap duration-150 ease-in transition-all";
+		"text-center min-w-[75px] py-2 px-3 md:py-3 md:px-4 text-nowrap  flex-nowrap duration-150 ease-in transition-all";
 
 	const variants: { default: string; primary: string; menu: string } = {
 		default: clsx(

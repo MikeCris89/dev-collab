@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useBlocker } from "react-router-dom";
 
 export function useUnsavedChanges(isDirty: boolean) {
@@ -25,8 +25,8 @@ export function useUnsavedChanges(isDirty: boolean) {
 		return () => window.removeEventListener("beforeunload", onBeforeUnload);
 	}, [isDirty]);
 
-	const allowNavigation = () => {
-		allowNav.current = true;
+	const allowNavigation = (value = true) => {
+		allowNav.current = value;
 	};
 
 	return allowNavigation;

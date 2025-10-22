@@ -21,7 +21,7 @@ const UserAddForm = () => {
 
 	const isDirty = !!userData.username || !!userData.password || !!userData.name;
 
-	useUnsavedChanges(isDirty);
+	const allowNav = useUnsavedChanges(isDirty);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setUserData((prev) => ({
@@ -32,16 +32,21 @@ const UserAddForm = () => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		try {
-			const count = members.length;
-			if (count >= LIMITS.MAX_USERS_PER_TEAM)
-				throw new Error("Max Users reached");
-			if (userData.username && userData.password) await addUser(userData);
-			navigate("/team", { replace: true });
-		} catch (e) {
-			if (e instanceof Error) console.log(e.message);
-			else console.log("Error has occured");
+
+		const count = members.length;
+		// if (count >= LIMITS.MAX_USERS_PER_TEAM)
+		if (count >= 1) throw new Error("Max Users reached");
+
+		if (userData.username && userData.password) {
+			allowNav();
+			await addUser(userData);
 		}
+		navigate("/team", { replace: true });
+		// } catch (e) {
+		// 	allowNav(false);
+		// 	if (e instanceof Error) console.log(e.message);
+		// 	else console.log("Error has occured");
+		// }
 	};
 
 	const handleSelectAll = () => {};
@@ -86,7 +91,6 @@ const UserAddForm = () => {
 				<input
 					name="name"
 					id="name"
-					required
 					value={userData.name}
 					onChange={handleChange}
 					disabled={isPending}
@@ -122,6 +126,7 @@ const UserAddForm = () => {
 					/>
 				}
 			</InputWrapper>
+			{error && <p className="text-red-500">{error.message}</p>}
 		</form>
 	);
 };

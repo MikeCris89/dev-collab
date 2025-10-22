@@ -1,9 +1,25 @@
-import { deleter, poster, putter } from "@/lib/api";
+import { deleter, fetcher, poster, putter } from "@/lib/api";
 import type { Folder, FolderInput, ProjectWithAll } from "@shared/contract";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PROJECTKEY } from "./useProjects";
 
 const BASE = "/folders";
+
+// get one folder from the useProject cache
+export const useFolder = ({
+	projectId,
+	folderId,
+}: {
+	projectId: string | null;
+	folderId: string | null;
+}) => {
+	return useQuery({
+		queryKey: [PROJECTKEY, projectId],
+		queryFn: () => fetcher<ProjectWithAll>(`/projects/${projectId}`),
+		select: (data) => data?.folders.find((f) => f.id === folderId),
+		enabled: !!projectId && !!folderId,
+	});
+};
 
 export const useCreateFolder = () => {
 	const queryClient = useQueryClient();

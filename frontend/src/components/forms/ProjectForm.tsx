@@ -8,7 +8,7 @@ import useRequireAuth from "@/hooks/useRequireAuth";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { useGlobal } from "@/context/GlobalContext";
-import type { Project } from "@shared/contract";
+import { LIMITS, type Project } from "@shared/contract";
 
 const ProjectForm = () => {
 	const { projectId } = useParams();
@@ -83,6 +83,7 @@ const ProjectForm = () => {
 					onChange={(e) => setTitle(e.target.value)}
 					disabled={isLoading}
 					className="w-[250px]"
+					maxLength={LIMITS.TITLE_MAX_LENGTH}
 				/>
 			</InputWrapper>
 

@@ -18,7 +18,7 @@ export const useProject = (id: string | null) => {
 	});
 };
 
-// select all notes from folder in project cache
+// select all notes from folder in useProject cache
 export const useFolderNotes = (
 	projectId: string | undefined,
 	folderId: string | undefined

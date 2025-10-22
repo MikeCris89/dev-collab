@@ -1,5 +1,8 @@
+import { useFolder } from "@/hooks/useFolders";
+import { useTeamProject, useTeamProjects } from "@/hooks/useTeam";
+import useThemeSwitcher from "@/hooks/useThemeSwitcher";
 import { FORMS } from "@shared/contract";
-import { Folder, Layers, NotepadText } from "lucide-react";
+import { Folder, FolderOpen, Layers, NotepadText } from "lucide-react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,6 +15,7 @@ interface NavEntry {
 	formUrl: string;
 	formEditUrl: string;
 	parentIcon: React.ReactNode | undefined;
+	parentTitle: string | undefined;
 	icon: React.ReactNode;
 }
 
@@ -53,14 +57,17 @@ interface GlobalCtx {
 export const GlobalContext = createContext<GlobalCtx | undefined>(undefined);
 
 const GlobalProvider = ({ children }: React.PropsWithChildren) => {
-	const { projectId, folderId, noteId } = useParams();
-
+	const params = useParams();
+	const { projectId, folderId, noteId } = params;
 	const [selected, setSelected] = useState<Selected>({ ...selectInit });
-	// const [showForm, setShowForm] = useState<ShowForm>({
-	// 	show: false,
-	// 	form: null,
-	// });
 	const [showMenu, setShowMenu] = useState(false);
+	useThemeSwitcher();
+
+	const { data: project } = useTeamProject(selected.p);
+	const { data: folder } = useFolder({
+		projectId: selected.p,
+		folderId: selected.f,
+	});
 
 	// set initial selected on page load
 	useEffect(() => {
@@ -75,6 +82,15 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				page,
 			});
 	}, []);
+
+	useEffect(
+		() =>
+			setSelected((prev) => ({
+				...prev,
+				n: params.noteId ?? null,
+			})),
+		[params]
+	);
 
 	// set selected.page based on selected id's
 	useEffect(() => {
@@ -116,6 +132,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				formUrl: "/p",
 				formEditUrl: `/p/${selected.p}`,
 				parentIcon: undefined,
+				parentTitle: undefined,
 				icon: <Layers />,
 			},
 			f: {
@@ -127,6 +144,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				formUrl: `/p/${selected.p}/f`,
 				formEditUrl: `/p/${selected.p}/f/${selected.f}`,
 				parentIcon: <Layers />,
+				parentTitle: project?.title,
 				icon: <Folder />,
 			},
 			n: {
@@ -137,7 +155,8 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				formId: FORMS.n,
 				formUrl: `/p/${selected.p}/f/${selected.f}/n`,
 				formEditUrl: `/p/${selected.p}/f/${selected.f}/n/${selected.n}`,
-				parentIcon: <Folder />,
+				parentIcon: <FolderOpen />,
+				parentTitle: folder?.title,
 				icon: <NotepadText />,
 			},
 		}),

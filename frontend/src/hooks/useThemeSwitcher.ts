@@ -1,0 +1,99 @@
+import { useEffect, useState } from "react";
+
+const getIsDark = () => {
+	if (typeof document === "undefined") return false;
+	return document.documentElement.classList.contains("dark");
+};
+
+const getStorageIsDark = () => {
+	if (localStorage.getItem("theme") === "dark") return true;
+	return false;
+};
+
+const useThemeSwitcher = () => {
+	const [isDark, setIsDark] = useState(getStorageIsDark());
+
+	useEffect(() => {
+		if (typeof document === "undefined") return;
+
+		const el = document.documentElement;
+
+		const storage = getStorageIsDark();
+
+		if (storage !== el.classList.contains("dark")) {
+			if (storage) {
+				// console.log("storage is dark, element is not");
+				el.classList.add("dark");
+			} else {
+				// console.log("storage is light, element is not");
+				el.classList.remove("dark");
+			}
+		}
+
+		const obs = new MutationObserver(() => {
+			setIsDark(getIsDark());
+		});
+
+		obs.observe(el, {
+			attributes: true,
+			attributeFilter: ["class"],
+		});
+
+		const onStorage = (e: StorageEvent) => {
+			if (e.key === "theme") setIsDark(getIsDark());
+		};
+		window.addEventListener("storage", onStorage);
+
+		return () => {
+			obs.disconnect();
+			window.removeEventListener("storage", onStorage);
+		};
+	}, []);
+
+	const toggle = () => {
+		setTimeout(() => {
+			const el = document.documentElement;
+			el.classList.toggle("dark");
+			localStorage.setItem(
+				"theme",
+				el.classList.contains("dark") ? "dark" : ""
+			);
+		}, 150);
+	};
+
+	// const shadowColor = isDark ? "#facc15" : "#3b82f6";
+
+	// const ThemeSwitcher2 = () => {
+	// 	return (
+	// 		<div className="cursor-pointer relative h-10" onClick={toggle}>
+	// 			<span
+	// 				className={clsx(
+	// 					baseStyle,
+	// 					isDark ? "opacity-100" : "opacity-0 pointer-events-none",
+	// 					"hover:text-shadow-[0_0_10px_#facc15,0_0_20px_#facc15]",
+	// 					"active:text-shadow-[0_0_10px_#facc15,0_0_20px_#facc15]"
+	// 				)}
+	// 			>
+	// 				☀️
+	// 			</span>
+	// 			<span
+	// 				className={clsx(
+	// 					baseStyle,
+	// 					!isDark ? "opacity-100" : "opacity-0 pointer-events-none",
+	// 					"hover:text-shadow-[0_0_10px_#3b82f6,0_0_20px_#3b82f6]",
+	// 					"active:text-shadow-[0_0_10px_#3b82f6,0_0_20px_#3b82f6]"
+	// 				)}
+	// 			>
+	// 				☾
+	// 			</span>
+	// 		</div>
+	// 	);
+	// };
+
+	return {
+		toggle,
+		isDark,
+	};
+};
+
+export default useThemeSwitcher;

@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
-import ThemeSwitcher from "../ThemeSwitcher";
+import ThemeSwitcher from "../../hooks/useThemeSwitcher";
 import { useAuth } from "../../context/AuthContext";
 
 const PublicHome = () => {
