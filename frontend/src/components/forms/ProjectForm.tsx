@@ -2,13 +2,13 @@ import { useState } from "react";
 import InputWrapper from "./InputWrapper";
 import { useCreateProject, useUpdateProject } from "@/hooks/useProjects";
 import { useNavigate, useParams } from "react-router-dom";
-import { useTeamMembers, useTeamProject } from "@/hooks/useTeam";
+import { useTeamProject } from "@/hooks/useTeam";
 import Loading from "../Loading";
-import useRequireAuth from "@/hooks/useRequireAuth";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { useGlobal } from "@/context/GlobalContext";
 import { LIMITS, type Project } from "@shared/contract";
+import MemberCheckList from "./MemberCheckList";
 
 const ProjectForm = () => {
 	const { projectId } = useParams();
@@ -19,14 +19,15 @@ const ProjectForm = () => {
 	} = useTeamProject(projectId || null);
 
 	const [title, setTitle] = useState(existing?.title || "");
+	const [userIds, setUserIds] = useState<string[]>(
+		existing?.projectsUsers.map((u) => u.userId) ?? []
+	);
 
 	const navigate = useNavigate();
-	const { user } = useRequireAuth();
 	const { setSelected } = useGlobal();
 	const [action] = useGetSearchParams(["action"]);
 	const isEdit = action === "edit";
 
-	const { data: members } = useTeamMembers();
 	const {
 		mutateAsync: addProject,
 		isPending: pendingAdd,
@@ -63,9 +64,9 @@ const ProjectForm = () => {
 		if (isEdit) {
 			if (!existing)
 				throw new Error("ProjectForm Edit Action - Missing Existing Data");
-			resp = await editProject({ data: { title }, id: existing.id });
+			resp = await editProject({ data: { title, userIds }, id: existing.id });
 		} else {
-			resp = await addProject({ data: { title } });
+			resp = await addProject({ data: { title, userIds } });
 		}
 		setSelected((prev) => ({ ...prev, p: resp.id, f: null, n: null }));
 		navigate(`/`, { replace: true });
@@ -88,16 +89,11 @@ const ProjectForm = () => {
 			</InputWrapper>
 
 			<h2>Team Access</h2>
-			{/* {filteredMembers.length === 0 && <p>No Team Members</p>} */}
-			{members
-				?.filter((m) => m.id !== user.sub)
-				.map((m) => {
-					return (
-						<div key={m.id}>
-							<p>{m.name ?? m.username}</p>
-						</div>
-					);
-				})}
+			<MemberCheckList
+				projectId={projectId}
+				userIds={userIds}
+				setUserIds={setUserIds}
+			/>
 		</form>
 	);
 };
