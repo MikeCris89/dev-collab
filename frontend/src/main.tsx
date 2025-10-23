@@ -11,9 +11,9 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
-			staleTime: 1000 * 60 * 5, // Data stays fresh for 5 minutes
+			staleTime: 1000 * 60 * 5,
 			retry: 1,
-			refetchOnWindowFocus: false, // Don't refetch when user comes back to tab
+			refetchOnWindowFocus: false,
 		},
 	},
 });

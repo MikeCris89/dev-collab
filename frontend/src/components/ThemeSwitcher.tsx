@@ -3,11 +3,13 @@ import clsx from "clsx";
 
 const ThemeSwitcher = () => {
 	const { toggle, isDark } = useThemeSwitcher();
+
 	const baseStyle = clsx(
 		"absolute right-0 top-0 text-3xl transition-opacity duration-[300ms]"
 	);
 	return (
 		<div className="cursor-pointer relative h-10" onClick={toggle}>
+			{/* shadowColor = isDark ? "#facc15" : "#3b82f6"; */}
 			<span
 				className={clsx(
 					baseStyle,

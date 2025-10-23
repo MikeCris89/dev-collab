@@ -61,35 +61,6 @@ const useThemeSwitcher = () => {
 		}, 150);
 	};
 
-	// const shadowColor = isDark ? "#facc15" : "#3b82f6";
-
-	// const ThemeSwitcher2 = () => {
-	// 	return (
-	// 		<div className="cursor-pointer relative h-10" onClick={toggle}>
-	// 			<span
-	// 				className={clsx(
-	// 					baseStyle,
-	// 					isDark ? "opacity-100" : "opacity-0 pointer-events-none",
-	// 					"hover:text-shadow-[0_0_10px_#facc15,0_0_20px_#facc15]",
-	// 					"active:text-shadow-[0_0_10px_#facc15,0_0_20px_#facc15]"
-	// 				)}
-	// 			>
-	// 				☀️
-	// 			</span>
-	// 			<span
-	// 				className={clsx(
-	// 					baseStyle,
-	// 					!isDark ? "opacity-100" : "opacity-0 pointer-events-none",
-	// 					"hover:text-shadow-[0_0_10px_#3b82f6,0_0_20px_#3b82f6]",
-	// 					"active:text-shadow-[0_0_10px_#3b82f6,0_0_20px_#3b82f6]"
-	// 				)}
-	// 			>
-	// 				☾
-	// 			</span>
-	// 		</div>
-	// 	);
-	// };
-
 	return {
 		toggle,
 		isDark,

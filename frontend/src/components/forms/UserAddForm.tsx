@@ -12,6 +12,7 @@ const UserAddForm = () => {
 		name: "",
 		projectIds: [],
 	});
+	const [err, setErr] = useState<string | null>(null);
 
 	const navigate = useNavigate();
 
@@ -32,21 +33,20 @@ const UserAddForm = () => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		setErr(null);
 
 		const count = members.length;
-		// if (count >= LIMITS.MAX_USERS_PER_TEAM)
-		if (count >= 1) throw new Error("Max Users reached");
+		if (count >= LIMITS.MAX_USERS_PER_TEAM) {
+			allowNav();
+			setErr("Max users reached");
+			return;
+		}
 
 		if (userData.username && userData.password) {
 			allowNav();
 			await addUser(userData);
 		}
 		navigate("/team", { replace: true });
-		// } catch (e) {
-		// 	allowNav(false);
-		// 	if (e instanceof Error) console.log(e.message);
-		// 	else console.log("Error has occured");
-		// }
 	};
 
 	const handleSelectAll = () => {};
@@ -58,7 +58,12 @@ const UserAddForm = () => {
 			className="form"
 			autoComplete="off"
 		>
-			<h2>Add Team Member</h2>
+			<div>
+				<h2>Add Team Member</h2>
+				{(error || err) && (
+					<p className="text-red-500">{error?.message ?? err}</p>
+				)}
+			</div>
 			<InputWrapper htmlFor="username" label="Username">
 				<input
 					name="username"
@@ -100,33 +105,27 @@ const UserAddForm = () => {
 				/>
 			</InputWrapper>
 
-			<InputWrapper htmlFor="projects" label="Projects">
-				<InputWrapper
-					htmlFor="selectAll"
-					label="select all"
-					className="flex-row"
-				>
-					<input
-						type="checkbox"
-						name="selectAll"
-						id="selectAll"
-						onChange={handleChange}
-						disabled={isPending}
-						className="w-[250px]"
-					/>
-				</InputWrapper>
-				{
-					<input
-						type="checkbox"
-						name="projects"
-						id="projects"
-						onChange={handleChange}
-						disabled={isPending}
-						className="w-[250px]"
-					/>
-				}
+			<h3>Project Access</h3>
+			<InputWrapper htmlFor="selectAll" label="select all" className="flex-row">
+				<input
+					type="checkbox"
+					name="selectAll"
+					id="selectAll"
+					onChange={handleChange}
+					disabled={isPending}
+					className=""
+				/>
 			</InputWrapper>
-			{error && <p className="text-red-500">{error.message}</p>}
+			{
+				<input
+					type="checkbox"
+					name="projects"
+					id="projects"
+					onChange={handleChange}
+					disabled={isPending}
+					className=""
+				/>
+			}
 		</form>
 	);
 };

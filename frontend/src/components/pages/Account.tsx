@@ -11,10 +11,12 @@ const Account = () => {
 	const { data: userData, isLoading, error } = useTeamMember(user.sub);
 
 	if (isLoading) return <Loading />;
-	if (!userData || error) throw new Error("");
+	console.log(user);
+	if (!userData || error)
+		throw new Error(error?.message ?? "Account Page: Userdata fetch error");
 
 	return (
-		<div className="flex flex-col gap-3 items-center w-full  mx-auto">
+		<section className="flex flex-col gap-3 items-center w-full  mx-auto">
 			{/* <h1>Account</h1> */}
 			<h2>{userData.username}</h2>
 			{userData.name && <h3>{userData.name}</h3>}
@@ -26,7 +28,7 @@ const Account = () => {
 			<Button onClick={logout} variant="primary">
 				Logout
 			</Button>
-		</div>
+		</section>
 	);
 };
 

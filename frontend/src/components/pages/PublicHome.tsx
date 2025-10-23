@@ -1,6 +1,7 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
-import ThemeSwitcher from "../../hooks/useThemeSwitcher";
+
 import { useAuth } from "../../context/AuthContext";
+import ThemeSwitcher from "../ThemeSwitcher";
 
 const PublicHome = () => {
 	const { error } = useAuth();

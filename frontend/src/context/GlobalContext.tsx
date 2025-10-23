@@ -160,7 +160,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				icon: <NotepadText />,
 			},
 		}),
-		[selected]
+		[selected, folder, project]
 	);
 
 	return (
