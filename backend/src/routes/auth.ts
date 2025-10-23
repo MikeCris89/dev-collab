@@ -8,15 +8,7 @@ import type { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { reqUser } from "src/types/types.js";
 import prisma from "../db/client.js";
-
-// const user = await Promise.resolve({
-// 	id: "1234",
-// 	username,
-// 	password,
-// 	role: ROLES.admin,
-// 	teamId: "4321",
-// 	createdAt: new Date(),
-// });
+import { sanitizeAuthUser } from "src/lib/utils.js";
 
 const COOKIE_OPTIONS = {
 	httpOnly: true,
@@ -87,7 +79,7 @@ router.post("/signup", async (req, res) => {
 
 	res.cookie("session", token, COOKIE_OPTIONS);
 
-	const { password: _password, ...userData } = user;
+	const userData = sanitizeAuthUser(user);
 
 	res.status(201).json(userData);
 });
@@ -110,7 +102,7 @@ router.post("/login", async (req, res) => {
 
 	res.cookie("session", token, COOKIE_OPTIONS);
 
-	const { password: _password, ...userData } = user;
+	const userData = sanitizeAuthUser(user);
 
 	res.json(userData);
 });
