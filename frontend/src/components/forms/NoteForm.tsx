@@ -40,15 +40,15 @@ const NoteForm = () => {
 		: title.trim() !== "" || body.trim() !== "";
 
 	// Block navigation for unsaved changes
-	const allowNavigation = useUnsavedChanges(isDirty);
+	const allowNav = useUnsavedChanges(isDirty);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (title && body) {
 			const newNote = { title, body };
 			let resp: Note;
-			allowNavigation();
-			if (isEdit && existing?.id) {
+			allowNav();
+			if (isEdit && existing) {
 				resp = await updateNote({
 					noteId: existing.id,
 					data: newNote,
@@ -83,6 +83,7 @@ const NoteForm = () => {
 				onChange={(e) => setBody(e.target.value)}
 				className="flex-1 h-full w-full max-w-[95%] text-center text-xl text-balance"
 				disabled={isLoading}
+				maxLength={LIMITS.NOTE_BODY_MAX_LENGTH}
 			/>
 			{error && (
 				<p className="text-red-500">

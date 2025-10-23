@@ -1,10 +1,20 @@
 import bcrypt from "bcrypt";
-import { EditUser, LIMITS, ROLES } from "@shared/contract";
+import {
+	EditUser,
+	LIMITS,
+	ProjectWithUsers,
+	ROLES,
+	TeamWithAll,
+} from "@shared/contract";
 import express from "express";
 import { adminOnly } from "src/lib/middleware.js";
 import { reqUser } from "src/types/types.js";
 import prisma from "../db/client.js";
-import { BadRequestError, UnauthorizedError } from "src/lib/errors.js";
+import {
+	BadRequestError,
+	NotFoundError,
+	UnauthorizedError,
+} from "src/lib/errors.js";
 import { userQueries } from "src/db/queries/users.js";
 import { sanitizeTeamUser } from "src/lib/utils.js";
 
@@ -46,7 +56,24 @@ router.get("/", async (req, res) => {
 		},
 	});
 
-	res.json(resp);
+	if (!resp) throw new NotFoundError();
+
+	const team: TeamWithAll = {
+		...resp,
+		createdAt: resp.createdAt.toISOString(),
+		projects: resp.projects.map((p) => ({
+			...p,
+			createdAt: p.createdAt.toISOString(),
+			projectsUsers: p.projectsUsers.map((u) => u.userId),
+		})),
+		users: resp.users.map((u) => ({
+			...u,
+			createdAt: u.createdAt.toISOString(),
+			projectsUsers: u.projectsUsers.map((p) => p.projectId),
+		})),
+	};
+
+	res.json(team);
 });
 
 router.post("/", adminOnly, async (req, res) => {

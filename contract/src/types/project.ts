@@ -23,7 +23,7 @@ export type ProjectWithNotes = Project & {
 };
 
 export type ProjectWithUsers = Project & {
-	projectsUsers: Omit<ProjectsUser, "projectId">[];
+	projectsUsers: string[];
 };
 
 export type ProjectWithAll = Project & {

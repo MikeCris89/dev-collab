@@ -10,8 +10,8 @@ export const useFolder = ({
 	projectId,
 	folderId,
 }: {
-	projectId: string | null;
-	folderId: string | null;
+	projectId: string | null | undefined;
+	folderId: string | null | undefined;
 }) => {
 	return useQuery({
 		queryKey: [PROJECTKEY, projectId],
@@ -46,14 +46,14 @@ export const useEditFolder = () => {
 
 	return useMutation({
 		mutationFn: ({
-			id,
+			folderId,
 			data,
 			projectId,
 		}: {
-			id: string;
+			folderId: string;
 			data: FolderInput;
 			projectId: string;
-		}) => putter<FolderInput, Folder>(`${BASE}/${projectId}/${id}`, data),
+		}) => putter<FolderInput, Folder>(`${BASE}/${projectId}/${folderId}`, data),
 		onSuccess: (resp) => {
 			queryClient.setQueryData([PROJECTKEY], (old: ProjectWithAll) => ({
 				...old,

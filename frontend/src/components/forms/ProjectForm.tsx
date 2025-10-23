@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputWrapper from "./InputWrapper";
 import { useCreateProject, useUpdateProject } from "@/hooks/useProjects";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTeamProject } from "@/hooks/useTeam";
 import Loading from "../Loading";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
@@ -11,39 +11,45 @@ import { LIMITS, type Project } from "@shared/contract";
 import MemberCheckList from "./MemberCheckList";
 
 const ProjectForm = () => {
+	const { setSelected, closeForm } = useGlobal();
 	const { projectId } = useParams();
+
+	const [title, setTitle] = useState("");
+	const [userIds, setUserIds] = useState<string[]>([]);
+
+	const [action] = useGetSearchParams(["action"]);
+	const isEdit = action === "edit";
+
 	const {
 		data: existing,
 		isLoading: loadingProject,
 		error: errProject,
 	} = useTeamProject(projectId || null);
 
-	const [title, setTitle] = useState(existing?.title || "");
-	const [userIds, setUserIds] = useState<string[]>(
-		existing?.projectsUsers.map((u) => u.userId) ?? []
-	);
-
-	const navigate = useNavigate();
-	const { setSelected } = useGlobal();
-	const [action] = useGetSearchParams(["action"]);
-	const isEdit = action === "edit";
-
 	const {
 		mutateAsync: addProject,
 		isPending: pendingAdd,
 		error: errAdd,
 	} = useCreateProject();
+
 	const {
 		mutateAsync: editProject,
 		isPending: pendingEdit,
 		error: errEdit,
 	} = useUpdateProject();
 
-	const isDirty = existing?.title
+	const isDirty = existing
 		? existing.title !== title.trim()
 		: title.trim() !== "";
 
 	const allowNav = useUnsavedChanges(isDirty);
+
+	useEffect(() => {
+		if (existing) {
+			setTitle(existing.title);
+			setUserIds([...existing.projectsUsers]);
+		}
+	}, [existing]);
 
 	const isLoading = pendingAdd || pendingEdit || loadingProject;
 	const error = errEdit || errProject || errAdd;
@@ -69,7 +75,7 @@ const ProjectForm = () => {
 			resp = await addProject({ data: { title, userIds } });
 		}
 		setSelected((prev) => ({ ...prev, p: resp.id, f: null, n: null }));
-		navigate(`/`, { replace: true });
+		closeForm();
 	};
 
 	return (

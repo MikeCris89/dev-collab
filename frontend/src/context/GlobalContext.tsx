@@ -4,7 +4,7 @@ import useThemeSwitcher from "@/hooks/useThemeSwitcher";
 import { FORMS } from "@shared/contract";
 import { Folder, FolderOpen, Layers, NotepadText } from "lucide-react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 interface NavEntry {
 	title: string;
@@ -45,11 +45,9 @@ export const selectInit: Selected = {
 interface GlobalCtx {
 	selected: Selected;
 	setSelected: React.Dispatch<React.SetStateAction<Selected>>;
-	// showForm: ShowForm;
 	showMenu: boolean;
 	setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
-	// setShowForm: SetShowForm;
-	// closeForm: () => void;
+	closeForm: () => void;
 	toggleMenu: () => void;
 	nav: Nav;
 }
@@ -59,6 +57,8 @@ export const GlobalContext = createContext<GlobalCtx | undefined>(undefined);
 const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 	const params = useParams();
 	const { projectId, folderId, noteId } = params;
+	const location = useLocation();
+	const navigate = useNavigate();
 	const [selected, setSelected] = useState<Selected>({ ...selectInit });
 	const [showMenu, setShowMenu] = useState(false);
 	useThemeSwitcher();
@@ -100,25 +100,13 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 		if (selected.page !== page) setSelected((prev) => ({ ...prev, page }));
 	}, [selected]);
 
-	// Set ShowForm for toolbar action buttons
-	// useEffect(() => {
-	// 	if (
-	// 		(pathname.endsWith("/new") || pathname.endsWith("/edit")) &&
-	// 		!showForm.show
-	// 	)
-	// 		setShowForm((prev) => ({ ...prev, show: true }));
-	// 	else if (
-	// 		!pathname.endsWith("/new") &&
-	// 		!pathname.endsWith("/edit") &&
-	// 		showForm.show
-	// 	)
-	// 		setShowForm((prev) => ({ ...prev, show: false }));
-	// }, [pathname]);
-
-	// const closeForm = () => setShowForm({ show: false, form: null });
-
 	const toggleMenu = () => {
 		setShowMenu((prev) => !prev);
+	};
+
+	const closeForm = () => {
+		if (location.state?.from) navigate(-1);
+		else navigate("/", { replace: true });
 	};
 
 	const nav = useMemo(
@@ -168,9 +156,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 			value={{
 				selected,
 				setSelected,
-				// showForm,
-				// setShowForm,
-				// closeForm,
+				closeForm,
 				showMenu,
 				setShowMenu,
 				toggleMenu,
