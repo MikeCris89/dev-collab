@@ -18,20 +18,6 @@ export const useProject = (id: string | null) => {
 	});
 };
 
-// select all notes from folder in useProject cache
-export const useFolderNotes = (
-	projectId: string | undefined,
-	folderId: string | undefined
-) => {
-	return useQuery({
-		queryKey: [PROJECTKEY, projectId],
-		queryFn: () => fetcher<ProjectWithAll>(`${BASE}/${projectId}`),
-		select: (data) =>
-			data?.folders?.find((f) => f.id === folderId)?.notes ?? [],
-		enabled: !!projectId && !!folderId,
-	});
-};
-
 // select one note from folder in project cache
 export const useNote = (
 	projectId: string | undefined,

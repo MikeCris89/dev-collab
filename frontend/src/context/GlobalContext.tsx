@@ -1,9 +1,16 @@
 import { useFolder } from "@/hooks/useFolders";
-import { useTeamProject, useTeamProjects } from "@/hooks/useTeam";
+import { useTeamProject } from "@/hooks/useTeam";
 import useThemeSwitcher from "@/hooks/useThemeSwitcher";
 import { FORMS } from "@shared/contract";
 import { Folder, FolderOpen, Layers, NotepadText } from "lucide-react";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+	createContext,
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 interface NavEntry {
@@ -50,6 +57,8 @@ interface GlobalCtx {
 	closeForm: () => void;
 	toggleMenu: () => void;
 	nav: Nav;
+	allowNavRef: React.RefObject<boolean>;
+	allowNav: (value?: boolean) => void;
 }
 
 export const GlobalContext = createContext<GlobalCtx | undefined>(undefined);
@@ -68,6 +77,16 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 		projectId: selected.p,
 		folderId: selected.f,
 	});
+
+	const allowNavRef = useRef(false);
+
+	const allowNav = (value: boolean = true) => {
+		allowNavRef.current = value;
+	};
+
+	useEffect(() => {
+		if (allowNavRef.current === true) allowNavRef.current = false;
+	}, [location.pathname]);
 
 	// set initial selected on page load
 	useEffect(() => {
@@ -161,6 +180,8 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				setShowMenu,
 				toggleMenu,
 				nav,
+				allowNavRef,
+				allowNav,
 			}}
 		>
 			{children}

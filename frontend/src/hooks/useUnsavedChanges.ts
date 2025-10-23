@@ -1,10 +1,12 @@
+import { useGlobal } from "@/context/GlobalContext";
 import { useEffect, useRef } from "react";
 import { useBlocker } from "react-router-dom";
 
 export function useUnsavedChanges(isDirty: boolean) {
-	const allowNav = useRef(false);
+	// const allowNav = useRef(false);
 	// Block in-app navigation
-	const blocker = useBlocker(isDirty && !allowNav.current);
+	const { allowNavRef } = useGlobal();
+	const blocker = useBlocker(() => isDirty && !allowNavRef.current);
 
 	useEffect(() => {
 		if (!isDirty) return;
@@ -25,9 +27,9 @@ export function useUnsavedChanges(isDirty: boolean) {
 		return () => window.removeEventListener("beforeunload", onBeforeUnload);
 	}, [isDirty]);
 
-	const allowNavigation = (value = true) => {
-		allowNav.current = value;
+	const allowNav = (value = true) => {
+		allowNavRef.current = value;
 	};
 
-	return allowNavigation;
+	return allowNav;
 }

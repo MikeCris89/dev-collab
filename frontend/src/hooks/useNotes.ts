@@ -1,9 +1,26 @@
-import { deleter, poster, putter } from "@/lib/api";
+import { deleter, fetcher, poster, putter } from "@/lib/api";
 import type { Note, NoteInput, ProjectWithAll } from "@shared/contract";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PROJECTKEY } from "./useProjects";
 
 const BASE = "/notes";
+
+// select all notes from folder in useProject cache
+export const useFolderNotes = ({
+	projectId,
+	folderId,
+}: {
+	projectId: string | null;
+	folderId: string | null;
+}) => {
+	return useQuery({
+		queryKey: [PROJECTKEY, projectId],
+		queryFn: () => fetcher<ProjectWithAll>(`/projects/${projectId}`),
+		select: (data) =>
+			data?.folders?.find((f) => f.id === folderId)?.notes ?? [],
+		enabled: !!projectId && !!folderId,
+	});
+};
 
 export const useCreateNote = () => {
 	const queryClient = useQueryClient();
@@ -22,7 +39,9 @@ export const useCreateNote = () => {
 					return {
 						...old,
 						folders: old.folders.map((f) =>
-							f.id === resp.folderId ? { ...f, notes: [...f.notes, resp] } : f
+							f.id === resp.folderId
+								? { ...f, notes: [...(f.notes ?? []), resp] }
+								: f
 						),
 					};
 				}

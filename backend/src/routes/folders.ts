@@ -10,9 +10,11 @@ const router = express.Router();
 
 router.use(adminOnly);
 
-router.use(async (req, _res, next) => {
+router.param("projectId", async (req, _res, next, projectId) => {
 	const { teamId } = reqUser(req);
-	const { projectId } = req.params;
+	// const { projectId } = req.params;
+
+	console.log("PROJECTID:", projectId, req);
 
 	if (!projectId) throw new BadRequestError("Missing Project ID");
 

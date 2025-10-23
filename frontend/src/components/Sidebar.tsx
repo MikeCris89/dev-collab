@@ -14,6 +14,7 @@ import ListItem from "./ListItem";
 import { useTeamProjects } from "@/hooks/useTeam";
 import { NavLink, useLocation, useParams } from "react-router-dom";
 import Loading from "./Loading";
+import { useFolderNotes } from "@/hooks/useNotes";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
@@ -36,6 +37,12 @@ const Sidebar = () => {
 		isLoading: loadingProject,
 		error: errorProject,
 	} = useProject(selected.p);
+
+	const {
+		data: folderNotes,
+		isLoading: loadingFolder,
+		error: errorFolder,
+	} = useFolderNotes({ projectId: selected.p, folderId: selected.f });
 
 	useEffect(() => {
 		if (!showMenu) return;
@@ -74,7 +81,7 @@ const Sidebar = () => {
 		const data = {
 			p: projects,
 			f: project?.folders ?? [],
-			n: project?.folders?.find((f) => f.id === selected.f)?.notes ?? [],
+			n: folderNotes ?? [],
 		};
 
 		if (search) {
@@ -87,14 +94,16 @@ const Sidebar = () => {
 		}
 
 		return data[selected.page];
-	}, [search, projects, project, selected]);
+	}, [search, projects, project, selected, folderNotes]);
 
-	const isLoading = loadingProject || loadingProjects;
+	const isLoading = loadingProject || loadingProjects || loadingFolder;
+	const error = errorProject || errorProjects || errorFolder;
 
-	if (!isLoading && (errorProject || errorProjects))
+	if (!isLoading && error)
 		throw new Error(
 			errorProjects?.message ??
 				errorProject?.message ??
+				errorFolder?.message ??
 				"Error fetching project data"
 		);
 
@@ -194,6 +203,7 @@ const Sidebar = () => {
 								className="cursor-pointer hover:text-accent"
 								to={`${nav[parent].formEditUrl}?action=edit&formId=${nav[parent].formId}`}
 								onClick={() => setShowMenu(false)}
+								state={{ from: pathname }}
 							>
 								<Edit2 size={20} />
 							</NavLink>

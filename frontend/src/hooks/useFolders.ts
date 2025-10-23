@@ -31,12 +31,15 @@ export const useCreateFolder = () => {
 		}: {
 			data: FolderInput;
 			projectId: string;
-		}) => poster<FolderInput, Folder>(`${BASE}/${projectId}/folders`, data),
-		onSuccess: (resp) => {
-			queryClient.setQueryData([PROJECTKEY], (old: ProjectWithAll) => ({
-				...old,
-				folders: [...(old.folders ?? []), resp],
-			}));
+		}) => poster<FolderInput, Folder>(`${BASE}/${projectId}`, data),
+		onSuccess: (resp, { projectId }) => {
+			queryClient.setQueryData(
+				[PROJECTKEY, projectId],
+				(old: ProjectWithAll) => ({
+					...old,
+					folders: [...(old.folders ?? []), resp],
+				})
+			);
 		},
 	});
 };
@@ -54,11 +57,14 @@ export const useEditFolder = () => {
 			data: FolderInput;
 			projectId: string;
 		}) => putter<FolderInput, Folder>(`${BASE}/${projectId}/${folderId}`, data),
-		onSuccess: (resp) => {
-			queryClient.setQueryData([PROJECTKEY], (old: ProjectWithAll) => ({
-				...old,
-				folders: old.folders.map((f) => (f.id === resp.id ? resp : f)),
-			}));
+		onSuccess: (resp, { projectId }) => {
+			queryClient.setQueryData(
+				[PROJECTKEY, projectId],
+				(old: ProjectWithAll) => ({
+					...old,
+					folders: old.folders.map((f) => (f.id === resp.id ? resp : f)),
+				})
+			);
 		},
 	});
 };

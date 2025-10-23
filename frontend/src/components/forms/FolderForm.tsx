@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import InputWrapper from "./InputWrapper";
 import { useCreateFolder, useEditFolder, useFolder } from "@/hooks/useFolders";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGlobal } from "@/context/GlobalContext";
 import Loading from "../Loading";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
@@ -12,6 +12,7 @@ const FolderForm = () => {
 	const { setSelected, closeForm } = useGlobal();
 	const { projectId, folderId } = useParams();
 	const [action] = useGetSearchParams(["action"]);
+	const navigate = useNavigate();
 
 	const isEdit = action === "edit";
 
@@ -43,9 +44,9 @@ const FolderForm = () => {
 		}
 	}, [existing]);
 
+	if (isLoading) return <Loading />;
 	if (!projectId) throw new Error("Project ID Missing.");
 	if (isEdit && !folderId) throw new Error("Folder ID Missing.");
-	if (isLoading) return <Loading />;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -55,11 +56,13 @@ const FolderForm = () => {
 			if (isEdit) {
 				if (!folderId || !existing) throw new Error("Missing Folder Data.");
 				resp = await editFolder({ data: { title }, projectId, folderId });
+				setSelected((prev) => ({ ...prev, f: resp.id }));
+				closeForm();
 			} else {
 				resp = await addFolder({ data: { title }, projectId });
+				setSelected((prev) => ({ ...prev, f: resp.id }));
+				navigate(`/p/${projectId}/f/${resp.id}`, { replace: true });
 			}
-			setSelected((prev) => ({ ...prev, f: resp.id }));
-			closeForm();
 		}
 	};
 
@@ -82,7 +85,7 @@ const FolderForm = () => {
 					maxLength={LIMITS.TITLE_MAX_LENGTH}
 				/>
 			</InputWrapper>
-			{error && <p>{error.message}</p>}
+			{error && <p className="text-red-500">{error.message}</p>}
 		</form>
 	);
 };

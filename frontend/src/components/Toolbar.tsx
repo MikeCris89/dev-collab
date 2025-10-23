@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { UserCircle2, Users2 } from "lucide-react";
 
 const NoteBar = () => {
+	const { allowNav, allowNavRef } = useGlobal();
 	const location = useLocation();
 	const navigate = useNavigate();
 
@@ -43,7 +44,6 @@ const NoteBar = () => {
 					<>
 						<Button
 							onClick={() => {
-								// setShowForm((prev) => ({ ...prev, form: FORMS.n }));
 								navigate(`${pathname}?action=edit&formId=${FORMS.n}`, {
 									state: { from: pathname },
 								});
@@ -59,6 +59,8 @@ const NoteBar = () => {
 						<Button
 							onClick={() => {
 								const from = location.state?.from;
+								allowNav();
+
 								if (!from) {
 									navigate("/");
 								} else {
