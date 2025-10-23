@@ -1,5 +1,6 @@
 import { useTeamMembers } from "@/hooks/useTeam";
-import { LIMITS } from "@shared/contract";
+import { FORMS, LIMITS } from "@shared/contract";
+import Button from "../Button";
 
 const TeamPage = () => {
 	const { data: members = [], isLoading } = useTeamMembers();
@@ -7,10 +8,19 @@ const TeamPage = () => {
 	if (isLoading) return <p>Loading...</p>;
 
 	return (
-		<div className="flex flex-col gap-3 items-center w-full p-4">
-			<div className="text-text-muted text-sm self-end">
-				users: {members.length} / {LIMITS.MAX_USERS_PER_TEAM}
-			</div>
+		<section className="flex flex-col gap-3 items-center w-full p-4">
+			{/* <h1 className="">Team</h1> */}
+			<Button
+				variant="primary"
+				className=""
+				href={`?action=add&formId=${FORMS.userAdd}`}
+			>
+				add member
+			</Button>
+
+			<p className="text-text-muted text-sm self-end">
+				Members: {members.length} / {LIMITS.MAX_USERS_PER_TEAM}
+			</p>
 			{members.map((m) => {
 				return (
 					<div key={m.id} className="card p-4 text-left w-[400px] max-w-[90%]">
@@ -24,7 +34,7 @@ const TeamPage = () => {
 					</div>
 				);
 			})}
-		</div>
+		</section>
 	);
 };
 
