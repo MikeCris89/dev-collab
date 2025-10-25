@@ -30,7 +30,7 @@ export type UserWithTeam = User & {
 };
 
 export type UserWithProjects = User & {
-	projectsUsers?: Omit<ProjectsUser, "userId">[];
+	projectsUsers?: string[];
 };
 
 export type SignupRequest = {

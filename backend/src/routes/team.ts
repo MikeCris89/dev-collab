@@ -69,7 +69,9 @@ router.get("/", async (req, res) => {
 		users: resp.users.map((u) => ({
 			...u,
 			createdAt: u.createdAt.toISOString(),
-			projectsUsers: u.projectsUsers.map((p) => p.projectId),
+			...(isAdmin
+				? { projectsUsers: u.projectsUsers.map((p) => p.projectId) }
+				: {}),
 		})),
 	};
 

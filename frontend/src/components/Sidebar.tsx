@@ -132,6 +132,10 @@ const Sidebar = () => {
 				</i>
 			</Button>
 
+			<h3 className="text-accent text-sm md:text-base font-bold p-0 m-0">
+				DevCollab
+			</h3>
+
 			{/* Account & Team buttons */}
 			<div className="flex justify-between items-center w-full p-2 mb-2">
 				<NavLink
@@ -140,6 +144,7 @@ const Sidebar = () => {
 						pathname.includes("/account") && "bg-accent-hover text-accent"
 					)}
 					to="/account"
+					onClick={() => setShowMenu(false)}
 				>
 					<UserCircle2Icon size={22} /> <span>Account</span>
 				</NavLink>
@@ -149,6 +154,7 @@ const Sidebar = () => {
 						pathname.includes("/team") && "bg-accent-hover text-accent"
 					)}
 					to="/team"
+					onClick={() => setShowMenu(false)}
 				>
 					<UsersRound size={22} />
 					<span>Team</span>
@@ -186,16 +192,18 @@ const Sidebar = () => {
 				{(selected.p || selected.f) && (
 					<>
 						<div
-							className="flex items-center gap-1 text-left font-bold text-sm  cursor-pointer hover:text-accent text-balance"
+							className="flex items-center gap-1 text-left cursor-pointer hover:text-accent "
 							onClick={() => {
 								if (selected.f) setSelected((prev) => ({ ...prev, f: null }));
 								else if (selected.p)
 									setSelected((prev) => ({ ...prev, p: null }));
 							}}
 						>
-							<ChevronLeft size={16} />
-							{nav[page].parentIcon}
-							{parentTitle}
+							<ChevronLeft size={16} className="shrink-0" />
+							<i className="shrink-0">{nav[page].parentIcon}</i>
+							<p className="text-sm font-bold text-balance line-clamp-2 text-ellipsis">
+								{parentTitle}
+							</p>
 						</div>
 						{/* Edit / Delete Btns */}
 						<div className="flex gap-6 items-center justify-end">

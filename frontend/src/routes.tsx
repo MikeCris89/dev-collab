@@ -15,6 +15,7 @@ import GlobalProvider from "./context/GlobalContext";
 import TeamPage from "./components/pages/TeamPage";
 import NoneSelected from "./components/pages/NoneSelected";
 import Account from "./components/pages/Account";
+import ErrorFallback from "./components/ErrorFallback";
 
 const PublicRoutes = () => {
 	const { user } = useAuth();
@@ -47,6 +48,7 @@ const PrivateRoutes = () => {
 export const router = createBrowserRouter([
 	{
 		element: <PublicRoutes />,
+		errorElement: <ErrorFallback />,
 		children: [
 			{ path: "/login", element: <Login /> },
 			{ path: "/signup", element: <Signup /> },
@@ -54,10 +56,12 @@ export const router = createBrowserRouter([
 	},
 	{
 		element: <PrivateRoutes />,
+		errorElement: <ErrorFallback />,
 		children: [
 			{
 				path: "/",
 				element: <Home />,
+				errorElement: <ErrorFallback />,
 				children: [
 					{ index: true, element: <NoneSelected /> },
 					// { path: "p/new", element: <ProjectForm /> },

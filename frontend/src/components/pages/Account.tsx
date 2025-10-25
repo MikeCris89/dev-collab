@@ -11,23 +11,23 @@ const Account = () => {
 	const { data: userData, isLoading, error } = useTeamMember(user.sub);
 
 	if (isLoading) return <Loading />;
-	console.log(user);
 	if (!userData || error)
 		throw new Error(error?.message ?? "Account Page: Userdata fetch error");
 
 	return (
-		<section className="flex flex-col gap-3 items-center w-full  mx-auto">
-			{/* <h1>Account</h1> */}
-			<h2>{userData.username}</h2>
-			{userData.name && <h3>{userData.name}</h3>}
-			<div className="flex justify-between items-center w-full">
-				<p>Switch Theme: </p>
-				<ThemeSwitcher />
-			</div>
+		<section className="flex flex-col gap-3 items-center w-full">
+			<div className="flex flex-col gap-3 items-center w-[600px] mx-auto max-w-[95%]">
+				<h2>{userData.username}</h2>
+				{userData.name && <h3>{userData.name}</h3>}
+				<div className="flex justify-between items-center w-full">
+					<p>Switch Theme: </p>
+					<ThemeSwitcher />
+				</div>
 
-			<Button onClick={logout} variant="primary">
-				Logout
-			</Button>
+				<Button onClick={logout} variant="primary">
+					Logout
+				</Button>
+			</div>
 		</section>
 	);
 };
