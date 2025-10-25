@@ -1,22 +1,30 @@
-import { useCreateTeamMember, useTeamMembers } from "@/hooks/useTeam";
+import {
+	useCreateTeamMember,
+	useTeamMembers,
+	useTeamProjects,
+} from "@/hooks/useTeam";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { LIMITS, type SignupRequest } from "@shared/contract";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InputWrapper from "./InputWrapper";
+import ProjectCheckList from "./ProjectCheckList";
 
 const UserAddForm = () => {
 	const [userData, setUserData] = useState<SignupRequest>({
 		username: "",
 		password: "",
 		name: "",
-		projectIds: [],
 	});
+
+	const [projectIds, setProjectIds] = useState<string[]>([]);
+
 	const [err, setErr] = useState<string | null>(null);
 
 	const navigate = useNavigate();
 
 	// const { data: projects, isLoading, error } = use;
+	const { data: projects = [] } = useTeamProjects();
 	const { data: members = [] } = useTeamMembers();
 	const { mutateAsync: addUser, isPending, error } = useCreateTeamMember();
 
@@ -44,7 +52,7 @@ const UserAddForm = () => {
 
 		if (userData.username && userData.password) {
 			allowNav();
-			await addUser(userData);
+			await addUser({ ...userData, projectIds });
 		}
 		navigate("/team", { replace: true });
 	};
@@ -106,7 +114,7 @@ const UserAddForm = () => {
 			</InputWrapper>
 
 			<h3>Project Access</h3>
-			<InputWrapper htmlFor="selectAll" label="select all" className="flex-row">
+			{/* <InputWrapper htmlFor="selectAll" label="select all" className="flex-row">
 				<input
 					type="checkbox"
 					name="selectAll"
@@ -125,7 +133,9 @@ const UserAddForm = () => {
 					disabled={isPending}
 					className=""
 				/>
-			}
+			} */}
+
+			<ProjectCheckList projectIds={projectIds} setProjectIds={setProjectIds} />
 		</form>
 	);
 };

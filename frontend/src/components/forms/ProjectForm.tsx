@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import InputWrapper from "./InputWrapper";
 import { useCreateProject, useUpdateProject } from "@/hooks/useProjects";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTeamProject } from "@/hooks/useTeam";
 import Loading from "../Loading";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
@@ -13,6 +13,7 @@ import MemberCheckList from "./MemberCheckList";
 const ProjectForm = () => {
 	const { setSelected, closeForm } = useGlobal();
 	const { projectId } = useParams();
+	const navigate = useNavigate();
 
 	const [title, setTitle] = useState("");
 	const [userIds, setUserIds] = useState<string[]>([]);
@@ -71,11 +72,13 @@ const ProjectForm = () => {
 			if (!existing)
 				throw new Error("ProjectForm Edit Action - Missing Existing Data");
 			resp = await editProject({ data: { title, userIds }, id: existing.id });
+			setSelected((prev) => ({ ...prev, p: resp.id, f: null, n: null }));
+			closeForm();
 		} else {
 			resp = await addProject({ data: { title, userIds } });
+			setSelected((prev) => ({ ...prev, p: resp.id, f: null, n: null }));
+			navigate("/", { replace: true });
 		}
-		setSelected((prev) => ({ ...prev, p: resp.id, f: null, n: null }));
-		closeForm();
 	};
 
 	return (
@@ -95,11 +98,7 @@ const ProjectForm = () => {
 			</InputWrapper>
 
 			<h2>Team Access</h2>
-			<MemberCheckList
-				projectId={projectId}
-				userIds={userIds}
-				setUserIds={setUserIds}
-			/>
+			<MemberCheckList userIds={userIds} setUserIds={setUserIds} />
 		</form>
 	);
 };

@@ -2,11 +2,9 @@ import useRequireAuth from "@/hooks/useRequireAuth";
 import { useTeamMembers } from "@/hooks/useTeam";
 
 const MemberCheckList = ({
-	projectId,
 	userIds,
 	setUserIds,
 }: {
-	projectId: string | undefined;
 	userIds: string[];
 	setUserIds: React.Dispatch<React.SetStateAction<string[]>>;
 }) => {
@@ -19,7 +17,7 @@ const MemberCheckList = ({
 				members
 					.filter((m) => m.id !== user.sub)
 					.map((m) => {
-						const selected = !!projectId && userIds.includes(m.id);
+						const selected = userIds.includes(m.id);
 
 						return (
 							<div
