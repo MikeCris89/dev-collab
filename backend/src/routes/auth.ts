@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Response } from "express";
 import { BadRequestError, UnauthorizedError } from "../lib/errors.js";
 import jwt from "jsonwebtoken";
 import { requireAuth } from "../lib/middleware.js";
@@ -19,6 +19,18 @@ const COOKIE_OPTIONS = {
 
 const router = express.Router();
 
+const resetSession = (res: Response, token?: string) => {
+	res.clearCookie("session", {
+		httpOnly: true,
+		secure: process.env.NODE_ENV === "production",
+		sameSite: "lax",
+	});
+
+	if (token) {
+		res.cookie("session", token, COOKIE_OPTIONS);
+	}
+};
+
 const getToken = (user: User) => {
 	let token;
 	const secret = process.env.JWT_SECRET!;
@@ -30,6 +42,7 @@ const getToken = (user: User) => {
 				username: user.username,
 				role: user.role,
 				teamId: user.teamId,
+				isAdmin: user.role === ROLES.admin,
 			},
 			secret,
 			{
@@ -77,7 +90,7 @@ router.post("/signup", async (req, res) => {
 
 	const token = getToken(user);
 
-	res.cookie("session", token, COOKIE_OPTIONS);
+	resetSession(res, token);
 
 	const userData = sanitizeAuthUser(user);
 
@@ -100,7 +113,7 @@ router.post("/login", async (req, res) => {
 
 	const token = getToken(user);
 
-	res.cookie("session", token, COOKIE_OPTIONS);
+	resetSession(res, token);
 
 	const userData = sanitizeAuthUser(user);
 
@@ -108,11 +121,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/logout", (_req, res) => {
-	res.clearCookie("session", {
-		httpOnly: true,
-		secure: process.env.NODE_ENV === "production",
-		sameSite: "lax",
-	});
+	resetSession(res);
 
 	res.end();
 });

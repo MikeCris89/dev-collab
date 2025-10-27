@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { api } from "../lib/api";
+import { api, fetcher, poster } from "../lib/api";
 import type {
 	ErrorDTO,
+	JwtUser,
 	LoginRequest,
 	SignupRequest,
-	User,
 	UserAuth,
 } from "@shared/contract";
 import type { AxiosError } from "axios";
@@ -14,8 +14,8 @@ interface AuthCtx {
 	error: string | null;
 	setError: React.Dispatch<React.SetStateAction<string | null>>;
 	user: UserAuth | null;
-	signup: (userData: SignupRequest) => Promise<void>;
-	login: (userData: LoginRequest) => Promise<void>;
+	signup: (userData: SignupRequest) => Promise<JwtUser | undefined>;
+	login: (userData: LoginRequest) => Promise<JwtUser | undefined>;
 	logout: () => Promise<void>;
 	refresh: () => Promise<void>;
 }
@@ -25,13 +25,13 @@ export const AuthContext = createContext<AuthCtx | undefined>(undefined);
 const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const [user, setUser] = useState<UserAuth | null>(null);
+	const [user, setUser] = useState<JwtUser | null>(null);
 
 	const refresh = async () => {
 		try {
 			setIsLoading(true);
-			const resp = await api.get("/auth/me");
-			setUser(resp.data);
+			const resp = await fetcher<JwtUser>("/auth/me");
+			setUser(resp);
 		} catch (e) {
 			console.log("User not logged in, rendering login page");
 		} finally {
@@ -41,16 +41,21 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 
 	useEffect(() => {
 		(async () => {
+			setError(null);
 			await refresh();
 		})();
 	}, []);
 
 	const signup = async (userData: SignupRequest) => {
 		try {
+			setError(null);
 			setIsLoading(true);
-			const resp = await api.post("/auth/signup", userData);
-			setUser(resp.data);
-			return resp.data;
+			const resp = await poster<SignupRequest, JwtUser>(
+				"/auth/signup",
+				userData
+			);
+			setUser(resp);
+			return resp;
 		} catch (e) {
 			const err = e as AxiosError<ErrorDTO>;
 			const msg = err.response?.data?.message ?? err.message ?? "Unknown error";
@@ -62,10 +67,11 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 
 	const login = async (userData: LoginRequest) => {
 		try {
+			setError(null);
 			setIsLoading(true);
-			const resp = await api.post("/auth/login", userData);
-			setUser(resp.data);
-			return resp.data;
+			const resp = await poster<LoginRequest, JwtUser>("/auth/login", userData);
+			setUser(resp);
+			return resp;
 		} catch (e) {
 			setError("Error logging in");
 		} finally {
@@ -75,6 +81,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 
 	const logout = async () => {
 		try {
+			setError(null);
 			setIsLoading(true);
 			await api.post("/auth/logout");
 			setUser(null);

@@ -81,6 +81,7 @@ const UserAddForm = () => {
 							autoComplete="off"
 							className="w-[250px]"
 							required
+							maxLength={LIMITS.USERNAME_MAX_LENGTH}
 						/>
 					</InputWrapper>
 
@@ -107,6 +108,7 @@ const UserAddForm = () => {
 							autoComplete="off"
 							className="w-[250px]"
 							placeholder="(optional)"
+							maxLength={LIMITS.USERNAME_MAX_LENGTH}
 						/>
 					</InputWrapper>
 				</div>

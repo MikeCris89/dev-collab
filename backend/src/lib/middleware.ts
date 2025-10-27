@@ -37,7 +37,6 @@ export const requireAuth: RequestHandler = (req, _res, next) => {
 	if (!token) throw new UnauthorizedError("Auth Required");
 
 	try {
-		// TODO get user info: {uid: string, username: string}
 		const payload = jwt.verify(
 			token,
 			process.env.JWT_SECRET!
@@ -45,8 +44,10 @@ export const requireAuth: RequestHandler = (req, _res, next) => {
 		// normalize
 		req.user = {
 			sub: String(payload.sub),
+			username: String(payload.username),
 			role: String(payload.role) as Roles,
 			teamId: String(payload.teamId),
+			isAdmin: payload.isAdmin,
 		};
 
 		next();

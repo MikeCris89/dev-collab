@@ -46,4 +46,10 @@ export type LoginRequest = {
 	password: string;
 };
 
-export type JwtUser = { sub: string; role: Roles; teamId: string };
+export type JwtUser = {
+	sub: string;
+	username: string;
+	role: Roles;
+	teamId: string;
+	isAdmin: boolean;
+};

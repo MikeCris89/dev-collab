@@ -4,11 +4,13 @@ import { useTeamMember } from "@/hooks/useTeam";
 import useRequireAuth from "@/hooks/useRequireAuth";
 import Loading from "../Loading";
 import ThemeSwitcher from "../ThemeSwitcher";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Account = () => {
 	const { logout } = useAuth();
 	const { user } = useRequireAuth();
 	const { data: userData, isLoading, error } = useTeamMember(user.sub);
+	const queryClient = useQueryClient();
 
 	if (isLoading) return <Loading />;
 	if (!userData || error)
@@ -24,7 +26,13 @@ const Account = () => {
 					<ThemeSwitcher />
 				</div>
 
-				<Button onClick={logout} variant="primary">
+				<Button
+					onClick={() => {
+						queryClient.clear();
+						logout();
+					}}
+					variant="primary"
+				>
 					Logout
 				</Button>
 			</div>

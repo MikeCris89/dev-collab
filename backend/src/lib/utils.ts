@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { BadRequestError } from "./errors.js";
 import {
 	FolderInput,
+	JwtUser,
 	LIMITS,
 	LoginRequest,
 	NoteInput,
@@ -103,9 +104,10 @@ export const sanitizeTeamUser = (user: User) => {
 	return member;
 };
 
-export const sanitizeAuthUser = (user: User): UserAuth => {
+export const sanitizeAuthUser = (user: User): JwtUser => {
 	return {
 		sub: user.id,
+		username: user.username,
 		isAdmin: user.role === ROLES.admin,
 		teamId: user.teamId,
 		role: user.role,

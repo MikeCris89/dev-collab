@@ -14,7 +14,7 @@ const Layout = () => {
 	return (
 		<>
 			<Sidebar />
-			<div className="flex-1 flex flex-col items-stretch h-full w-full">
+			<div className="flex-1 flex flex-col justify-center items-center  h-full w-full overflow-hidden">
 				<InnerErrorBoundary>
 					{/* black backdrop for mobile menu */}
 					{showMenu && (

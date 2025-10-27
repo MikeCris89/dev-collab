@@ -17,7 +17,7 @@ export const isAuth = (req: Request): req is AuthReq =>
 	typeof (req.user as any).sub === "string";
 
 // keep in types.ts for TS to recognize req.user
-export const reqUser = (req: Request): JwtUser & { isAdmin: boolean } => {
+export const reqUser = (req: Request): JwtUser => {
 	const user = req.user;
 
 	if (!user || !user.teamId || !user.role)

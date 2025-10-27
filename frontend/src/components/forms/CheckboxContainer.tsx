@@ -20,7 +20,7 @@ const CheckboxContainer = ({
 	const itemIds = useMemo(() => items.map((i) => i.id), [items]);
 
 	const selectAll = useMemo(() => {
-		if (itemIds.length !== state.length) return false;
+		if (itemIds.length === 0 || itemIds.length !== state.length) return false;
 
 		const stateSet = new Set(state);
 		return itemIds.every((id) => stateSet.has(id));
@@ -35,7 +35,7 @@ const CheckboxContainer = ({
 	};
 
 	return (
-		<div className="sidebar flex flex-col items-stretch justify-center rounded-md outline outline-border-medium p-2 w-[300px] max-w-[95%] max-h-[700px] overflow-y-auto overflow-x-hiden">
+		<div className="sidebar-list flex flex-col items-stretch justify-center rounded-md outline outline-border-medium p-2 w-[300px] max-w-[95%] max-h-[700px] overflow-y-auto overflow-x-hiden">
 			{/* <InputWrapper
 				htmlFor="selectAll"
 				label="select all"
