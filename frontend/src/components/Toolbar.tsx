@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { UserCircle2, Users2 } from "lucide-react";
 
 const NoteBar = () => {
-	const { allowNav, allowNavRef } = useGlobal();
+	const { allowNav } = useGlobal();
 	const location = useLocation();
 	const navigate = useNavigate();
 

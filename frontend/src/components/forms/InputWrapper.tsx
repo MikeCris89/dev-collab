@@ -5,15 +5,17 @@ const InputWrapper = ({
 	label,
 	children,
 	className,
+	labelClassName,
 }: {
 	htmlFor: string;
 	label: string;
 	children: React.ReactNode;
 	className?: string;
+	labelClassName?: string;
 }) => {
 	return (
 		<div className={clsx("flex flex-col gap-1", className)}>
-			<label htmlFor={htmlFor} className="self-start">
+			<label htmlFor={htmlFor} className={clsx("self-start", labelClassName)}>
 				{label}
 			</label>
 			{children}

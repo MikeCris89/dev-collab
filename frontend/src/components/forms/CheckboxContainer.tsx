@@ -1,0 +1,77 @@
+import { useMemo } from "react";
+import Checkbox, { type CheckItem } from "./Checkbox";
+import InputWrapper from "./InputWrapper";
+
+const CheckboxContainer = ({
+	items,
+	state,
+	setState,
+	noneLabel,
+	icon,
+}: {
+	items: CheckItem[];
+	state: string[];
+	setState: React.Dispatch<React.SetStateAction<string[]>>;
+	noneLabel: string;
+	icon?: React.ReactNode;
+}) => {
+	const itemIds = useMemo(() => items.map((i) => i.id), [items]);
+
+	const selectAll = useMemo(() => {
+		if (itemIds.length !== state.length) return false;
+
+		const stateSet = new Set(state);
+		return itemIds.every((id) => stateSet.has(id));
+	}, [itemIds, state]);
+
+	// No need for useState + useEffect!
+
+	const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const checked = e.target.checked;
+		if (checked) setState([...itemIds]);
+		else setState([]);
+	};
+
+	return (
+		<div className="flex flex-col items-stretch justify-center rounded-md outline outline-border-medium p-2 w-[300px] max-w-[95%] max-h-[700px] overflow-y-auto overflow-x-hiden">
+			<InputWrapper
+				htmlFor="selectAll"
+				label="select all"
+				className="flex-row gap-2 p-1 pb-3 items-center"
+				labelClassName="text-sm text-text-muted cursor-pointer p-2"
+			>
+				<input
+					type="checkbox"
+					name="selectAll"
+					id="selectAll"
+					onChange={handleSelectAll}
+					className="w-[10px] h-[10px]"
+					checked={selectAll}
+				/>
+			</InputWrapper>
+			{items && items.length > 0 ? (
+				items.map((item) => {
+					const checked = state.includes(item.id);
+					const onChange = (checked: boolean) => {
+						if (checked) setState((prev) => [...prev, item.id]);
+						else setState((prev) => prev.filter((i) => i !== item.id));
+					};
+
+					return (
+						<Checkbox
+							item={item}
+							icon={icon}
+							checked={checked}
+							onChange={onChange}
+							key={item.id}
+						/>
+					);
+				})
+			) : (
+				<p className="text-text-muted text-sm self-center"> - {noneLabel} - </p>
+			)}
+		</div>
+	);
+};
+
+export default CheckboxContainer;

@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import InputWrapper from "./InputWrapper";
 import { useCreateProject, useUpdateProject } from "@/hooks/useProjects";
 import { useNavigate, useParams } from "react-router-dom";
-import { useTeamProject } from "@/hooks/useTeam";
+import { useTeamMembers, useTeamProject } from "@/hooks/useTeam";
 import Loading from "../Loading";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { useGlobal } from "@/context/GlobalContext";
 import { LIMITS, type Project } from "@shared/contract";
-import MemberCheckList from "./MemberCheckList";
+import CheckboxContainer from "./CheckboxContainer";
+import useRequireAuth from "@/hooks/useRequireAuth";
+import { User } from "lucide-react";
 
 const ProjectForm = () => {
+	const { user } = useRequireAuth();
 	const { setSelected, closeForm } = useGlobal();
 	const { projectId } = useParams();
 	const navigate = useNavigate();
@@ -26,6 +29,8 @@ const ProjectForm = () => {
 		isLoading: loadingProject,
 		error: errProject,
 	} = useTeamProject(projectId || null);
+
+	const { data: members = [] } = useTeamMembers();
 
 	const {
 		mutateAsync: addProject,
@@ -82,23 +87,41 @@ const ProjectForm = () => {
 	};
 
 	return (
-		<form id="project-form" className="form" onSubmit={handleSubmit}>
+		<form
+			id="project-form"
+			className="flex flex-col gap-4 justify-center items-center "
+			onSubmit={handleSubmit}
+		>
 			<h1>{isEdit ? "Edit" : "Create New"} Project</h1>
-			<InputWrapper htmlFor="title" label="Title">
-				<input
-					name="title"
-					id="title"
-					required
-					value={title}
-					onChange={(e) => setTitle(e.target.value)}
-					disabled={isLoading}
-					className="w-[250px]"
-					maxLength={LIMITS.TITLE_MAX_LENGTH}
-				/>
-			</InputWrapper>
+			<div className="flex flex-wrap gap-4 justify-center items-start">
+				<div className="p-3">
+					<InputWrapper htmlFor="title" label="Title">
+						<input
+							name="title"
+							id="title"
+							required
+							value={title}
+							onChange={(e) => setTitle(e.target.value)}
+							disabled={isLoading}
+							className="w-[250px]"
+							maxLength={LIMITS.TITLE_MAX_LENGTH}
+						/>
+					</InputWrapper>
+				</div>
 
-			<h2>Team Access</h2>
-			<MemberCheckList userIds={userIds} setUserIds={setUserIds} />
+				<div className="flex flex-col gap-4">
+					<h2>Team Access</h2>
+					<CheckboxContainer
+						items={members
+							.filter((m) => m.id !== user.sub)
+							.map((m) => ({ label: m.name ?? m.username, id: m.id }))}
+						state={userIds}
+						setState={setUserIds}
+						noneLabel="No Team Members"
+						icon={<User />}
+					/>
+				</div>
+			</div>
 		</form>
 	);
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUnsavedChanges } from "../../hooks/useUnsavedChanges";
 import { LIMITS, type Note } from "@shared/contract";
 import { useCreateNote, useUpdateNote } from "@/hooks/useNotes";

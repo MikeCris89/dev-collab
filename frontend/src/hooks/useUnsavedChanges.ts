@@ -1,11 +1,10 @@
 import { useGlobal } from "@/context/GlobalContext";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useBlocker } from "react-router-dom";
 
 export function useUnsavedChanges(isDirty: boolean) {
-	// const allowNav = useRef(false);
-	// Block in-app navigation
 	const { allowNavRef } = useGlobal();
+	// Block in-app navigation
 	const blocker = useBlocker(() => isDirty && !allowNavRef.current);
 
 	useEffect(() => {

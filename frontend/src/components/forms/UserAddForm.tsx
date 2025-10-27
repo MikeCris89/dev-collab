@@ -5,10 +5,11 @@ import {
 } from "@/hooks/useTeam";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { LIMITS, type SignupRequest } from "@shared/contract";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InputWrapper from "./InputWrapper";
-import ProjectCheckList from "./ProjectCheckList";
+import CheckboxContainer from "./CheckboxContainer";
+import { useGlobal } from "@/context/GlobalContext";
 
 const UserAddForm = () => {
 	const [userData, setUserData] = useState<SignupRequest>({
@@ -16,14 +17,12 @@ const UserAddForm = () => {
 		password: "",
 		name: "",
 	});
-
 	const [projectIds, setProjectIds] = useState<string[]>([]);
-
 	const [err, setErr] = useState<string | null>(null);
 
 	const navigate = useNavigate();
+	const { nav } = useGlobal();
 
-	// const { data: projects, isLoading, error } = use;
 	const { data: projects = [] } = useTeamProjects();
 	const { data: members = [] } = useTeamMembers();
 	const { mutateAsync: addUser, isPending, error } = useCreateTeamMember();
@@ -57,85 +56,76 @@ const UserAddForm = () => {
 		navigate("/team", { replace: true });
 	};
 
-	const handleSelectAll = () => {};
-
 	return (
 		<form
 			id="user-add-form"
 			onSubmit={handleSubmit}
-			className="form"
+			className="h-full w-full overflow-y-auto overflow-x-hidden"
 			autoComplete="off"
 		>
 			<div>
-				<h2>Add Team Member</h2>
+				<h1>Add Team Member</h1>
 				{(error || err) && (
 					<p className="text-red-500">{error?.message ?? err}</p>
 				)}
 			</div>
-			<InputWrapper htmlFor="username" label="Username">
-				<input
-					name="username"
-					id="username"
-					value={userData.username}
-					onChange={handleChange}
-					disabled={isPending}
-					autoComplete="off"
-					className="w-[250px]"
-					required
-				/>
-			</InputWrapper>
+			<div className="flex flex-wrap gap-4 items-start justify-center w-full">
+				<div className="flex flex-col gap-2 md:gap-4 shrink-0 overflow-hidden p-4">
+					<InputWrapper htmlFor="username" label="Username">
+						<input
+							name="username"
+							id="username"
+							value={userData.username}
+							onChange={handleChange}
+							disabled={isPending}
+							autoComplete="off"
+							className="w-[250px]"
+							required
+						/>
+					</InputWrapper>
 
-			{/* // TODO generate random passwords instead, do not let users create their own passwords */}
+					<InputWrapper htmlFor="password" label="Password">
+						<input
+							name="password"
+							id="password"
+							type="password"
+							value={userData.password}
+							required
+							onChange={handleChange}
+							disabled={isPending}
+							className="w-[250px]"
+						/>
+					</InputWrapper>
 
-			<InputWrapper htmlFor="password" label="Password">
-				<input
-					name="password"
-					id="password"
-					type="password"
-					value={userData.password}
-					required
-					onChange={handleChange}
-					disabled={isPending}
-					className="w-[250px]"
-				/>
-			</InputWrapper>
+					<InputWrapper htmlFor="name" label="Name">
+						<input
+							name="name"
+							id="name"
+							value={userData.name}
+							onChange={handleChange}
+							disabled={isPending}
+							autoComplete="off"
+							className="w-[250px]"
+							placeholder="(optional)"
+						/>
+					</InputWrapper>
+				</div>
 
-			<InputWrapper htmlFor="name" label="Name">
-				<input
-					name="name"
-					id="name"
-					value={userData.name}
-					onChange={handleChange}
-					disabled={isPending}
-					autoComplete="off"
-					className="w-[250px]"
-					placeholder="(optional)"
-				/>
-			</InputWrapper>
+				<div className="shrink-0 flex flex-col gap-4">
+					<h3 className="text-center">Project Access</h3>
 
-			<h3>Project Access</h3>
-			{/* <InputWrapper htmlFor="selectAll" label="select all" className="flex-row">
-				<input
-					type="checkbox"
-					name="selectAll"
-					id="selectAll"
-					onChange={handleChange}
-					disabled={isPending}
-					className=""
-				/>
-			</InputWrapper>
-			{
-				<input
-					type="checkbox"
-					name="projects"
-					id="projects"
-					onChange={handleChange}
-					disabled={isPending}
-					className=""
-				/>
-			} */}
-
-			<ProjectCheckList projectIds={projectIds} setProjectIds={setProjectIds} />
+					<CheckboxContainer
+						items={projects.map((p) => ({
+							label: p.title,
+							id: p.id,
+						}))}
+						state={projectIds}
+						setState={setProjectIds}
+						noneLabel="No Projects"
+						icon={nav.p.icon}
+					/>
+				</div>
+			</div>
 		</form>
 	);
 };
