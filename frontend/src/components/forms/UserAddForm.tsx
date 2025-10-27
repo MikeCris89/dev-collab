@@ -60,7 +60,7 @@ const UserAddForm = () => {
 		<form
 			id="user-add-form"
 			onSubmit={handleSubmit}
-			className="h-full w-full overflow-y-auto overflow-x-hidden"
+			className="form"
 			autoComplete="off"
 		>
 			<div>

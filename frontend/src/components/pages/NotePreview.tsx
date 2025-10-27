@@ -19,7 +19,7 @@ const NotePreview = () => {
 			<div className="flex-1 flex flex-col gap-5 justify-start items-center w-full p-3 overflow-y-auto">
 				<div className="flex flex-col  w-full ">
 					<div
-						className="text-[16px] cursor-pointer hover:font-bold transition-none p-1 text-right text-nowrap self-end "
+						className="text-[12px] cursor-pointer hover:text-accent transition-none p-1 text-right text-nowrap self-end "
 						onClick={() => navigate("/")}
 					>
 						x close

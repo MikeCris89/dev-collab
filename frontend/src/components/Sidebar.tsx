@@ -6,6 +6,7 @@ import { useProject } from "@/hooks/useProjects";
 import {
 	ChevronLeft,
 	Edit2,
+	Layers,
 	Trash2,
 	UserCircle2Icon,
 	UsersRound,
@@ -187,12 +188,22 @@ const Sidebar = () => {
 				</div>
 			</div>
 
+			{page === "n" && (
+				<div className="flex gap-2 items-center text-sm font-semibold p-2">
+					<>
+						<span className=" ">
+							<Layers size={16} />
+						</span>
+						<span>{nav.f.parentTitle}</span>
+					</>
+				</div>
+			)}
 			{/* SECTION / back btn */}
-			<div className="flex justify-between items-center w-full p-2 h-14">
+			<div className="flex justify-between gap-4 items-center w-full p-2 ">
 				{(selected.p || selected.f) && (
 					<>
 						<div
-							className="flex items-center gap-1 text-left cursor-pointer hover:text-accent "
+							className="flex items-center gap-1 text-left cursor-pointer hover:text-accent group py-2"
 							onClick={() => {
 								if (selected.f) setSelected((prev) => ({ ...prev, f: null }));
 								else if (selected.p)
@@ -201,12 +212,12 @@ const Sidebar = () => {
 						>
 							<ChevronLeft size={16} className="shrink-0" />
 							<i className="shrink-0">{nav[page].parentIcon}</i>
-							<p className="text-sm font-bold text-balance line-clamp-2 text-ellipsis">
+							<p className="text-sm font-bold text-balance line-clamp-2 text-ellipsis group-hover:text-accent">
 								{parentTitle}
 							</p>
 						</div>
 						{/* Edit / Delete Btns */}
-						<div className="flex gap-6 items-center justify-end">
+						<div className="flex gap-5 items-center justify-end">
 							<NavLink
 								className="cursor-pointer hover:text-accent"
 								to={`${nav[parent].formEditUrl}?action=edit&formId=${nav[parent].formId}`}

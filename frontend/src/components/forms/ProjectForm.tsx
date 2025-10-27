@@ -87,11 +87,7 @@ const ProjectForm = () => {
 	};
 
 	return (
-		<form
-			id="project-form"
-			className="flex flex-col gap-4 justify-center items-center "
-			onSubmit={handleSubmit}
-		>
+		<form id="project-form" className="form" onSubmit={handleSubmit}>
 			<h1>{isEdit ? "Edit" : "Create New"} Project</h1>
 			<div className="flex flex-wrap gap-4 justify-center items-start">
 				<div className="p-3">
@@ -110,11 +106,11 @@ const ProjectForm = () => {
 				</div>
 
 				<div className="flex flex-col gap-4">
-					<h2>Team Access</h2>
+					<label>Team Access</label>
 					<CheckboxContainer
 						items={members
 							.filter((m) => m.id !== user.sub)
-							.map((m) => ({ label: m.name ?? m.username, id: m.id }))}
+							.map((m) => ({ label: m.name || m.username, id: m.id }))}
 						state={userIds}
 						setState={setUserIds}
 						noneLabel="No Team Members"

@@ -2,8 +2,8 @@ import bcrypt from "bcrypt";
 import {
 	EditUser,
 	LIMITS,
-	ProjectWithUsers,
 	ROLES,
+	SignupRequest,
 	TeamWithAll,
 } from "@shared/contract";
 import express from "express";
@@ -88,7 +88,7 @@ router.post("/", adminOnly, async (req, res) => {
 	if (userCount >= LIMITS.MAX_USERS_PER_TEAM)
 		throw new BadRequestError("Max Users reached");
 
-	const { username, password, name } = req.body;
+	const { username, password, name, projectIds } = req.body as SignupRequest;
 
 	if (!username || !password)
 		throw new BadRequestError("Username and Password required");
@@ -99,15 +99,42 @@ router.post("/", adminOnly, async (req, res) => {
 
 	const hash = await bcrypt.hash(password, 10);
 
-	const user = await userQueries.createUser({
+	const user = {
 		username,
 		password: hash,
-		name,
+		name: name ?? null,
 		role: ROLES.team,
 		teamId,
+	};
+
+	// validate projects belong to team id
+	if (projectIds?.length) {
+		const validProjects = await prisma.project.count({
+			where: {
+				id: { in: projectIds },
+				teamId: teamId,
+			},
+		});
+
+		if (validProjects !== projectIds.length) {
+			throw new BadRequestError("Some projects not found or not in team");
+		}
+	}
+
+	const resp = await prisma.user.create({
+		data: {
+			...user,
+			projectsUsers: projectIds?.length
+				? {
+						createMany: {
+							data: projectIds.map((projectId) => ({ projectId })),
+						},
+				  }
+				: {},
+		},
 	});
 
-	const userData = sanitizeTeamUser(user);
+	const userData = sanitizeTeamUser(resp);
 
 	res.status(201).json(userData);
 });
@@ -116,15 +143,39 @@ router.put("/:id", async (req, res) => {
 	const { isAdmin, teamId, sub } = reqUser(req);
 	const { id } = req.params;
 
-	const body: EditUser = req.body;
+	const { projectIds, ...body }: EditUser = req.body;
 
 	if (!isAdmin) {
 		if (sub !== id) throw new UnauthorizedError();
 	}
 
+	// validate projects belong to team id
+	if (projectIds?.length) {
+		const validProjects = await prisma.project.count({
+			where: {
+				id: { in: projectIds },
+				teamId: teamId,
+			},
+		});
+
+		if (validProjects !== projectIds.length) {
+			throw new BadRequestError("Some projects not found or not in team");
+		}
+	}
+
 	const user = await prisma.user.update({
 		where: { id, teamId },
-		data: body,
+		data: {
+			...body,
+			projectsUsers: projectIds
+				? {
+						deleteMany: {},
+						createMany: {
+							data: projectIds.map((projectId) => ({ projectId })),
+						},
+				  }
+				: {},
+		},
 	});
 
 	const userData = sanitizeTeamUser(user);

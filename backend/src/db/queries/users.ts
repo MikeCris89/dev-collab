@@ -7,7 +7,7 @@ export type CreateUserDTO = SignupRequest & {
 
 export const userQueries = {
 	async createUser(data: CreateUserDTO) {
-		const { teamId, ...userData } = data;
+		const { teamId, projectIds, ...userData } = data;
 		return await prisma.user.create({
 			data: {
 				...userData,
