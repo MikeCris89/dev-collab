@@ -31,9 +31,11 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 		try {
 			setIsLoading(true);
 			const resp = await fetcher<JwtUser>("/auth/me");
+			console.log("AUTH: ", resp);
 			setUser(resp);
 		} catch (e) {
 			console.log("User not logged in, rendering login page");
+			setUser(null);
 		} finally {
 			setIsLoading(false);
 		}
@@ -42,8 +44,21 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	useEffect(() => {
 		(async () => {
 			setError(null);
+			console.log("AUTH Refreshing");
 			await refresh();
 		})();
+
+		// Handle back/forward cache restoration
+		const handlePageShow = (event: PageTransitionEvent) => {
+			console.log("pageshow");
+			if (event.persisted) {
+				console.log("Page restored from bfcache, refreshing auth");
+				refresh();
+			}
+		};
+
+		window.addEventListener("pageshow", handlePageShow);
+		return () => window.removeEventListener("pageshow", handlePageShow);
 	}, []);
 
 	const signup = async (userData: SignupRequest) => {

@@ -66,6 +66,16 @@ router.get("/me", requireAuth, async (req, res) => {
 
 	if (!resp) throw new UnauthorizedError("Account not found");
 
+	// Prevent browser caching
+	res.setHeader(
+		"Cache-Control",
+		"no-store, no-cache, must-revalidate, private"
+	);
+	res.setHeader("Pragma", "no-cache");
+	res.setHeader("Expires", "0");
+
+	console.log("User Authenticated: ", user);
+
 	res.json(user);
 });
 
