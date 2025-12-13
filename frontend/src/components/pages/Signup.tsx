@@ -63,7 +63,6 @@ const Signup = () => {
 					<input
 						name="name"
 						id="name"
-						required
 						value={userData.name}
 						onChange={handleChange}
 						disabled={isLoading}

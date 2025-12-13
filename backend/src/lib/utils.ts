@@ -4,12 +4,9 @@ import {
 	FolderInput,
 	JwtUser,
 	LIMITS,
-	LoginRequest,
 	NoteInput,
 	ProjectInput,
 	ROLES,
-	SignupRequest,
-	UserAuth,
 } from "@shared/contract";
 import type { User } from "@prisma/client";
 
@@ -64,7 +61,7 @@ export const validateFolderInput: RequestHandler = (req, _res, next) => {
 	if (typeof title !== "string" || trimTitle.length === 0)
 		throw new BadRequestError("Title must be a non-empty string.");
 
-	if (title.length > LIMITS.TITLE_MAX_LENGTH)
+	if (trimTitle.length > LIMITS.TITLE_MAX_LENGTH)
 		throw new BadRequestError(
 			`Title must be ${LIMITS.TITLE_MAX_LENGTH} characters or less`
 		);
@@ -89,7 +86,7 @@ export const validateProjectInput: RequestHandler = (req, _res, next) => {
 	if (typeof title !== "string" || trimTitle.length === 0)
 		throw new BadRequestError("Title must be a non-empty string.");
 
-	if (title.length > LIMITS.TITLE_MAX_LENGTH)
+	if (trimTitle.length > LIMITS.TITLE_MAX_LENGTH)
 		throw new BadRequestError(
 			`Title must be ${LIMITS.TITLE_MAX_LENGTH} characters or less`
 		);

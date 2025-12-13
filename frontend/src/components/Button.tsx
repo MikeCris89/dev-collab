@@ -42,6 +42,7 @@ const Button = ({
 	onClick,
 	className,
 	href,
+	replace = false,
 }: React.PropsWithChildren<{
 	variant?: "default" | "primary" | "menu";
 	type?: "button" | "submit" | "reset";
@@ -50,6 +51,7 @@ const Button = ({
 	onClick?: () => void;
 	className?: string;
 	href?: string;
+	replace?: boolean;
 }>) => {
 	const { pathname } = useLocation();
 	const [action, formId] = useGetSearchParams(["action", "formId"]);
@@ -68,7 +70,7 @@ const Button = ({
 					)}
 					onClick={onClick}
 					state={{ from: pathname }}
-					replace={showForm || undefined}
+					replace={showForm || replace || undefined}
 				>
 					{children}
 				</NavLink>
