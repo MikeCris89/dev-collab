@@ -1,0 +1,200 @@
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
+import { LIMITS } from "@shared/contract";
+import { useState } from "react";
+
+interface TiptapEditorProps {
+	content: string;
+	onChange: (html: string) => void;
+	placeholder?: string;
+}
+
+export function TiptapEditor({
+	content,
+	onChange,
+	placeholder,
+}: TiptapEditorProps) {
+	const [, forceUpdate] = useState({}); // Trick to force re-render
+
+	const editor = useEditor({
+		extensions: [
+			StarterKit,
+			TaskList,
+			TaskItem.configure({
+				nested: true,
+			}),
+		],
+		content,
+		onUpdate: ({ editor }) => {
+			onChange(editor.getHTML());
+		},
+		onTransaction: () => {
+			forceUpdate({}); // Force toolbar to re-render on cursor move
+		},
+		editorProps: {
+			attributes: {
+				class:
+					"prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[200px] p-4",
+			},
+			// attributes: {
+			// 	class: "focus:outline-none min-h-[200px] p-4 text-text-primary",
+			// },
+		},
+	});
+
+	if (!editor) {
+		return null;
+	}
+
+	// // Add this console log
+	// if (editor) {
+	// 	console.log("Is bold active?", editor.isActive("bold"));
+	// }
+
+	return (
+		<div className="border border-border-medium rounded-lg overflow-hidden bg-bg-elevated">
+			{/* Toolbar */}
+			<div className="flex gap-1 p-2 border-b border-border-medium bg-bg-muted flex-wrap">
+				<ToolbarButton
+					onClick={() => editor.chain().focus().toggleBold().run()}
+					isActive={editor.isActive("bold")}
+					title="Bold"
+				>
+					<strong>B</strong>
+				</ToolbarButton>
+
+				<ToolbarButton
+					onClick={() => editor.chain().focus().toggleItalic().run()}
+					isActive={editor.isActive("italic")}
+					title="Italic"
+				>
+					<em>I</em>
+				</ToolbarButton>
+
+				<ToolbarButton
+					onClick={() => editor.chain().focus().toggleStrike().run()}
+					isActive={editor.isActive("strike")}
+					title="Strikethrough"
+				>
+					<s>S</s>
+				</ToolbarButton>
+
+				<div className="w-px bg-border-light mx-1" />
+
+				<ToolbarButton
+					onClick={() =>
+						editor.chain().focus().toggleHeading({ level: 1 }).run()
+					}
+					isActive={editor.isActive("heading", { level: 1 })}
+					title="Heading 1"
+				>
+					H1
+				</ToolbarButton>
+
+				<ToolbarButton
+					onClick={() =>
+						editor.chain().focus().toggleHeading({ level: 2 }).run()
+					}
+					isActive={editor.isActive("heading", { level: 2 })}
+					title="Heading 2"
+				>
+					H2
+				</ToolbarButton>
+
+				<ToolbarButton
+					onClick={() =>
+						editor.chain().focus().toggleHeading({ level: 3 }).run()
+					}
+					isActive={editor.isActive("heading", { level: 3 })}
+					title="Heading 3"
+				>
+					H3
+				</ToolbarButton>
+
+				<div className="w-px bg-border-light mx-1" />
+
+				<ToolbarButton
+					onClick={() => editor.chain().focus().toggleBulletList().run()}
+					isActive={editor.isActive("bulletList")}
+					title="Bullet List"
+				>
+					• List
+				</ToolbarButton>
+
+				<ToolbarButton
+					onClick={() => editor.chain().focus().toggleOrderedList().run()}
+					isActive={editor.isActive("orderedList")}
+					title="Numbered List"
+				>
+					1. List
+				</ToolbarButton>
+
+				<ToolbarButton
+					onClick={() => editor.chain().focus().toggleTaskList().run()}
+					isActive={editor.isActive("taskList")}
+					title="Task List"
+				>
+					✓ Tasks
+				</ToolbarButton>
+
+				<div className="w-px bg-border-light mx-1" />
+
+				<ToolbarButton
+					onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+					isActive={editor.isActive("codeBlock")}
+					title="Code Block"
+				>
+					{"</>"}
+				</ToolbarButton>
+
+				<ToolbarButton
+					onClick={() => editor.chain().focus().toggleBlockquote().run()}
+					isActive={editor.isActive("blockquote")}
+					title="Quote"
+				>
+					" "
+				</ToolbarButton>
+			</div>
+
+			{/* Editor */}
+			<EditorContent
+				editor={editor}
+				placeholder={placeholder}
+				maxLength={LIMITS.NOTE_BODY_MAX_LENGTH}
+				className="text-left"
+			/>
+		</div>
+	);
+}
+
+// Toolbar Button Component
+interface ToolbarButtonProps {
+	onClick: () => void;
+	isActive: boolean;
+	children: React.ReactNode;
+	title?: string;
+}
+
+function ToolbarButton({
+	onClick,
+	isActive,
+	children,
+	title,
+}: ToolbarButtonProps) {
+	return (
+		<button
+			onClick={onClick}
+			title={title}
+			className={`px-3 py-1.5 rounded text-sm font-medium transition-colors
+        ${
+					isActive
+						? "bg-accent-hover text-accent"
+						: "bg-bg-elevated hover:bg-hover-medium text-text-primary border border-border-medium"
+				}`}
+		>
+			{children}
+		</button>
+	);
+}

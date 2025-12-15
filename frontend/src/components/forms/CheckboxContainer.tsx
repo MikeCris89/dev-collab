@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import Checkbox, { type CheckItem } from "./Checkbox";
-import InputWrapper from "./InputWrapper";
 
 const CheckboxContainer = ({
 	items,

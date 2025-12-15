@@ -46,9 +46,7 @@ const NoneSelected = () => {
 				<h3 className="text-text-muted text-4xl">
 					No {info[page].label} selected
 				</h3>
-				<p className="text-text-muted">
-					Select one from the list or Create New:
-				</p>
+				<p className="text-text-muted">Select from the menu or Create New:</p>
 				<Button
 					variant="primary"
 					onClick={() => {

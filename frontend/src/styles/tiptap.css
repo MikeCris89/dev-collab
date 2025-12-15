@@ -1,0 +1,225 @@
+/* TipTap Editor Styles */
+.ProseMirror {
+	outline: none;
+	color: var(--color-text-primary);
+}
+
+.ProseMirror > * + * {
+	margin-top: 0.75em;
+}
+
+/* Placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+	content: attr(data-placeholder);
+	float: left;
+	color: var(--color-text-muted);
+	pointer-events: none;
+	height: 0;
+}
+
+/* Task List Styles */
+/* ul[data-type="taskList"] {
+	list-style: none;
+	padding: 0;
+	margin-left: 0;
+}
+
+ul[data-type="taskList"] li {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.5rem;
+}
+
+ul[data-type="taskList"] li > label {
+	flex: 0 0 auto;
+	margin-top: 0.25rem;
+	user-select: none;
+}
+
+ul[data-type="taskList"] li > div {
+	flex: 1 1 auto;
+}
+
+ul[data-type="taskList"] input[type="checkbox"] {
+	cursor: pointer;
+	width: 1rem;
+	height: 1rem;
+	accent-color: var(--color-accent);
+}
+
+ul[data-type="taskList"] li[data-checked="true"] > div > p {
+	text-decoration: line-through;
+	color: var(--color-text-muted);
+} */
+
+/* Task List Styles */
+ul[data-type="taskList"] {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+ul[data-type="taskList"] li {
+	display: flex;
+	align-items: flex-center;
+	gap: 0.5rem;
+	margin: 0.25rem 0;
+}
+
+ul[data-type="taskList"] li > label {
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	margin-top: 0.15rem; /* Fine-tune vertical alignment */
+	user-select: none;
+}
+
+ul[data-type="taskList"] li > div {
+	flex: 1;
+	min-width: 0; /* Allows text to wrap properly */
+}
+
+ul[data-type="taskList"] input[type="checkbox"] {
+	cursor: pointer;
+	width: 1.125rem;
+	height: 1.125rem;
+	margin: 0;
+	accent-color: var(--color-accent);
+}
+
+ul[data-type="taskList"] li[data-checked="true"] > div > p {
+	text-decoration: line-through;
+	color: var(--color-text-muted);
+}
+
+/* Code Block */
+.ProseMirror pre {
+	background: var(--color-bg-muted);
+	color: var(--color-text-primary);
+	font-family: "JetBrainsMono", "Courier New", monospace;
+	padding: 0.75rem 1rem;
+	border-radius: 0.5rem;
+	border: 1px solid var(--color-border-medium);
+}
+
+.ProseMirror code {
+	background: var(--color-bg-muted);
+	color: var(--color-accent);
+	padding: 0.125rem 0.25rem;
+	border-radius: 0.25rem;
+	font-size: 0.875em;
+}
+
+.ProseMirror pre code {
+	color: inherit;
+	padding: 0;
+	background: none;
+	font-size: 0.8rem;
+}
+
+/* Blockquote */
+.ProseMirror blockquote {
+	padding-left: 1rem;
+	border-left: 3px solid var(--color-accent);
+	color: var(--color-text-muted);
+}
+
+/* Headings */
+.ProseMirror h1 {
+	font-size: 2em;
+	font-weight: bold;
+	margin-top: 0.67em;
+	margin-bottom: 0.67em;
+	color: var(--color-text-primary);
+}
+
+.ProseMirror h2 {
+	font-size: 1.5em;
+	font-weight: bold;
+	margin-top: 0.83em;
+	margin-bottom: 0.83em;
+	color: var(--color-text-primary);
+}
+
+.ProseMirror h3 {
+	font-size: 1.17em;
+	font-weight: bold;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	color: var(--color-text-primary);
+}
+
+/* Links */
+.ProseMirror a {
+	color: var(--color-accent);
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.ProseMirror a:hover {
+	background: var(--color-accent-hover);
+}
+
+/* Lists */
+.ProseMirror ul,
+.ProseMirror ol {
+	padding-left: 1.5rem;
+}
+
+.ProseMirror ul li,
+.ProseMirror ol li {
+	color: var(--color-text-primary);
+}
+
+/* Selection */
+.ProseMirror ::selection {
+	background: var(--color-accent-hover);
+}
+
+/* Strong/Bold */
+.ProseMirror strong {
+	font-weight: bold;
+	color: var(--color-text-primary);
+}
+
+/* Emphasis/Italic */
+.ProseMirror em {
+	font-style: italic;
+}
+
+/* Strikethrough */
+.ProseMirror s {
+	text-decoration: line-through;
+}
+
+/* Regular bullet lists */
+.ProseMirror ul:not([data-type="taskList"]) {
+	list-style: disc;
+	padding-left: 1.5rem;
+	margin: 0.5rem 0;
+}
+
+.ProseMirror ul:not([data-type="taskList"]) li {
+	margin: 0.25rem 0;
+	padding-left: 0.25rem;
+}
+
+/* Regular ordered lists */
+.ProseMirror ol {
+	list-style: decimal;
+	padding-left: 1.5rem;
+	margin: 0.5rem 0;
+}
+
+.ProseMirror ol li {
+	margin: 0.25rem 0;
+	padding-left: 0.25rem;
+}
+
+/* Nested lists */
+.ProseMirror ul ul,
+.ProseMirror ul ol,
+.ProseMirror ol ul,
+.ProseMirror ol ol {
+	margin: 0.25rem 0;
+}

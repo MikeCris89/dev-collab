@@ -5,6 +5,7 @@ import { useCreateNote, useUpdateNote } from "@/hooks/useNotes";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNote } from "@/hooks/useProjects";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
+import { TiptapEditor } from "./TiptapEditor";
 
 const NoteForm = () => {
 	const { projectId, folderId, noteId } = useParams();
@@ -76,7 +77,8 @@ const NoteForm = () => {
 				disabled={isLoading}
 				maxLength={LIMITS.TITLE_MAX_LENGTH}
 			/>
-			<textarea
+
+			{/* <textarea
 				value={body}
 				placeholder="body"
 				required
@@ -84,7 +86,10 @@ const NoteForm = () => {
 				className="flex-1 h-full w-full max-w-[95%] text-center text-xl text-balance"
 				disabled={isLoading}
 				maxLength={LIMITS.NOTE_BODY_MAX_LENGTH}
-			/>
+			/> */}
+
+			<TiptapEditor content={body} onChange={(html) => setBody(html)} />
+
 			{error && (
 				<p className="text-red-500">
 					{error.message || "Something went wrong"}

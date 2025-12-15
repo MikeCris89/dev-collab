@@ -189,7 +189,7 @@ const Sidebar = () => {
 			</div>
 
 			{page === "n" && (
-				<div className="flex gap-2 items-center text-sm font-semibold p-2">
+				<div className="flex gap-2 items-center text-sm font-semibold p-2 text-left text-balance">
 					<>
 						<span className=" ">
 							<Layers size={16} />
@@ -212,7 +212,7 @@ const Sidebar = () => {
 						>
 							<ChevronLeft size={16} className="shrink-0" />
 							<i className="shrink-0">{nav[page].parentIcon}</i>
-							<p className="text-sm font-bold text-balance line-clamp-2 text-ellipsis group-hover:text-accent">
+							<p className="text-sm font-bold text-balance line-clamp-2 text-ellipsis group-hover:text-accent text-left">
 								{parentTitle}
 							</p>
 						</div>
