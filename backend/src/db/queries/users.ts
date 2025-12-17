@@ -1,9 +1,5 @@
 import prisma from "../client.js";
-import { Roles, ROLES, SignupRequest } from "@shared/contract";
-
-export type CreateUserDTO = SignupRequest & {
-	role?: Roles;
-};
+import { ROLES, CreateUserDTO } from "@shared/contract";
 
 export const userQueries = {
 	async createUser(data: CreateUserDTO) {

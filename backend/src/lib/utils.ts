@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { BadRequestError } from "./errors.js";
 import {
+	CreateUserDTO,
 	FolderInput,
 	JwtUser,
 	LIMITS,
@@ -34,6 +35,10 @@ export const sanitizeHTML = (html: string): string => {
 	});
 };
 
+export const sanitizePlainText = (text: string): string => {
+	return DOMPurify.sanitize(text, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+};
+
 // Note Validation
 export const validateNoteInput: RequestHandler = (req, _res, next) => {
 	const note = req.body as NoteInput;
@@ -64,7 +69,7 @@ export const validateNoteInput: RequestHandler = (req, _res, next) => {
 		);
 	}
 
-	req.body.title = trimTitle;
+	req.body.title = sanitizePlainText(trimTitle);
 	req.body.body = sanitizeHTML(trimBody);
 
 	next();
@@ -90,7 +95,7 @@ export const validateFolderInput: RequestHandler = (req, _res, next) => {
 			`Title must be ${LIMITS.TITLE_MAX_LENGTH} characters or less`
 		);
 
-	req.body.title = trimTitle;
+	req.body.title = sanitizePlainText(trimTitle);
 
 	next();
 };
@@ -115,7 +120,42 @@ export const validateProjectInput: RequestHandler = (req, _res, next) => {
 			`Title must be ${LIMITS.TITLE_MAX_LENGTH} characters or less`
 		);
 
-	req.body.title = trimTitle;
+	req.body.title = sanitizePlainText(trimTitle);
+
+	next();
+};
+
+export const validateUserInput: RequestHandler = (req, _res, next) => {
+	const { username, password, name } = req.body as CreateUserDTO;
+
+	const trimUsername = username.trim();
+	const trimName = name?.trim() || null;
+
+	if (typeof trimUsername !== "string" || trimUsername.length === 0) {
+		throw new BadRequestError("Username is required");
+	}
+
+	if (
+		typeof password !== "string" ||
+		password.length < LIMITS.PASSWORD_MIN_LENGTH
+	) {
+		throw new BadRequestError(
+			`Password must be at least ${LIMITS.PASSWORD_MIN_LENGTH} characters`
+		);
+	}
+
+	if (trimUsername.length > LIMITS.USERNAME_MAX_LENGTH)
+		throw new BadRequestError(
+			`Username must be ${LIMITS.USERNAME_MAX_LENGTH} characters or less`
+		);
+
+	if (trimName && trimName.length > LIMITS.NAME_MAX_LENGTH)
+		throw new BadRequestError(
+			`Name must be ${LIMITS.NAME_MAX_LENGTH} characters or less`
+		);
+
+	req.body.username = sanitizePlainText(trimUsername);
+	req.body.name = trimName ? sanitizePlainText(trimName) : null;
 
 	next();
 };

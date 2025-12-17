@@ -2,17 +2,17 @@ import express, { Response } from "express";
 import { BadRequestError, UnauthorizedError } from "../lib/errors.js";
 import jwt from "jsonwebtoken";
 import { requireAuth } from "../lib/middleware.js";
-import { ROLES } from "@shared/contract";
+import { CreateUserDTO, ROLES } from "@shared/contract";
 import { userQueries } from "../db/queries/index.js";
 import type { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { reqUser } from "src/types/types.js";
 import prisma from "../db/client.js";
-import { sanitizeAuthUser } from "src/lib/utils.js";
+import { sanitizeAuthUser, validateUserInput } from "src/lib/utils.js";
 
 const COOKIE_OPTIONS = {
 	httpOnly: true,
-	sameSite: "lax" as const,
+	sameSite: "strict" as const,
 	secure: process.env.NODE_ENV === "production",
 	maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days to match the token
 };
@@ -79,11 +79,9 @@ router.get("/me", requireAuth, async (req, res) => {
 	res.json(user);
 });
 
-router.post("/signup", async (req, res) => {
-	const { username, password, name } = req.body;
-
-	if (!username || !password)
-		throw new BadRequestError("Username and Password required");
+router.post("/signup", validateUserInput, async (req, res) => {
+	const userInput = req.body as CreateUserDTO;
+	const { username, password, name } = userInput;
 
 	const existing = await userQueries.getByUsername(username);
 
@@ -94,7 +92,7 @@ router.post("/signup", async (req, res) => {
 	const user = await userQueries.createUser({
 		username,
 		password: hash,
-		name,
+		name: name ?? null,
 		role: ROLES.admin,
 	});
 

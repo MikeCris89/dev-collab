@@ -8,7 +8,9 @@ export const LIMITS = {
 
 	// Content limits
 	USERNAME_MAX_LENGTH: 20,
+	NAME_MAX_LENGTH: 30,
 	TITLE_MAX_LENGTH: 50,
 	NOTE_BODY_MAX_LENGTH: 50000, // ~10k words
 	COMMENT_MAX_LENGTH: 1000,
+	PASSWORD_MIN_LENGTH: 8,
 } as const;

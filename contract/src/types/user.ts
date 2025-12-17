@@ -1,4 +1,3 @@
-import { ProjectsUser } from "./projects-user.js";
 import { ROLES } from "../constants/roles.js";
 import { Team } from "./team.js";
 
@@ -20,6 +19,10 @@ export type UserAuth = {
 	role: Roles;
 };
 
+export type CreateUserDTO = SignupRequest & {
+	role?: Roles;
+};
+
 export type EditUser = {
 	name?: string;
 	projectIds?: string[];
@@ -36,7 +39,7 @@ export type UserWithProjects = User & {
 export type SignupRequest = {
 	username: string;
 	password: string;
-	name?: string;
+	name?: string | null;
 	teamId?: string;
 	projectIds?: string[];
 };
