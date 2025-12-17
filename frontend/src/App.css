@@ -1,5 +1,4 @@
-/* @import "tailwindcss";
-@import "./styles/theme.css"; */
+@reference "./index.css";
 
 @layer components {
 	#root {

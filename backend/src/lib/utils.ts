@@ -9,6 +9,30 @@ import {
 	ROLES,
 } from "@shared/contract";
 import type { User } from "@prisma/client";
+import DOMPurify from "isomorphic-dompurify";
+
+export const sanitizeHTML = (html: string): string => {
+	return DOMPurify.sanitize(html, {
+		ALLOWED_TAGS: [
+			"p",
+			"strong",
+			"em",
+			"u",
+			"h1",
+			"h2",
+			"h3",
+			"ul",
+			"ol",
+			"li",
+			"a",
+			"blockquote",
+			"code",
+			"pre",
+			"br",
+		],
+		ALLOWED_ATTR: ["href", "target"],
+	});
+};
 
 // Note Validation
 export const validateNoteInput: RequestHandler = (req, _res, next) => {
@@ -41,7 +65,7 @@ export const validateNoteInput: RequestHandler = (req, _res, next) => {
 	}
 
 	req.body.title = trimTitle;
-	req.body.body = trimBody;
+	req.body.body = sanitizeHTML(trimBody);
 
 	next();
 };

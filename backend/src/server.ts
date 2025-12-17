@@ -10,12 +10,12 @@ import teamRouter from "./routes/team.js";
 import projectsRouter from "./routes/projects.js";
 import foldersRouter from "./routes/folders.js";
 
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 
 const app = express();
 const PORT = 4001;
 
-app.use(cors({ origin: `http://localhost:5173`, credentials: true }));
+app.use(cors({ origin: process.env.PUBLIC_URL, credentials: true }));
 app.use(cookieParser());
 
 // Body Parser

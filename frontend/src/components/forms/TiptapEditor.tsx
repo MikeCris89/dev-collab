@@ -185,6 +185,7 @@ function ToolbarButton({
 }: ToolbarButtonProps) {
 	return (
 		<button
+			type="button"
 			onClick={onClick}
 			title={title}
 			className={`px-3 py-1.5 rounded text-sm font-medium transition-colors

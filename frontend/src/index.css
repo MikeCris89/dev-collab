@@ -2,10 +2,6 @@
 @import "./styles/theme.css";
 @import "./styles/tiptap.css";
 
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
-
 @layer utilities {
 	html {
 		font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -16,12 +12,6 @@
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 	}
-
-	/* a {
-		font-weight: 500;
-		color: #646cff;
-		text-decoration: none;
-	} */
 
 	body {
 		@apply p-0 m-0 w-[100vw] h-[100dvh] box-border bg-bg-main transition-colors duration-300 text-text-primary;
@@ -60,29 +50,8 @@
 		@apply opacity-50 text-text-muted cursor-not-allowed;
 	}
 
-	/* button:hover {
-		@apply;
-	}
-	button:focus,
-	button:focus-visible {
-		@apply outline-border-medium;
-	} */
-
 	input,
 	textarea {
 		@apply outline-1 outline-border-medium rounded-xl caret-text-primary text-sm text-text-primary p-3 focus:outline-accent my-1 bg-bg-muted transition-all duration-300;
 	}
 }
-
-/* @media (prefers-color-scheme: light) {
-	:root {
-		color: #213547;
-		background-color: #ffffff;
-	}
-	a:hover {
-		color: #747bff;
-	}
-	button {
-		background-color: #f9f9f9;
-	}
-} */
