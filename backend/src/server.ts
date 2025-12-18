@@ -9,6 +9,7 @@ import dotenv from "dotenv";
 import teamRouter from "./routes/team.js";
 import projectsRouter from "./routes/projects.js";
 import foldersRouter from "./routes/folders.js";
+import helmet from "helmet";
 
 dotenv.config({ path: ".env" });
 
@@ -20,6 +21,9 @@ app.use(cookieParser());
 
 // Body Parser
 app.use(express.json());
+
+// Cookie Headers
+app.use(helmet());
 
 // Morgan Logging
 app.use(morgan("tiny"));
