@@ -91,12 +91,34 @@ export const useDeleteNote = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({ id, folderId }: { id: string; folderId: string }) =>
-			deleter(`${BASE}/${folderId}/${id}`),
-		onSuccess: (_resp, { id }) => {
-			queryClient.setQueryData([PROJECTKEY], (old: Note[]) => {
-				return old.filter((n) => n.id !== id);
-			});
+		mutationFn: ({
+			id,
+			folderId,
+			projectId,
+		}: {
+			id: string;
+			folderId: string;
+			projectId: string;
+		}) => deleter(`${BASE}/${folderId}/${id}`),
+		onSuccess: (_resp, { id, folderId, projectId }) => {
+			queryClient.setQueryData(
+				[PROJECTKEY, projectId],
+				(old: ProjectWithAll) => {
+					console.log("note old", old);
+					const folder = old.folders.find((f) => f.id === folderId);
+					if (!folder) throw new Error("useUpdateNote: folder not found");
+					const newFolder = {
+						...folder,
+						notes: folder.notes.filter((n) => n.id !== id),
+					};
+					return {
+						...old,
+						folders: old.folders.map((f) =>
+							f.id === folderId ? newFolder : f
+						),
+					};
+				}
+			);
 		},
 	});
 };

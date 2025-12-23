@@ -43,7 +43,7 @@
 	}
 
 	button {
-		@apply rounded-xl text-text-primary  transition-all duration-300 cursor-pointer font-medium;
+		@apply rounded-xl text-text-primary  transition-all duration-200 cursor-pointer font-medium;
 	}
 
 	button:disabled {

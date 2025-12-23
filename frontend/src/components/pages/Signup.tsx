@@ -63,7 +63,7 @@ const Signup = () => {
 					<input
 						name="name"
 						id="name"
-						value={userData.name}
+						value={userData.name ?? undefined}
 						onChange={handleChange}
 						disabled={isLoading}
 						autoComplete="off"

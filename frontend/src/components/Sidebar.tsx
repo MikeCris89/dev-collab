@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useProject } from "@/hooks/useProjects";
+import { useDeleteProject, useProject } from "@/hooks/useProjects";
 import {
 	ChevronLeft,
 	Edit2,
@@ -13,20 +13,23 @@ import {
 } from "lucide-react";
 import ListItem from "./ListItem";
 import { useTeamProjects } from "@/hooks/useTeam";
-import { NavLink, useLocation, useParams } from "react-router-dom";
+import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
 import Loading from "./Loading";
 import { useFolderNotes } from "@/hooks/useNotes";
+import { useDeleteFolder } from "@/hooks/useFolders";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
 	const { pathname } = useLocation();
 	const { projectId, folderId, noteId } = useParams();
+	const navigate = useNavigate();
 
 	const { selected, setSelected, showMenu, setShowMenu, toggleMenu, nav } =
 		useGlobal();
 
 	const [search, setSearch] = useState<string | null>(null);
 
+	// Queries
 	const {
 		data: projects = [],
 		isLoading: loadingProjects,
@@ -44,6 +47,19 @@ const Sidebar = () => {
 		isLoading: loadingFolder,
 		error: errorFolder,
 	} = useFolderNotes({ projectId: selected.p, folderId: selected.f });
+
+	// Mutations
+	const {
+		mutateAsync: deleteFolder,
+		isPending: pendingFolder,
+		error: errorDeleteFolder,
+	} = useDeleteFolder();
+
+	const {
+		mutateAsync: deleteProject,
+		isPending: pendingProject,
+		error: errorDeleteProject,
+	} = useDeleteProject();
 
 	useEffect(() => {
 		if (!showMenu) return;
@@ -108,7 +124,22 @@ const Sidebar = () => {
 				"Error fetching project data"
 		);
 
+	const handleDelete = async () => {
+		if (selected.p) {
+			if (selected.f) {
+				await deleteFolder({ id: selected.f, projectId: selected.p });
+				setSelected((prev) => ({ ...prev, f: null, n: null }));
+			} else {
+				await deleteProject(selected.p);
+				setSelected((prev) => ({ ...prev, p: null, f: null, n: null }));
+			}
+		}
+	};
+
 	const parent = page === "f" ? "p" : "f";
+
+	if (errorDeleteFolder)
+		console.log("Folder Delete Error: ", errorDeleteFolder);
 
 	return (
 		<section
@@ -191,7 +222,7 @@ const Sidebar = () => {
 			{page === "n" && (
 				<div className="flex gap-2 items-center text-sm font-semibold p-2 text-left text-balance">
 					<>
-						<span className=" ">
+						<span>
 							<Layers size={16} />
 						</span>
 						<span>{nav.f.parentTitle}</span>
@@ -226,7 +257,10 @@ const Sidebar = () => {
 							>
 								<Edit2 size={20} />
 							</NavLink>
-							<i className="cursor-pointer hover:text-red-500">
+							<i
+								className="cursor-pointer hover:text-red-500"
+								onClick={handleDelete}
+							>
 								<Trash2 size={20} />
 							</i>
 						</div>

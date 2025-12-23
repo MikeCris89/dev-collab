@@ -6,18 +6,32 @@ import { FORMS } from "@shared/contract";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { useEffect, useState } from "react";
 import { UserCircle2, Users2 } from "lucide-react";
+import { useDeleteNote } from "@/hooks/useNotes";
 
 const NoteBar = () => {
-	const { allowNav } = useGlobal();
+	const { allowNav, setSelected } = useGlobal();
 	const location = useLocation();
 	const navigate = useNavigate();
 
 	const { pathname } = location;
 	const [action, formId] = useGetSearchParams(["action", "formId"]);
+	const {
+		mutateAsync: deleteNote,
+		isPending,
+		error,
+		isSuccess,
+	} = useDeleteNote();
 
-	const { noteId } = useParams();
+	const { noteId, folderId, projectId } = useParams();
 
 	const showForm = !!action && !!formId;
+
+	const handleDelete = async () => {
+		if (noteId && folderId && projectId)
+			await deleteNote({ id: noteId, folderId, projectId });
+		setSelected((prev) => ({ ...prev, n: null }));
+		navigate("/", { replace: true });
+	};
 
 	return (
 		<div className="flex flex-col-reverse md:flex-row justify-end items-start w-full h-full px-5 pt-2 md:pt-2 gap-3">
@@ -51,7 +65,9 @@ const NoteBar = () => {
 						>
 							✏️ edit
 						</Button>
-						<Button>🗑️ delete</Button>
+						<Button className="hover:text-red-500" onClick={handleDelete}>
+							🗑️ delete
+						</Button>
 					</>
 				)}
 				{showForm && (

@@ -16,8 +16,6 @@ const validateFolder: RequestHandler = async (req, _res, next) => {
 	const { teamId } = reqUser(req);
 	const { folderId } = req.params;
 
-	console.log("FOLDER_ID", folderId, req.params);
-
 	if (!folderId) throw new BadRequestError("Missing folder ID");
 
 	const valid = await prisma.folder.findFirst({

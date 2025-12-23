@@ -102,7 +102,7 @@ const UserAddForm = () => {
 						<input
 							name="name"
 							id="name"
-							value={userData.name}
+							value={userData.name ?? undefined}
 							onChange={handleChange}
 							disabled={isPending}
 							autoComplete="off"

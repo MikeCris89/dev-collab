@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { NavLink, useLocation } from "react-router-dom";
 
 export const btnInitStyle =
-	"text-center min-w-[75px] py-2 px-3 md:py-3 md:px-4 text-nowrap  flex-nowrap duration-150 ease-in transition-all";
+	"text-center min-w-[75px] py-2 px-3 md:py-3 md:px-4 text-nowrap  flex-nowrap duration-100 ease-in transition-all rounded-xl";
 
 export const btnVariants: { default: string; primary: string; menu: string } = {
 	default: clsx(
@@ -17,7 +17,7 @@ export const btnVariants: { default: string; primary: string; menu: string } = {
 	),
 	primary: clsx(
 		"text-[16px] text-white bg-accent focus:bg-accent font-bold",
-		"hover:bg-accent hover:shadow-[0_2px_20px] hover:shadow-accent hover:-translate-y-0.5 ",
+		"hover:bg-accent hover:shadow-[0_2px_20px] hover:shadow-accent hover:-translate-y-0.5",
 		"active:bg-accent active:shadow-[0_2px_20px] active:shadow-accent active:-translate-y-0.5 "
 		// "enabled:hover:bg-accent hover:shadow-[0_2px_20px] enabled:hover:shadow-accent enabled:hover:-translate-y-0.5 ",
 		// "enabled:focus:bg-accent ",

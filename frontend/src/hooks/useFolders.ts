@@ -74,11 +74,16 @@ export const useDeleteFolder = () => {
 	return useMutation({
 		mutationFn: ({ id, projectId }: { id: string; projectId: string }) =>
 			deleter(`${BASE}/${projectId}/${id}`),
-		onSuccess: (_, { id }) => {
-			queryClient.setQueryData([PROJECTKEY], (old: ProjectWithAll) => ({
-				...old,
-				folders: old.folders.filter((f) => f.id !== id),
-			}));
+		onSuccess: (_, { id, projectId }) => {
+			queryClient.setQueryData(
+				[PROJECTKEY, projectId],
+				(old: ProjectWithAll) => {
+					return {
+						...old,
+						folders: old.folders.filter((f) => f.id !== id),
+					};
+				}
+			);
 		},
 	});
 };

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { btnInitStyle, btnVariants } from "./Button";
+import Button, { btnInitStyle, btnVariants } from "./Button";
 
 const ErrorFallback = ({
 	boundaryError,
@@ -28,15 +28,16 @@ const ErrorFallback = ({
 						Reset
 					</button>
 				)}
-				<button
+				<a
 					className={clsx(btnInitStyle, btnVariants.primary)}
 					onClick={() => {
 						if (boundaryError?.resetErrorBoundary)
 							boundaryError.resetErrorBoundary();
 					}}
+					href="/"
 				>
 					Go Home
-				</button>
+				</a>
 			</div>
 		</div>
 	);

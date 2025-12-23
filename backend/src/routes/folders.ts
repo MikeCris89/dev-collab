@@ -12,9 +12,8 @@ router.use(adminOnly);
 
 router.param("projectId", async (req, _res, next, projectId) => {
 	const { teamId } = reqUser(req);
-	// const { projectId } = req.params;
 
-	console.log("PROJECTID:", projectId, req);
+	console.log("PROJECTID: ", projectId);
 
 	if (!projectId) throw new BadRequestError("Missing Project ID");
 
