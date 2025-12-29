@@ -57,6 +57,12 @@ const Button = ({
 	const [action, formId] = useGetSearchParams(["action", "formId"]);
 	const showForm = !!action && !!formId;
 
+	// const handleClick = (
+	// 	e: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>
+	// ) => {
+	// 	e.stopPropogation();
+	// };
+
 	return (
 		<>
 			{href ? (

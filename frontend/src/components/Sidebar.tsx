@@ -17,6 +17,7 @@ import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
 import Loading from "./Loading";
 import { useFolderNotes } from "@/hooks/useNotes";
 import { useDeleteFolder } from "@/hooks/useFolders";
+import { useDeleteModal } from "@/context/DeleteModalContext";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
@@ -61,6 +62,8 @@ const Sidebar = () => {
 		error: errorDeleteProject,
 	} = useDeleteProject();
 
+	const { setShowModal } = useDeleteModal();
+
 	useEffect(() => {
 		if (!showMenu) return;
 		// Return if not in mobile view
@@ -72,7 +75,10 @@ const Sidebar = () => {
 		const listener = (e: MouseEvent) => {
 			if (!sidebarRef.current) return;
 
-			if (!sidebarRef.current.contains(e?.target as Node)) setShowMenu(false);
+			const modal = document.querySelector('[data-modal="true"]');
+			if (modal && modal.contains(e.target as Node)) return;
+
+			if (!sidebarRef.current.contains(e.target as Node)) setShowMenu(false);
 		};
 
 		document.addEventListener("mousedown", listener);
@@ -124,16 +130,23 @@ const Sidebar = () => {
 				"Error fetching project data"
 		);
 
-	const handleDelete = async () => {
+	const handleDelete = () => {
 		if (selected.p) {
 			if (selected.f) {
-				await deleteFolder({ id: selected.f, projectId: selected.p });
 				setSelected((prev) => ({ ...prev, f: null, n: null }));
+				navigate("/", { replace: true });
+				deleteFolder({ id: selected.f, projectId: selected.p });
 			} else {
-				await deleteProject(selected.p);
 				setSelected((prev) => ({ ...prev, p: null, f: null, n: null }));
+				navigate("/", { replace: true });
+				deleteProject(selected.p);
 			}
 		}
+	};
+
+	const deleteModal = {
+		type: selected.p ? (selected.f ? "Folder" : "Project") : "",
+		onConfirm: handleDelete,
 	};
 
 	const parent = page === "f" ? "p" : "f";
@@ -147,14 +160,14 @@ const Sidebar = () => {
 			className={clsx(
 				"absolute left-0 -translate-x-full md:static md:inset-auto  md:translate-x-0",
 				"flex flex-col",
-				" h-screen w-[250px] max-w-screen md:h-full md:w-[300px] bg-bg-surface  p-1 py-4 border-r border-r-border-medium shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] transition-all duration-300 z-50 backdrop-blur-sm ",
+				" h-screen w-[250px] max-w-screen md:h-full md:w-[300px] bg-bg-surface  p-1 py-4 border-r border-r-border-medium shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] transition-all duration-300 z-[49] backdrop-blur-sm ",
 				showMenu && "translate-x-0"
 			)}
 		>
 			{/* Mobile Menu Button */}
 			<Button
 				className={clsx(
-					"md:hidden absolute left-full rounded-[0_14px_14px_0] !py-2 !px-0 !min-w-[50px] top-3"
+					"md:hidden absolute left-full !rounded-[0_14px_14px_0] !py-2 !px-0 !min-w-[50px] top-3"
 				)}
 				variant="menu"
 				onClick={toggleMenu}
@@ -259,7 +272,7 @@ const Sidebar = () => {
 							</NavLink>
 							<i
 								className="cursor-pointer hover:text-red-500"
-								onClick={handleDelete}
+								onClick={() => setShowModal(deleteModal)}
 							>
 								<Trash2 size={20} />
 							</i>

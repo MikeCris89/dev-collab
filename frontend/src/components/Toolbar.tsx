@@ -7,6 +7,7 @@ import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { useEffect, useState } from "react";
 import { UserCircle2, Users2 } from "lucide-react";
 import { useDeleteNote } from "@/hooks/useNotes";
+import { useDeleteModal } from "@/context/DeleteModalContext";
 
 const NoteBar = () => {
 	const { allowNav, setSelected } = useGlobal();
@@ -15,22 +16,26 @@ const NoteBar = () => {
 
 	const { pathname } = location;
 	const [action, formId] = useGetSearchParams(["action", "formId"]);
-	const {
-		mutateAsync: deleteNote,
-		isPending,
-		error,
-		isSuccess,
-	} = useDeleteNote();
+	const { mutateAsync: deleteNote } = useDeleteNote();
+
+	const { setShowModal } = useDeleteModal();
 
 	const { noteId, folderId, projectId } = useParams();
 
 	const showForm = !!action && !!formId;
 
-	const handleDelete = async () => {
-		if (noteId && folderId && projectId)
-			await deleteNote({ id: noteId, folderId, projectId });
-		setSelected((prev) => ({ ...prev, n: null }));
-		navigate("/", { replace: true });
+	const handleDelete = () => {
+		if (noteId && folderId && projectId) {
+			navigate("/", { replace: true });
+			setSelected((prev) => ({ ...prev, n: null }));
+			deleteNote({ id: noteId, folderId, projectId });
+		}
+	};
+
+	const deleteModal = {
+		type: "Note",
+		name: "",
+		onConfirm: handleDelete,
 	};
 
 	return (
@@ -65,7 +70,10 @@ const NoteBar = () => {
 						>
 							✏️ edit
 						</Button>
-						<Button className="hover:text-red-500" onClick={handleDelete}>
+						<Button
+							className="hover:text-red-500"
+							onClick={() => setShowModal(deleteModal)}
+						>
 							🗑️ delete
 						</Button>
 					</>

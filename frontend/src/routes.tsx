@@ -16,6 +16,7 @@ import TeamPage from "./components/pages/TeamPage";
 import NoneSelected from "./components/pages/NoneSelected";
 import Account from "./components/pages/Account";
 import InnerErrorFallback from "./components/InnerErrorFallback";
+import ModalProvider from "./context/DeleteModalContext";
 
 const PublicRoutes = () => {
 	const { user } = useAuth();
@@ -39,9 +40,11 @@ const PrivateRoutes = () => {
 	}
 
 	return (
-		<GlobalProvider>
-			<Outlet />
-		</GlobalProvider>
+		// <GlobalProvider>
+		// 	<ModalProvider>
+		<Outlet />
+		// 	</ModalProvider>
+		// </GlobalProvider>
 	);
 };
 
