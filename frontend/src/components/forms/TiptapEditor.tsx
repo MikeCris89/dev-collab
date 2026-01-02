@@ -3,7 +3,7 @@ import StarterKit from "@tiptap/starter-kit";
 import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
 import { LIMITS } from "@shared/contract";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface TiptapEditorProps {
 	content: string;
@@ -38,25 +38,27 @@ export function TiptapEditor({
 				class:
 					"prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[200px] p-4",
 			},
-			// attributes: {
-			// 	class: "focus:outline-none min-h-[200px] p-4 text-text-primary",
-			// },
 		},
 	});
+
+	// Update editor content when prop changes
+	useEffect(() => {
+		if (editor && content !== editor.getHTML()) {
+			editor.commands.setContent(content);
+		}
+	}, [content, editor]);
 
 	if (!editor) {
 		return null;
 	}
 
-	// // Add this console log
-	// if (editor) {
-	// 	console.log("Is bold active?", editor.isActive("bold"));
-	// }
-
 	return (
-		<div className="border border-border-medium rounded-lg overflow-hidden bg-bg-elevated">
+		<div className="border border-border-medium rounded-lg overflow-hidden bg-bg-elevated h-full">
 			{/* Toolbar */}
-			<div className="flex gap-1 p-2 border-b border-border-medium bg-bg-muted flex-wrap">
+			<div
+				className="flex gap-1 p-2 border-b border-border-medium bg-bg-muted flex-wrap"
+				tabIndex={-1}
+			>
 				<ToolbarButton
 					onClick={() => editor.chain().focus().toggleBold().run()}
 					isActive={editor.isActive("bold")}
@@ -163,7 +165,8 @@ export function TiptapEditor({
 				editor={editor}
 				placeholder={placeholder}
 				maxLength={LIMITS.NOTE_BODY_MAX_LENGTH}
-				className="text-left"
+				className="text-left h-full"
+				autoFocus
 			/>
 		</div>
 	);
@@ -194,6 +197,7 @@ function ToolbarButton({
 						? "bg-accent-hover text-accent"
 						: "bg-bg-elevated hover:bg-hover-medium text-text-primary border border-border-medium"
 				}`}
+			tabIndex={-1}
 		>
 			{children}
 		</button>

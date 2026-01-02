@@ -18,6 +18,7 @@ import Loading from "./Loading";
 import { useFolderNotes } from "@/hooks/useNotes";
 import { useDeleteFolder } from "@/hooks/useFolders";
 import { useDeleteModal } from "@/context/DeleteModalContext";
+import { FORMS } from "@shared/contract";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
@@ -56,11 +57,8 @@ const Sidebar = () => {
 		error: errorDeleteFolder,
 	} = useDeleteFolder();
 
-	const {
-		mutateAsync: deleteProject,
-		isPending: pendingProject,
-		error: errorDeleteProject,
-	} = useDeleteProject();
+	const { mutateAsync: deleteProject, error: errorDeleteProject } =
+		useDeleteProject();
 
 	const { setShowModal } = useDeleteModal();
 
@@ -303,7 +301,7 @@ const Sidebar = () => {
 								key={el.id}
 								href={
 									page === "n" && selected.p && selected.f
-										? `/p/${selected.p}/f/${selected.f}/n/${el.id}`
+										? `/p/${selected.p}/f/${selected.f}/n/${el.id}?action=edit&formId=${FORMS.n}`
 										: paramSel || !!noteId
 										? undefined
 										: "/"
@@ -317,7 +315,7 @@ const Sidebar = () => {
 										if (page === "n" && selected.p && selected.f) {
 											setShowMenu(false);
 										}
-									}, 200);
+									}, 150);
 								}}
 								icon={nav[page].icon}
 								page={page}

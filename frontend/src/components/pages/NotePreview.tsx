@@ -59,11 +59,6 @@ const NotePreview = () => {
 					</div>
 					<h1 className="flex-1 text-center ">{note.title}</h1>
 				</div>
-				{/* <p
-					className="sidebar-list flex-1 card w-full p-6 text-left text-balance whitespace-pre-line text-2xl overflow-y-auto prose"
-					id="note-preview"
-					dangerouslySetInnerHTML={{ __html: note.body }}
-				/> */}
 				<div className="w-full">
 					<EditorContent editor={editor} className="text-left text-balance" />
 				</div>

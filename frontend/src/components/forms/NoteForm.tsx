@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUnsavedChanges } from "../../hooks/useUnsavedChanges";
-import { LIMITS, type Note } from "@shared/contract";
+import { FORMS, LIMITS, type Note } from "@shared/contract";
 import { useCreateNote, useUpdateNote } from "@/hooks/useNotes";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNote } from "@/hooks/useProjects";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { TiptapEditor } from "./TiptapEditor";
+import { useGlobal } from "@/context/GlobalContext";
 
 const NoteForm = () => {
 	const { projectId, folderId, noteId } = useParams();
@@ -13,9 +14,18 @@ const NoteForm = () => {
 	const [action] = useGetSearchParams(["action"]);
 	const isEdit = action === "edit";
 
-	const { data: existing } = useNote(projectId, folderId, noteId);
-	const [title, setTitle] = useState<string>(existing?.title ?? "");
-	const [body, setBody] = useState<string>(existing?.body ?? "");
+	const { formDirty, setFormDirty } = useGlobal();
+	const { data: existing, isLoading: noteLoading } = useNote(
+		projectId,
+		folderId,
+		noteId
+	);
+
+	const initialTitle = existing?.title ?? "";
+	const initialBody = existing?.body ?? "";
+
+	const [title, setTitle] = useState<string>(initialTitle);
+	const [body, setBody] = useState<string>(initialBody);
 
 	const {
 		mutateAsync: addNote,
@@ -29,19 +39,38 @@ const NoteForm = () => {
 		error: errUpdating,
 	} = useUpdateNote();
 
+	useEffect(() => {
+		// Calculate if dirty based on comparison to original values
+		const isDirty = existing
+			? title.trim() !== existing.title.trim() ||
+			  body.trim() !== existing.body.trim()
+			: title.trim() !== "" || body.trim() !== "";
+
+		console.log(body);
+		console.log(existing?.body);
+
+		setFormDirty(isDirty);
+	}, [title, body, setFormDirty, existing]);
+
+	useEffect(() => {
+		if (existing) {
+			setTitle(existing.title);
+			setBody(existing.body);
+		}
+	}, [existing, noteId]);
+
+	// Block navigation for unsaved changes
+	const allowNav = useUnsavedChanges(formDirty);
+
 	if (!projectId || !folderId)
 		throw new Error(`Missing ID's. PID: ${projectId} FID: ${folderId}`);
 
+	if (isEdit && noteLoading) {
+		return <div>Loading note...</div>;
+	}
+
 	if (isEdit && !existing) throw new Error("Existing note data missing");
 	if (!isEdit && existing) throw new Error("Existing note found for new entry");
-
-	// Calculate if dirty based on comparison to original values
-	const isDirty = existing
-		? title !== existing.title || body !== existing.body
-		: title.trim() !== "" || body.trim() !== "";
-
-	// Block navigation for unsaved changes
-	const allowNav = useUnsavedChanges(isDirty);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -50,16 +79,21 @@ const NoteForm = () => {
 			let resp: Note;
 			allowNav();
 			if (isEdit && existing) {
-				resp = await updateNote({
-					noteId: existing.id,
-					data: newNote,
-					folderId,
-					projectId,
-				});
+				if (formDirty)
+					resp = await updateNote({
+						noteId: existing.id,
+						data: newNote,
+						folderId,
+						projectId,
+					});
+				else resp = existing;
 			} else {
 				resp = await addNote({ data: newNote, folderId, projectId });
 			}
-			navigate(`/p/${projectId}/f/${folderId}/n/${resp.id}`, { replace: true });
+			navigate(
+				`/p/${projectId}/f/${folderId}/n/${resp.id}?action=edit&formId=${FORMS.n}`,
+				{ replace: true }
+			);
 		}
 	};
 
@@ -76,19 +110,14 @@ const NoteForm = () => {
 				className="text-[36px] text-accent text-center max-w-[90%]"
 				disabled={isLoading}
 				maxLength={LIMITS.TITLE_MAX_LENGTH}
+				autoFocus={!isEdit}
 			/>
 
-			{/* <textarea
-				value={body}
-				placeholder="body"
-				required
-				onChange={(e) => setBody(e.target.value)}
-				className="flex-1 h-full w-full max-w-[95%] text-center text-xl text-balance"
-				disabled={isLoading}
-				maxLength={LIMITS.NOTE_BODY_MAX_LENGTH}
-			/> */}
-
-			<TiptapEditor content={body} onChange={(html) => setBody(html)} />
+			<TiptapEditor
+				key={existing?.id || "new"}
+				content={body}
+				onChange={(html) => setBody(html)}
+			/>
 
 			{error && (
 				<p className="text-red-500">

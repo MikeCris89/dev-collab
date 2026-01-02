@@ -59,6 +59,8 @@ interface GlobalCtx {
 	nav: Nav;
 	allowNavRef: React.RefObject<boolean>;
 	allowNav: (value?: boolean) => void;
+	formDirty: boolean;
+	setFormDirty: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const GlobalContext = createContext<GlobalCtx | undefined>(undefined);
@@ -71,6 +73,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 	const [selected, setSelected] = useState<Selected>({ ...selectInit });
 	const [showMenu, setShowMenu] = useState(false);
 	useThemeSwitcher();
+	const [formDirty, setFormDirty] = useState(false);
 
 	const { data: project } = useTeamProject(selected.p);
 	const { data: folder } = useFolder({
@@ -182,6 +185,8 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				nav,
 				allowNavRef,
 				allowNav,
+				formDirty,
+				setFormDirty,
 			}}
 		>
 			{children}

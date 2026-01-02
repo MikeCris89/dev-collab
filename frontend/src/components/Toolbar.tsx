@@ -10,7 +10,7 @@ import { useDeleteNote } from "@/hooks/useNotes";
 import { useDeleteModal } from "@/context/DeleteModalContext";
 
 const NoteBar = () => {
-	const { allowNav, setSelected } = useGlobal();
+	const { allowNav, setSelected, formDirty } = useGlobal();
 	const location = useLocation();
 	const navigate = useNavigate();
 
@@ -94,8 +94,13 @@ const NoteBar = () => {
 						>
 							❌ cancel
 						</Button>
-						<Button type="submit" form={formId} variant="primary">
-							save
+						<Button
+							type="submit"
+							form={formId}
+							variant="primary"
+							disabled={!formDirty}
+						>
+							✅ save
 						</Button>
 					</>
 				)}
@@ -123,24 +128,7 @@ const Toolbar = () => {
 	const { noteId } = useParams();
 	const [action] = useGetSearchParams(["action"]);
 
-	// const { data: projects } = useTeamProjects();
-	// const { data: folder } = useFolder({
-	// 	projectId: selected.p,
-	// 	folderId: selected.f,
-	// });
-
 	useEffect(() => {
-		// const newTitle2 = pathname.startsWith("/team")
-		// 	? { title: "Team", icon: <Users2 /> }
-		// 	: pathname.startsWith("/account")
-		// 	? { title: "Account", icon: <User2 /> }
-		// 	: nav[selected.page].parentTitle
-		// 	? {
-		// 			icon: nav[selected.page].parentIcon,
-		// 			title: nav[selected.page].parentTitle,
-		// 	  }
-		// 	: titleInit;
-
 		const newTitle = { ...titleInit };
 		if (pathname.startsWith("/team")) {
 			newTitle.icon = <Users2 size={30} />;
@@ -180,92 +168,6 @@ const Toolbar = () => {
 			)}
 
 			{(isNote || isForm) && <NoteBar />}
-
-			{/* {pathname === "/team" && (
-				<div>
-					<Button
-						variant="primary"
-						className="m-auto"
-						href={`${pathname}?action=add&formId=${FORMS.userAdd}`}
-					>
-						add
-					</Button>
-				</div>
-			)} */}
-
-			{/* {
-				<>
-					{selected.n && (
-						<div className="flex justify-between w-full md:flex-col md:justify-start md:w-fit text-left">
-							<p className="text-xs text-text-muted font-bold md:p-1 m-0 text-balance">
-								created: <br />
-								{selected
-									? new Date(selected.n.createdAt).toLocaleString()
-									: " - "}
-							</p>
-
-							<p className="text-right md:text-left text-text-muted text-xs text-balance md:p-1 m-0">
-								last updated: <br />
-								{selected
-									? new Date(selected.n.updatedAt).toLocaleString()
-									: " - "}
-							</p>
-						</div>
-					)}
-
-					<div className="flex flex-nowrap justify-end gap-3 col-start-3">
-						{!showForm && noteId && (
-							<>
-								<Button
-									onClick={() => {
-										// setShowForm((prev) => ({ ...prev, form: FORMS.n }));
-										navigate(`${pathname}?action=edit&formId=${FORMS.n}`, {
-											state: { from: pathname },
-										});
-									}}
-								>
-									✏️ edit
-								</Button>
-								<Button>🗑️ delete</Button>
-							</>
-						)}
-						{showForm && (
-							<>
-								<Button
-									// onClick={() => {
-									// 	// navigate(location.state?.from ?? "/", {
-									// 	// 	replace: true,
-									// 	// });
-									// 	navigate(pathname, {
-									// 		replace: true,
-									// 	});
-									// }}
-									onClick={() => {
-										const from = location.state?.from;
-										// console.log("FROM: ", from);
-										// console.log("path: ", pathname);
-										// if (from && from !== pathname && from !== "/") {
-										// 	console.log(1);
-										// 	// Go back to where we came from
-										// 	navigate(from, { replace: true });
-										// } else
-										if (!from) {
-											navigate("/");
-										} else {
-											navigate(-1);
-										}
-									}}
-								>
-									❌ cancel
-								</Button>
-								<Button type="submit" form={formId} variant="primary">
-									save
-								</Button>
-							</>
-						)}
-					</div>
-				</>
-			} */}
 		</div>
 	);
 };
