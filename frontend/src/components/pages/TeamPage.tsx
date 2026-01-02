@@ -9,7 +9,7 @@ const TeamPage = () => {
 	if (isLoading) return <p>Loading...</p>;
 
 	return (
-		<section className="sidebar-list flex-1  min-h-0 overflow-y-auto overflow-x-hidden ">
+		<section className="flex-1  min-h-0 overflow-y-auto overflow-x-hidden ">
 			<div className="flex flex-col gap-5 justify-center items-center">
 				<Button
 					variant="primary"

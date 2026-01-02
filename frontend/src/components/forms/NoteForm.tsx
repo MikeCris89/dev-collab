@@ -7,6 +7,7 @@ import { useNote } from "@/hooks/useProjects";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { TiptapEditor } from "./TiptapEditor";
 import { useGlobal } from "@/context/GlobalContext";
+import Loading from "../Loading";
 
 const NoteForm = () => {
 	const { projectId, folderId, noteId } = useParams();
@@ -39,25 +40,23 @@ const NoteForm = () => {
 		error: errUpdating,
 	} = useUpdateNote();
 
-	useEffect(() => {
-		// Calculate if dirty based on comparison to original values
-		const isDirty = existing
-			? title.trim() !== existing.title.trim() ||
-			  body.trim() !== existing.body.trim()
-			: title.trim() !== "" || body.trim() !== "";
-
-		console.log(body);
-		console.log(existing?.body);
-
-		setFormDirty(isDirty);
-	}, [title, body, setFormDirty, existing]);
-
+	// Initialize states
 	useEffect(() => {
 		if (existing) {
 			setTitle(existing.title);
 			setBody(existing.body);
 		}
 	}, [existing, noteId]);
+
+	// Check if dirty based on comparison to original values
+	useEffect(() => {
+		const isDirty = existing
+			? title.trim() !== existing.title.trim() ||
+			  body.trim() !== existing.body.trim()
+			: title.trim() !== "" || body.trim() !== "";
+
+		setFormDirty(isDirty);
+	}, [title, body, setFormDirty, existing]);
 
 	// Block navigation for unsaved changes
 	const allowNav = useUnsavedChanges(formDirty);
@@ -66,7 +65,7 @@ const NoteForm = () => {
 		throw new Error(`Missing ID's. PID: ${projectId} FID: ${folderId}`);
 
 	if (isEdit && noteLoading) {
-		return <div>Loading note...</div>;
+		return <Loading />;
 	}
 
 	if (isEdit && !existing) throw new Error("Existing note data missing");
@@ -79,6 +78,7 @@ const NoteForm = () => {
 			let resp: Note;
 			allowNav();
 			if (isEdit && existing) {
+				console.log("SAVE BODY", body);
 				if (formDirty)
 					resp = await updateNote({
 						noteId: existing.id,
@@ -116,7 +116,9 @@ const NoteForm = () => {
 			<TiptapEditor
 				key={existing?.id || "new"}
 				content={body}
-				onChange={(html) => setBody(html)}
+				onChange={(html) => {
+					setBody(html);
+				}}
 			/>
 
 			{error && (

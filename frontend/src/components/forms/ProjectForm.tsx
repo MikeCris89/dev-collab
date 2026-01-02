@@ -14,7 +14,7 @@ import { User } from "lucide-react";
 
 const ProjectForm = () => {
 	const { user } = useRequireAuth();
-	const { setSelected, closeForm } = useGlobal();
+	const { setSelected, closeForm, formDirty, setFormDirty } = useGlobal();
 	const { projectId } = useParams();
 	const navigate = useNavigate();
 
@@ -44,11 +44,15 @@ const ProjectForm = () => {
 		error: errEdit,
 	} = useUpdateProject();
 
-	const isDirty = existing
-		? existing.title !== title.trim()
-		: title.trim() !== "";
+	useEffect(() => {
+		const isDirty = existing
+			? existing.title.trim() !== title.trim()
+			: title.trim() !== "";
 
-	const allowNav = useUnsavedChanges(isDirty);
+		setFormDirty(isDirty);
+	}, [title, existing, setFormDirty]);
+
+	const allowNav = useUnsavedChanges(formDirty);
 
 	useEffect(() => {
 		if (existing) {

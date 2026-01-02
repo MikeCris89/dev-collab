@@ -280,17 +280,14 @@ const Sidebar = () => {
 			</div>
 
 			{/* List */}
-			<div className="sidebar-list flex-1 flex flex-col gap-4 justify-start items-center min-h-0 overflow-y-auto overflow-x-hidden p-1 h-full">
+			<div className="flex-1 flex flex-col gap-4 justify-start items-center min-h-0 overflow-y-auto overflow-x-hidden p-1 h-full">
 				{/* Loading - Item List */}
 				{isLoading ? (
 					<Loading />
 				) : !isLoading && filtered && filtered?.length > 0 ? (
 					filtered.map((el) => {
-						// const navSel = selected[page] === el.id;
 						const paramSel =
 							el.id === projectId || el.id === noteId || el.id === folderId;
-
-						// const isSel = navSel || paramSel;
 
 						return (
 							<ListItem
@@ -300,7 +297,10 @@ const Sidebar = () => {
 								selected={paramSel}
 								key={el.id}
 								href={
-									page === "n" && selected.p && selected.f
+									page === "n" &&
+									selected.p &&
+									selected.f &&
+									selected.n !== el.id
 										? `/p/${selected.p}/f/${selected.f}/n/${el.id}?action=edit&formId=${FORMS.n}`
 										: paramSel || !!noteId
 										? undefined

@@ -166,7 +166,6 @@ export function TiptapEditor({
 				placeholder={placeholder}
 				maxLength={LIMITS.NOTE_BODY_MAX_LENGTH}
 				className="text-left h-full"
-				autoFocus
 			/>
 		</div>
 	);

@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
 import Button from "./Button";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const ListItem = ({
 	title,
@@ -23,6 +24,7 @@ const ListItem = ({
 	page: string;
 }) => {
 	const [isSel, setIsSel] = useState(selected);
+	const { noteId } = useParams();
 
 	useEffect(() => {
 		setIsSel(selected);
@@ -37,7 +39,7 @@ const ListItem = ({
 				(selected || isSel) && "item-selected flex-nowrap"
 			)}
 			onClick={() => {
-				setIsSel(true);
+				if (!noteId) setIsSel(true);
 				onClick();
 			}}
 			href={href}

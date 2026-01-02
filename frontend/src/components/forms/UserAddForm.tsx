@@ -5,7 +5,7 @@ import {
 } from "@/hooks/useTeam";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { LIMITS, type SignupRequest } from "@shared/contract";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InputWrapper from "./InputWrapper";
 import CheckboxContainer from "./CheckboxContainer";
@@ -21,15 +21,20 @@ const UserAddForm = () => {
 	const [err, setErr] = useState<string | null>(null);
 
 	const navigate = useNavigate();
-	const { nav } = useGlobal();
+	const { nav, formDirty, setFormDirty } = useGlobal();
 
 	const { data: projects = [] } = useTeamProjects();
 	const { data: members = [] } = useTeamMembers();
 	const { mutateAsync: addUser, isPending, error } = useCreateTeamMember();
 
-	const isDirty = !!userData.username || !!userData.password || !!userData.name;
+	useEffect(() => {
+		const isDirty =
+			!!userData.username || !!userData.password || !!userData.name;
 
-	const allowNav = useUnsavedChanges(isDirty);
+		setFormDirty(isDirty);
+	}, [userData, setFormDirty]);
+
+	const allowNav = useUnsavedChanges(formDirty);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setUserData((prev) => ({
@@ -49,7 +54,7 @@ const UserAddForm = () => {
 			return;
 		}
 
-		if (userData.username && userData.password) {
+		if (formDirty && userData.username && userData.password) {
 			allowNav();
 			await addUser({ ...userData, projectIds });
 		}

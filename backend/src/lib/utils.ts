@@ -19,6 +19,7 @@ export const sanitizeHTML = (html: string): string => {
 			"strong",
 			"em",
 			"u",
+			"s", // strikethrough
 			"h1",
 			"h2",
 			"h3",
@@ -30,8 +31,20 @@ export const sanitizeHTML = (html: string): string => {
 			"code",
 			"pre",
 			"br",
+			"label", // For task lists
+			"input", // For checkboxes
+			"div", // TipTap uses divs
+			"span", // TipTap uses spans
 		],
-		ALLOWED_ATTR: ["href", "target"],
+		ALLOWED_ATTR: [
+			"href",
+			"target",
+			"data-type", // TipTap uses this for task lists
+			"data-checked", // TipTap uses this for checkbox state
+			"type", // For input type="checkbox"
+			"checked", // For checked checkboxes
+			"class", // May be needed for styling
+		],
 	});
 };
 

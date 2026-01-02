@@ -30,24 +30,6 @@
 		@apply hover:shadow-[0_2px_20px] hover:shadow-accent hover:-translate-y-0.5;
 	}
 
-	/* Custom scrollbar */
-	.sidebar-list::-webkit-scrollbar {
-		width: 4px;
-	}
-
-	.sidebar-list::-webkit-scrollbar-track {
-		background: transparent;
-	}
-
-	.sidebar-list::-webkit-scrollbar-thumb {
-		background: rgba(78, 205, 196, 0.3);
-		border-radius: 3px;
-	}
-
-	.sidebar-list::-webkit-scrollbar-thumb:hover {
-		background: rgba(78, 205, 196, 0.5);
-	}
-
 	.form {
 		@apply flex flex-col gap-4 md:gap-7 justify-start items-center h-full w-full p-4 overflow-y-auto overflow-x-hidden min-h-0;
 	}

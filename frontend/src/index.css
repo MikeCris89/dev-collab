@@ -55,3 +55,28 @@
 		@apply outline-1 outline-border-medium rounded-xl caret-text-primary text-sm text-text-primary p-3 focus:outline-accent my-1 bg-bg-muted transition-all duration-300;
 	}
 }
+
+@layer base {
+	/* Apply to all scrollable elements */
+	*::-webkit-scrollbar {
+		width: 4px;
+	}
+
+	*::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	*::-webkit-scrollbar-thumb {
+		background: rgba(78, 205, 196, 0.3);
+		border-radius: 3px;
+	}
+
+	*::-webkit-scrollbar-thumb:hover {
+		background: rgba(78, 205, 196, 0.5);
+	}
+
+	* {
+		scrollbar-width: thin;
+		scrollbar-color: rgba(78, 205, 196, 0.3) transparent;
+	}
+}

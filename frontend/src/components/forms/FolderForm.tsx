@@ -9,7 +9,7 @@ import { LIMITS, type Folder } from "@shared/contract";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 
 const FolderForm = () => {
-	const { setSelected, closeForm } = useGlobal();
+	const { setSelected, closeForm, setFormDirty, formDirty } = useGlobal();
 	const { projectId, folderId } = useParams();
 	const [action] = useGetSearchParams(["action"]);
 	const navigate = useNavigate();
@@ -32,17 +32,21 @@ const FolderForm = () => {
 
 	const { data: existing, isLoading } = useFolder({ projectId, folderId });
 
-	const isDirty = existing
-		? existing.title !== title.trim()
-		: title.trim() !== "";
-
-	const allowNav = useUnsavedChanges(isDirty);
+	const allowNav = useUnsavedChanges(formDirty);
 
 	useEffect(() => {
 		if (existing) {
 			setTitle(existing.title);
 		}
 	}, [existing]);
+
+	useEffect(() => {
+		const isDirty = existing
+			? existing.title !== title.trim()
+			: title.trim() !== "";
+
+		setFormDirty(isDirty);
+	}, [title, setFormDirty, existing]);
 
 	if (isLoading) return <Loading />;
 	if (!projectId) throw new Error("Project ID Missing.");
