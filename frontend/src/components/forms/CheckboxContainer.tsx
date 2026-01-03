@@ -35,12 +35,6 @@ const CheckboxContainer = ({
 
 	return (
 		<div className="flex flex-col items-stretch justify-center rounded-md outline outline-border-medium p-2 w-[300px] max-w-[95%] max-h-[700px] overflow-y-auto overflow-x-hiden">
-			{/* <InputWrapper
-				htmlFor="selectAll"
-				label="select all"
-				className="flex-row gap-2 p-1 pb-3 items-center"
-				labelClassName="text-sm text-text-muted cursor-pointer p-2"
-			> */}
 			<div className="flex justify-between w-full items-cente p-1 mb-2">
 				{initial ? (
 					<p

@@ -88,6 +88,7 @@ const FolderForm = () => {
 					className="w-[250px]"
 					required
 					maxLength={LIMITS.TITLE_MAX_LENGTH}
+					autoFocus
 				/>
 			</InputWrapper>
 			{error && <p className="text-red-500">{error.message}</p>}

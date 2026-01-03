@@ -45,8 +45,12 @@ const NoteForm = () => {
 		if (existing) {
 			setTitle(existing.title);
 			setBody(existing.body);
+		} else {
+			setTitle("");
+			setBody("");
+			setFormDirty(false);
 		}
-	}, [existing, noteId]);
+	}, [existing, noteId, setFormDirty]);
 
 	// Check if dirty based on comparison to original values
 	useEffect(() => {
@@ -78,7 +82,6 @@ const NoteForm = () => {
 			let resp: Note;
 			allowNav();
 			if (isEdit && existing) {
-				console.log("SAVE BODY", body);
 				if (formDirty)
 					resp = await updateNote({
 						noteId: existing.id,

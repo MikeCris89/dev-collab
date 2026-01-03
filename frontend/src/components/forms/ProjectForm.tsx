@@ -105,6 +105,7 @@ const ProjectForm = () => {
 							disabled={isLoading}
 							className="w-[250px]"
 							maxLength={LIMITS.TITLE_MAX_LENGTH}
+							autoFocus
 						/>
 					</InputWrapper>
 				</div>

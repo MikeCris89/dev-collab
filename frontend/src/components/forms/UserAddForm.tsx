@@ -87,6 +87,7 @@ const UserAddForm = () => {
 							className="w-[250px]"
 							required
 							maxLength={LIMITS.USERNAME_MAX_LENGTH}
+							autoFocus
 						/>
 					</InputWrapper>
 

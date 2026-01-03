@@ -95,14 +95,6 @@ const ListItem = ({
 			{isNote && (
 				<>
 					{body && (
-						// <small className="line-clamp-2 text-left text-balance">
-						// 	{body}
-						// </small>
-						// <EditorContent
-						// 	editor={editor}
-						// 	className="text-left text-balance line-clamp-2 "
-						// />
-						// <p className="text-xs line-clamp-2">{extractText(body)}</p>
 						<div
 							className="preview-content line-clamp-3 text-left text-balance"
 							dangerouslySetInnerHTML={{ __html: body }}

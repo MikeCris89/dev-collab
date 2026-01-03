@@ -38,6 +38,7 @@ const UserEditForm = () => {
 				onChange={(e) => setName(e.target.value)}
 				className="text-[36px] text-accent text-center max-w-[95%]"
 				disabled={isPending}
+				autoFocus
 			/>
 			{error && (
 				<div className="text-red-500 text-sm">
