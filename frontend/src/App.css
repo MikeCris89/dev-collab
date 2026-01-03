@@ -41,4 +41,80 @@
 	.list-item.item-selected {
 		@apply border-l-4 border-l-accent bg-accent/30! shadow-lg enabled:hover:bg-accent/30! ease-out duration-100;
 	}
+
+	/* Note list preview in sidebar */
+	.preview-content {
+		line-height: 1.4;
+		font-size: 0.75rem !important;
+		max-height: 4.2rem; /* 3 lines × 1.4 line-height × 0.75rem font */
+		overflow: hidden;
+		position: relative;
+		padding-left: 1.5rem;
+	}
+
+	.preview-content p {
+		margin: 0.125rem 0;
+		font-size: inherit !important;
+	}
+
+	.preview-content ul,
+	.preview-content ol {
+		margin: 0.25rem 0;
+		padding-left: 1rem;
+		font-size: inherit !important;
+	}
+
+	.preview-content li {
+		margin: 0.125rem 0;
+		font-size: inherit !important;
+	}
+
+	/* Task lists */
+	.preview-content ul[data-type="taskList"] {
+		list-style: none;
+		padding-left: 0;
+		margin: 0.25rem 0;
+	}
+
+	.preview-content li[data-type="taskItem"] {
+		display: flex;
+		/* gap: 0.5rem; */
+		align-items: flex-start;
+		margin: 0.125rem 0;
+	}
+
+	.preview-content li[data-type="taskItem"] div,
+	.preview-content li[data-type="taskItem"] p {
+		margin: 0;
+	}
+
+	.preview-content li[data-type="taskItem"][data-checked="true"] p {
+		text-decoration: line-through;
+		opacity: 0.6;
+	}
+
+	.preview-content li[data-type="taskItem"]::before {
+		content: "☐";
+		flex-shrink: 0;
+	}
+
+	.preview-content li[data-type="taskItem"][data-checked="true"]::before {
+		content: "☑";
+	}
+
+	/* Regular lists */
+	.preview-content ul:not([data-type="taskList"]) {
+		list-style: disc;
+	}
+
+	.preview-content ol {
+		list-style: decimal;
+	}
+
+	/* Hide checkbox inputs */
+	.preview-content input[type="checkbox"],
+	.preview-content label,
+	.preview-content span {
+		display: none;
+	}
 }
