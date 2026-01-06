@@ -63,7 +63,7 @@ const ListItem = ({
 				<i className="shrink-0">{!isNote && <ChevronRight />}</i>
 			</div>
 			{!isNote && childCount != null && (
-				<div>
+				<div className="w-full flex justify-start pl-9">
 					<small>
 						{childCount}{" "}
 						{page === "p"

@@ -53,6 +53,7 @@ router.get("/", async (req, res) => {
 					projectsUsers: { select: { userId: true, createdAt: true } },
 					_count: { select: { folders: true } },
 				},
+				orderBy: { createdAt: "asc" },
 			},
 		},
 	});

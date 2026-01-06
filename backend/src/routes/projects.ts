@@ -23,9 +23,12 @@ router.get("/:projectId", async (req, res) => {
 			id: true,
 			folders: {
 				include: {
-					notes: true,
+					notes: {
+						orderBy: { createdAt: "asc" },
+					},
 					_count: { select: { notes: true } },
 				},
+				orderBy: { createdAt: "asc" },
 			},
 			_count: { select: { folders: true } },
 		},
