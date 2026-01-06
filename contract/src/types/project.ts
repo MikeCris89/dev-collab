@@ -7,6 +7,7 @@ export type Project = {
 	title: string;
 	teamId: string;
 	createdAt: string;
+	childCount: number;
 };
 
 export type ProjectInput = {

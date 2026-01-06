@@ -6,6 +6,7 @@ export type Folder = {
 	title: string;
 	projectId: string;
 	createdAt: string;
+	childCount: number;
 };
 
 export type FolderInput = {

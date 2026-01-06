@@ -10,6 +10,7 @@ export type Note = {
 	folderId: string;
 	createdAt: string;
 	updatedAt: string;
+	childCount: number | null;
 };
 
 export type NoteInput = {

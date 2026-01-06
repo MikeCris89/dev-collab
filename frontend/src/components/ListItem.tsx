@@ -3,15 +3,12 @@ import { ChevronRight } from "lucide-react";
 import Button from "./Button";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import TaskList from "@tiptap/extension-task-list";
-import TaskItem from "@tiptap/extension-task-item";
 
 const ListItem = ({
 	title,
 	createdAt,
 	body,
+	childCount,
 	selected = false,
 	onClick,
 	icon,
@@ -21,6 +18,7 @@ const ListItem = ({
 	title: string;
 	createdAt: string;
 	body?: string;
+	childCount: number | null;
 	selected?: boolean;
 	onClick: () => void;
 	icon: React.ReactNode;
@@ -35,36 +33,8 @@ const ListItem = ({
 	}, [selected]);
 
 	const isNote = page === "n";
-
-	const editor = useEditor({
-		extensions: [
-			StarterKit,
-			TaskList,
-			TaskItem.configure({
-				nested: true,
-				HTMLAttributes: {
-					class: "task-item",
-				},
-			}),
-		],
-		content: body || "",
-		editable: false,
-		editorProps: {
-			attributes: {
-				class:
-					"focus:outline-none !text-xs prose-p:!text-xs prose-li:!text-xs prose-ul:!my-1 prose-li:!my-0",
-			},
-			// attributes: {
-			// 	class: "focus:outline-none text-text-primary !text-xs leading-tight",
-			// },
-		},
-	});
-
-	const extractText = (html: string) => {
-		const div = document.createElement("div");
-		div.innerHTML = html;
-		return div.textContent || "";
-	};
+	const isFolder = page === "f";
+	const isProject = page === "p";
 
 	return (
 		<Button
@@ -92,6 +62,16 @@ const ListItem = ({
 				</div>
 				<i className="shrink-0">{!isNote && <ChevronRight />}</i>
 			</div>
+			{!isNote && childCount != null && (
+				<div>
+					<small>
+						{childCount}{" "}
+						{page === "p"
+							? `folder${childCount === 1 ? "" : "s"}`
+							: `note${childCount === 1 ? "" : "s"}`}
+					</small>
+				</div>
+			)}
 			{isNote && (
 				<>
 					{body && (

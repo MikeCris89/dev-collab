@@ -294,6 +294,7 @@ const Sidebar = () => {
 								title={el.title}
 								createdAt={el.createdAt}
 								body={"body" in el ? el.body : undefined}
+								childCount={el.childCount}
 								selected={paramSel}
 								key={el.id}
 								href={
