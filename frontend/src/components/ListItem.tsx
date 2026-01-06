@@ -49,29 +49,32 @@ const ListItem = ({
 			href={href}
 		>
 			<div className={clsx("flex justify-start items-center gap-2 w-full ")}>
-				<div className="flex-1 flex justify-start items-center gap-2">
-					<i className="shrink-0">{icon}</i>
-					<p
-						className={clsx(
-							" text-left line-clamp-2 text-ellipsis text-base text-balance",
-							isNote && ""
-						)}
-					>
-						{title}
-					</p>
+				<div className="flex flex-col gap-1 w-full">
+					<div className="flex-1 flex justify-start items-center gap-2">
+						<i className="shrink-0">{icon}</i>
+						<p
+							className={clsx(
+								" text-left line-clamp-2 text-ellipsis text-base ",
+								isNote && ""
+							)}
+						>
+							{title}
+						</p>
+					</div>
+					{!isNote && childCount != null && (
+						<div className="w-full flex justify-start pl-9">
+							<small>
+								{childCount}{" "}
+								{page === "p"
+									? `folder${childCount === 1 ? "" : "s"}`
+									: `note${childCount === 1 ? "" : "s"}`}
+							</small>
+						</div>
+					)}
 				</div>
 				<i className="shrink-0">{!isNote && <ChevronRight />}</i>
 			</div>
-			{!isNote && childCount != null && (
-				<div className="w-full flex justify-start pl-9">
-					<small>
-						{childCount}{" "}
-						{page === "p"
-							? `folder${childCount === 1 ? "" : "s"}`
-							: `note${childCount === 1 ? "" : "s"}`}
-					</small>
-				</div>
-			)}
+
 			{isNote && (
 				<>
 					{body && (

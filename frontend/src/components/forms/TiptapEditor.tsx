@@ -1,62 +1,57 @@
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import TaskList from "@tiptap/extension-task-list";
-import TaskItem from "@tiptap/extension-task-item";
+import { EditorContent, Editor } from "@tiptap/react";
+
 import { LIMITS } from "@shared/contract";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface TiptapEditorProps {
-	content: string;
-	onChange: (html: string) => void;
 	placeholder?: string;
+	id: string;
+	editor: Editor;
 }
 
-export function TiptapEditor({
-	content,
-	onChange,
-	placeholder,
-}: TiptapEditorProps) {
-	const [, forceUpdate] = useState({}); // Trick to force re-render
-
-	const editor = useEditor({
-		extensions: [
-			StarterKit,
-			TaskList,
-			TaskItem.configure({
-				nested: true,
-			}),
-		],
-		content,
-		onUpdate: ({ editor }) => {
-			onChange(editor.getHTML());
-		},
-		onTransaction: () => {
-			forceUpdate({}); // Force toolbar to re-render on cursor move
-		},
-		editorProps: {
-			attributes: {
-				class:
-					"prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[200px] p-4",
-			},
-		},
-	});
+export function TiptapEditor({ placeholder, id, editor }: TiptapEditorProps) {
+	// const editor = useEditor({
+	// 	extensions: [
+	// 		StarterKit,
+	// 		TaskList,
+	// 		TaskItem.configure({
+	// 			nested: true,
+	// 		}),
+	// 	],
+	// 	content,
+	// 	onUpdate: ({ editor }) => {
+	// 		onChange(editor.getHTML());
+	// 	},
+	// 	onTransaction: () => {
+	// 		forceUpdate({}); // Force toolbar to re-render on cursor move
+	// 	},
+	// 	editorProps: {
+	// 		attributes: {
+	// 			class:
+	// 				"prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[200px] p-4",
+	// 		},
+	// 	},
+	// });
 
 	// Update editor content when prop changes
-	useEffect(() => {
-		if (editor && content !== editor.getHTML()) {
-			editor.commands.setContent(content);
-		}
-	}, [content, editor]);
+	// useEffect(() => {
+	// 	if (editor && content !== editor.getHTML()) {
+	// 		editor.commands.setContent(content);
+	// 	}
+	// }, [content, editor]);
 
 	if (!editor) {
 		return null;
 	}
 
+	const oldStyle = "border border-border-medium rounded-lg ";
+	const oldToolbar = " rounded-lg ";
+
 	return (
-		<div className="border border-border-medium rounded-lg overflow-hidden bg-bg-elevated h-full">
+		<div className="flex flex-col overflow-hidden bg-bg-elevated h-full w-full ">
 			{/* Toolbar */}
 			<div
-				className="flex gap-1 p-2 border-b border-border-medium bg-bg-muted flex-wrap"
+				className="flex gap-1 p-2 bg-bg-muted border-y border-border-medium flex-wrap overflow-hidden"
 				tabIndex={-1}
 			>
 				<ToolbarButton
@@ -161,12 +156,15 @@ export function TiptapEditor({
 			</div>
 
 			{/* Editor */}
-			<EditorContent
-				editor={editor}
-				placeholder={placeholder}
-				maxLength={LIMITS.NOTE_BODY_MAX_LENGTH}
-				className="text-left h-full"
-			/>
+			<div className="flex-1 flex overflow-hidden h-full ">
+				<EditorContent
+					// key={id}
+					editor={editor}
+					placeholder={placeholder}
+					maxLength={LIMITS.NOTE_BODY_MAX_LENGTH}
+					className="flex-1 text-left min-h-0 overflow-y-auto overflow-x-hidden [&_div]:h-full"
+				/>
+			</div>
 		</div>
 	);
 }

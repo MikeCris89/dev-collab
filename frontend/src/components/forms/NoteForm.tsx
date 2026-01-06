@@ -8,6 +8,10 @@ import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { TiptapEditor } from "./TiptapEditor";
 import { useGlobal } from "@/context/GlobalContext";
 import Loading from "../Loading";
+import { useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
 
 const NoteForm = () => {
 	const { projectId, folderId, noteId } = useParams();
@@ -23,10 +27,11 @@ const NoteForm = () => {
 	);
 
 	const initialTitle = existing?.title ?? "";
-	const initialBody = existing?.body ?? "";
+	// const initialBody = existing?.body ?? "";
 
 	const [title, setTitle] = useState<string>(initialTitle);
-	const [body, setBody] = useState<string>(initialBody);
+	// const [body, setBody] = useState<string>(initialBody);
+	const [, forceUpdate] = useState({}); // Trick to force re-render
 
 	const {
 		mutateAsync: addNote,
@@ -40,27 +45,72 @@ const NoteForm = () => {
 		error: errUpdating,
 	} = useUpdateNote();
 
-	// Initialize states
-	useEffect(() => {
-		if (existing) {
-			setTitle(existing.title);
-			setBody(existing.body);
-		} else {
-			setTitle("");
-			setBody("");
-			setFormDirty(false);
-		}
-	}, [existing, noteId, setFormDirty]);
-
-	// Check if dirty based on comparison to original values
-	useEffect(() => {
+	const checkIsDirty = (body: string) => {
 		const isDirty = existing
 			? title.trim() !== existing.title.trim() ||
 			  body.trim() !== existing.body.trim()
 			: title.trim() !== "" || body.trim() !== "";
-
 		setFormDirty(isDirty);
-	}, [title, body, setFormDirty, existing]);
+	};
+
+	const editor = useEditor(
+		{
+			extensions: [
+				StarterKit,
+				TaskList,
+				TaskItem.configure({
+					nested: true,
+				}),
+			],
+			content: existing?.body ?? "",
+			onUpdate: ({ editor }) => {
+				checkIsDirty(editor.getHTML());
+			},
+			onTransaction: () => {
+				forceUpdate({}); // Force toolbar to re-render on cursor move
+			},
+			editorProps: {
+				attributes: {
+					class:
+						"prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[200px] p-4",
+				},
+			},
+		},
+		[]
+	);
+
+	// Initialize states
+	useEffect(() => {
+		if (existing) {
+			// console.log("init useEffect render", existing);
+			// console.log(body);
+			setTitle(existing.title);
+			// setBody(existing.body);
+			// Update editor content without adding to history
+			if (editor) {
+				editor.commands.setContent(existing.body, {
+					emitUpdate: false,
+				});
+			}
+		} else {
+			setTitle("");
+			// setBody("");
+			setFormDirty(false);
+			// Clear editor when creating new note
+			if (editor) {
+				editor.commands.setContent("", {
+					emitUpdate: false,
+				});
+			}
+		}
+	}, [existing, noteId, setFormDirty, editor]);
+
+	// Check if dirty based on comparison to original values
+	useEffect(() => {
+		if (!editor) return;
+
+		checkIsDirty(editor.getHTML());
+	}, [title, existing, editor]);
 
 	// Block navigation for unsaved changes
 	const allowNav = useUnsavedChanges(formDirty);
@@ -77,6 +127,8 @@ const NoteForm = () => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		if (!editor) return;
+		const body = editor.getHTML();
 		if (title && body) {
 			const newNote = { title, body };
 			let resp: Note;
@@ -104,24 +156,26 @@ const NoteForm = () => {
 	const error = errAdding || errUpdating;
 
 	return (
-		<form id="note-form" onSubmit={handleSubmit} className="form h-full">
+		<form
+			id="note-form"
+			onSubmit={handleSubmit}
+			className="form h-full p-0 gap-0"
+		>
 			<input
 				value={title}
-				placeholder="Title"
+				placeholder="title"
 				required
 				onChange={(e) => setTitle(e.target.value)}
-				className="text-[36px] text-accent text-center max-w-[90%]"
+				className="text-[30px] md:text-[36px] text-accent text-left w-full p-0 m-0 py-4 pl-2 md:pl-3 border-none outline-none h-fit"
 				disabled={isLoading}
 				maxLength={LIMITS.TITLE_MAX_LENGTH}
 				autoFocus={!isEdit}
 			/>
 
 			<TiptapEditor
-				key={existing?.id || "new"}
-				content={body}
-				onChange={(html) => {
-					setBody(html);
-				}}
+				// key={existing?.id || "new"}
+				id={existing?.id || "new"}
+				editor={editor}
 			/>
 
 			{error && (
