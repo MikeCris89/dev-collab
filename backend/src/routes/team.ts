@@ -51,6 +51,7 @@ router.get("/", async (req, res) => {
 					  },
 				include: {
 					projectsUsers: { select: { userId: true, createdAt: true } },
+					_count: { select: { folders: true } },
 				},
 			},
 		},
@@ -65,6 +66,7 @@ router.get("/", async (req, res) => {
 			...p,
 			createdAt: p.createdAt.toISOString(),
 			projectsUsers: p.projectsUsers.map((u) => u.userId),
+			childCount: p._count.folders,
 		})),
 		users: resp.users.map((u) => ({
 			...u,

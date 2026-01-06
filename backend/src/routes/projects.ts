@@ -1,4 +1,4 @@
-import { LIMITS } from "@shared/contract";
+import { LIMITS, Project } from "@shared/contract";
 import express from "express";
 import { adminOnly } from "src/lib/middleware.js";
 import { reqUser } from "src/types/types.js";
@@ -13,7 +13,7 @@ router.get("/:projectId", async (req, res) => {
 	const { teamId, role, sub } = reqUser(req);
 	const { projectId } = req.params;
 
-	const project = await prisma.project.findFirst({
+	const resp = await prisma.project.findFirst({
 		where:
 			role === ROLES.admin
 				? { id: projectId, teamId }
@@ -24,14 +24,28 @@ router.get("/:projectId", async (req, res) => {
 			folders: {
 				include: {
 					notes: true,
+					_count: { select: { notes: true } },
 				},
 			},
+			_count: { select: { folders: true } },
 		},
 	});
 
-	if (!project) {
+	if (!resp) {
 		throw new NotFoundError("Project not found");
 	}
+
+	const project = {
+		...resp,
+		folders: resp.folders.map((f) => ({
+			...f,
+			notes: f.notes.map((n) => ({
+				...n,
+				childCount: null,
+			})),
+			childCount: f._count.notes,
+		})),
+	};
 
 	res.json(project);
 });
