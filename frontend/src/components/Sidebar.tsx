@@ -102,8 +102,10 @@ const Sidebar = () => {
 		const data = {
 			p: projects,
 			f: project?.folders ?? [],
-			n: folderNotes ?? [],
+			n: project?.folders.find((f) => f.id === selected.f)?.notes ?? [],
 		};
+
+		console.log(project?.folders);
 
 		if (search) {
 			return data[selected.page].filter(

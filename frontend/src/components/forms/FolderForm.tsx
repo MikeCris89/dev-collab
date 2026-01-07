@@ -65,7 +65,6 @@ const FolderForm = () => {
 			} else {
 				resp = await addFolder({ data: { title }, projectId });
 				setSelected((prev) => ({ ...prev, f: resp.id }));
-				// navigate(`/p/${projectId}/f/${resp.id}`, { replace: true });
 				navigate("/", { replace: true });
 			}
 		}

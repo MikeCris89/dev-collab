@@ -62,7 +62,9 @@ export const useEditFolder = () => {
 				[PROJECTKEY, projectId],
 				(old: ProjectWithAll) => ({
 					...old,
-					folders: old.folders.map((f) => (f.id === resp.id ? resp : f)),
+					folders: old.folders.map((f) =>
+						f.id === resp.id ? { ...f, title: resp.title } : f
+					),
 				})
 			);
 		},

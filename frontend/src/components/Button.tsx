@@ -1,4 +1,5 @@
 import useGetSearchParams from "@/hooks/useGetSearchParams";
+import { FORMS } from "@shared/contract";
 import clsx from "clsx";
 import { NavLink, useLocation } from "react-router-dom";
 
@@ -66,6 +67,8 @@ const Button = ({
 	const { pathname } = useLocation();
 	const [action, formId] = useGetSearchParams(["action", "formId"]);
 	const showForm = !!action && !!formId;
+	const isNoteForm = FORMS.n;
+	const isReplace = (showForm && !isNoteForm) || replace;
 
 	// const handleClick = (
 	// 	e: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>
@@ -86,7 +89,7 @@ const Button = ({
 					)}
 					onClick={onClick}
 					state={{ from: pathname }}
-					replace={showForm || replace || undefined}
+					replace={isReplace || undefined}
 				>
 					{children}
 				</NavLink>
