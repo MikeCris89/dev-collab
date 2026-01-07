@@ -76,7 +76,7 @@ const NoteForm = () => {
 				},
 			},
 		},
-		[]
+		[noteId]
 	);
 
 	// Initialize states
@@ -85,6 +85,7 @@ const NoteForm = () => {
 			// console.log("init useEffect render", existing);
 			// console.log(body);
 			setTitle(existing.title);
+			setFormDirty(false);
 			// setBody(existing.body);
 			// Update editor content without adding to history
 			if (editor) {

@@ -268,12 +268,13 @@ const Sidebar = () => {
 							>
 								<Edit2 size={20} />
 							</NavLink>
-							<i
+							{/* Delete button moved to edit forms */}
+							{/* <i
 								className="cursor-pointer hover:text-red-500"
 								onClick={() => setShowModal(deleteModal)}
 							>
 								<Trash2 size={20} />
-							</i>
+							</i> */}
 						</div>
 					</>
 				)}

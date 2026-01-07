@@ -5,7 +5,12 @@ import { NavLink, useLocation } from "react-router-dom";
 export const btnInitStyle =
 	"text-center min-w-[75px] py-2 px-3 md:py-3 md:px-4 text-nowrap  flex-nowrap duration-100 ease-in transition-all rounded-xl";
 
-export const btnVariants: { default: string; primary: string; menu: string } = {
+export const btnVariants: {
+	default: string;
+	primary: string;
+	menu: string;
+	link: string;
+} = {
 	default: clsx(
 		"bg-bg-surface/60 text-[14px] outline-1 outline-border-light ",
 		"hover:outline-border-medium hover:bg-border-light",
@@ -17,9 +22,11 @@ export const btnVariants: { default: string; primary: string; menu: string } = {
 	),
 	primary: clsx(
 		"text-[16px] text-white bg-accent focus:bg-accent font-bold",
+		// "enabled:bg-accent border border-border-medium enabled:border-none",
 		"hover:bg-accent hover:shadow-[0_2px_20px] hover:shadow-accent hover:-translate-y-0.5",
-		"active:bg-accent active:shadow-[0_2px_20px] active:shadow-accent active:-translate-y-0.5 "
-		// "enabled:hover:bg-accent hover:shadow-[0_2px_20px] enabled:hover:shadow-accent enabled:hover:-translate-y-0.5 ",
+		"active:bg-accent active:shadow-[0_2px_20px] active:shadow-accent active:-translate-y-0.5 ",
+		"disabled:hover:shadow-none disabled:bg-bg-surface/60 disabled:hover:-translate-y-0"
+		// "enabled:hover:bg-accent enabled:hover:shadow-[0_2px_20px] enabled:hover:shadow-accent enabled:hover:-translate-y-0.5 "
 		// "enabled:focus:bg-accent ",
 		// "enabled:active:bg-accent active:shadow-[0_2px_20px] enabled:active:shadow-accent enabled:active:-translate-y-0.5 "
 	),
@@ -30,6 +37,9 @@ export const btnVariants: { default: string; primary: string; menu: string } = {
 		// "enabled:hover:bg-accent hover:shadow-[0_2px_20px] enabled:hover:shadow-accent ",
 		// "enabled:focus:bg-accent ",
 		// "enabled:active:bg-accent active:shadow-[0_2px_20px] enabled:active:shadow-accent "
+	),
+	link: clsx(
+		"text-[14px] hover:underline hover:underline-offset-4 cursor-pointer p-0 m-0"
 	),
 };
 
@@ -44,7 +54,7 @@ const Button = ({
 	href,
 	replace = false,
 }: React.PropsWithChildren<{
-	variant?: "default" | "primary" | "menu";
+	variant?: "default" | "primary" | "menu" | "link";
 	type?: "button" | "submit" | "reset";
 	form?: string;
 	disabled?: boolean;
