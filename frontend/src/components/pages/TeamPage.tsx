@@ -2,9 +2,11 @@ import { useTeamMembers } from "@/hooks/useTeam";
 import { FORMS, LIMITS, ROLES } from "@shared/contract";
 import Button from "../Button";
 import clsx from "clsx";
+import { useNavigate } from "react-router-dom";
 
 const TeamPage = () => {
 	const { data: members = [], isLoading } = useTeamMembers();
+	const navigate = useNavigate();
 
 	if (isLoading) return <p>Loading...</p>;
 
@@ -38,14 +40,20 @@ const TeamPage = () => {
 							<div
 								key={m.id}
 								className={clsx(
-									"card text-left w-[400px] max-w-[90%] ",
-									isAdmin && "bg-accent/80"
+									"card text-left w-[400px] max-w-[90%] cursor-pointer",
+									"hover:outline-accent"
 								)}
+								onClick={() => {
+									navigate(
+										`?action=edit&formId=${FORMS.userEdit}&memberId=${m.id}`,
+										{ state: { from: "/team" } }
+									);
+								}}
 							>
 								<div className="flex gap-10 justify-center items-center w-full">
 									<i className="text-4xl shrink-0">👤</i>
 									<div className="flex-1 flex flex-col gap-2">
-										<p className="text-sm">
+										<p className={clsx("text-sm", isAdmin && "text-accent")}>
 											{m.role} - {m.name || "[no name]"}
 										</p>
 										<h2 className="text-lg">{m.username}</h2>

@@ -101,6 +101,7 @@ const UserAddForm = () => {
 							onChange={handleChange}
 							disabled={isPending}
 							className="w-[250px]"
+							minLength={LIMITS.PASSWORD_MIN_LENGTH}
 						/>
 					</InputWrapper>
 

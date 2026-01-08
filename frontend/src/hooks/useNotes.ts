@@ -35,7 +35,6 @@ export const useCreateNote = () => {
 			queryClient.setQueryData(
 				[PROJECTKEY, projectId],
 				(old: ProjectWithAll) => {
-					console.log("USE NOTES: ", old.folders);
 					return {
 						...old,
 						folders: old.folders.map((f) =>
@@ -104,7 +103,6 @@ export const useDeleteNote = () => {
 			queryClient.setQueryData(
 				[PROJECTKEY, projectId],
 				(old: ProjectWithAll) => {
-					console.log("note old", old);
 					const folder = old.folders.find((f) => f.id === folderId);
 					if (!folder) throw new Error("useUpdateNote: folder not found");
 					const newFolder = {

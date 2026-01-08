@@ -23,7 +23,7 @@ const resetSession = (res: Response, token?: string) => {
 	res.clearCookie("session", {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === "production",
-		sameSite: "lax",
+		sameSite: "strict",
 	});
 
 	if (token) {

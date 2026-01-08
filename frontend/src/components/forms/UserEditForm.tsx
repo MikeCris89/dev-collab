@@ -1,45 +1,83 @@
 import { useGlobal } from "@/context/GlobalContext";
-import { useEditTeamMember, useTeamMember } from "@/hooks/useTeam";
+import {
+	useEditTeamMember,
+	useTeamMember,
+	useTeamProjects,
+} from "@/hooks/useTeam";
+import type { EditUser } from "@shared/contract";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import Loading from "../Loading";
+import CheckboxContainer from "./CheckboxContainer";
 
 const UserEditForm = () => {
 	const [searchParams] = useSearchParams();
 	const memberId = searchParams.get("memberId");
-	const { formDirty, setFormDirty } = useGlobal();
+	const { formDirty, setFormDirty, nav } = useGlobal();
 
-	const { data: existing } = useTeamMember(memberId);
+	const { data: existing, isLoading } = useTeamMember(memberId);
 
-	const [name, setName] = useState<string>(existing?.name ?? "");
+	const [formData, setFormData] = useState<EditUser>({
+		name: existing?.name || "",
+	});
+
+	const [projectIds, setProjectIds] = useState<string[]>(
+		existing?.projectsUsers || []
+	);
+
+	const { data: projects, isLoading: loadingProjects } = useTeamProjects();
 
 	const { isPending, error, mutate: editUser } = useEditTeamMember();
 
 	useEffect(() => {
-		const isDirty = name !== (existing?.name || "");
+		const isDirty = formData.name !== (existing?.name || "");
 		setFormDirty(isDirty);
-	}, [name, setFormDirty, existing]);
+	}, [formData, setFormDirty, existing]);
 
-	if (!existing) throw new Error();
+	if (isLoading || loadingProjects) return <Loading />;
+
+	if (!memberId) throw new Error("memberId not provided.");
+	if (!existing) throw new Error("Team Member not found.");
 
 	const submitHandler = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		if (!formDirty) return;
 
-		editUser({ id: existing.id, data: { name } });
+		editUser({ id: existing.id, data: formData });
 	};
 
 	return (
-		<form onSubmit={submitHandler} id="user-edit-form" className="form">
+		<form onSubmit={submitHandler} id="user-edit-form" className="form ">
+			<h1 className="w-full text-center">Edit Team Member</h1>
+			{existing && <h2 className="text-4xl">{existing.username}</h2>}
 			<input
-				value={name}
+				value={formData.name}
 				placeholder="name"
 				required
-				onChange={(e) => setName(e.target.value)}
-				className="text-[36px] text-accent text-center max-w-[95%]"
+				onChange={(e) =>
+					setFormData((prev) => ({ ...prev, name: e.target.value }))
+				}
+				className="text-[28px] text-center max-w-[95%]"
 				disabled={isPending}
 				autoFocus
 			/>
+			<div className="shrink-0 flex flex-col gap-4">
+				<h3 className="text-center">Project Access</h3>
+
+				<CheckboxContainer
+					items={
+						projects?.map((p) => ({
+							label: p.title,
+							id: p.id,
+						})) || []
+					}
+					state={projectIds || []}
+					setState={setProjectIds}
+					noneLabel="No Projects"
+					icon={nav.p.icon}
+				/>
+			</div>
 			{error && (
 				<div className="text-red-500 text-sm">
 					{error.message ?? "Error has occurred"}

@@ -75,7 +75,7 @@ const NoteBar = () => {
 									allowNav();
 
 									if (!from) {
-										navigate("/");
+										navigate("/", { replace: !isNote });
 									} else {
 										navigate(-1);
 									}

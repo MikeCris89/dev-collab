@@ -82,11 +82,9 @@ const NoteForm = () => {
 	// Initialize states
 	useEffect(() => {
 		if (existing) {
-			// console.log("init useEffect render", existing);
-			// console.log(body);
 			setTitle(existing.title);
 			setFormDirty(false);
-			// setBody(existing.body);
+
 			// Update editor content without adding to history
 			if (editor) {
 				editor.commands.setContent(existing.body, {
@@ -95,8 +93,8 @@ const NoteForm = () => {
 			}
 		} else {
 			setTitle("");
-			// setBody("");
 			setFormDirty(false);
+
 			// Clear editor when creating new note
 			if (editor) {
 				editor.commands.setContent("", {
