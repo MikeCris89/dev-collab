@@ -11,7 +11,7 @@ import { useDeleteModal } from "@/context/DeleteModalContext";
 import { useDeleteFolder } from "@/hooks/useFolders";
 import { useDeleteProject } from "@/hooks/useProjects";
 
-const NoteBar = () => {
+const FormBar = () => {
 	const { allowNav, setSelected, formDirty } = useGlobal();
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -28,6 +28,8 @@ const NoteBar = () => {
 	const isNote = noteId && folderId && projectId;
 	const isFolder = !noteId && folderId && projectId;
 	const isProject = !noteId && !folderId && projectId;
+
+	const isTeamPage = pathname.startsWith("/team");
 
 	const showForm = !!action && !!formId;
 
@@ -75,7 +77,9 @@ const NoteBar = () => {
 									allowNav();
 
 									if (!from) {
-										navigate("/", { replace: !isNote });
+										navigate(isTeamPage ? "/team" : "/", {
+											replace: !isNote || isTeamPage,
+										});
 									} else {
 										navigate(-1);
 									}
@@ -175,7 +179,7 @@ const Toolbar = () => {
 				</div>
 			)}
 
-			{(isNote || isForm) && <NoteBar />}
+			{(isNote || isForm) && <FormBar />}
 		</div>
 	);
 };

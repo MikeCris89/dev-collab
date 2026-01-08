@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Loading from "../Loading";
 import CheckboxContainer from "./CheckboxContainer";
+import { arraysEqual } from "@/lib/utils";
 
 const UserEditForm = () => {
 	const [searchParams] = useSearchParams();
@@ -30,9 +31,17 @@ const UserEditForm = () => {
 	const { isPending, error, mutate: editUser } = useEditTeamMember();
 
 	useEffect(() => {
-		const isDirty = formData.name !== (existing?.name || "");
+		if (existing) setFormData({ name: existing.name });
+		setFormDirty(false);
+	}, [existing, memberId, setFormDirty]);
+
+	useEffect(() => {
+		const isDirty =
+			formData.name !== (existing?.name || "") ||
+			!arraysEqual(projectIds, existing?.projectsUsers ?? []);
+
 		setFormDirty(isDirty);
-	}, [formData, setFormDirty, existing]);
+	}, [formData, setFormDirty, existing, projectIds]);
 
 	if (isLoading || loadingProjects) return <Loading />;
 

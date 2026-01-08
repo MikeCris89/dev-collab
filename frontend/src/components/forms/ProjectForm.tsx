@@ -11,6 +11,7 @@ import { LIMITS, type Project } from "@shared/contract";
 import CheckboxContainer from "./CheckboxContainer";
 import useRequireAuth from "@/hooks/useRequireAuth";
 import { User } from "lucide-react";
+import { arraysEqual } from "@/lib/utils";
 
 const ProjectForm = () => {
 	const { user } = useRequireAuth();
@@ -46,11 +47,12 @@ const ProjectForm = () => {
 
 	useEffect(() => {
 		const isDirty = existing
-			? existing.title.trim() !== title.trim()
+			? existing.title.trim() !== title.trim() ||
+			  !arraysEqual(userIds, existing.projectsUsers)
 			: title.trim() !== "";
 
 		setFormDirty(isDirty);
-	}, [title, existing, setFormDirty]);
+	}, [title, existing, setFormDirty, userIds]);
 
 	const allowNav = useUnsavedChanges(formDirty);
 
