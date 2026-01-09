@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import Modal from "@/components/Modal";
 import { Trash2 } from "lucide-react";
 import { createContext, useContext, useState } from "react";
 
@@ -28,45 +29,46 @@ const ModalProvider = ({ children }: React.PropsWithChildren) => {
 		>
 			{children}
 			{showModal && (
-				<div
-					className="absolute inset-0 z-50 bg-black/70 flex justify-center items-center"
-					onClick={(e) => e.stopPropagation()}
-					data-modal="true"
-				>
-					<div
-						className=" flex flex-col gap-4 justify-center items-center border border-border-medium rounded-md h-fit w-fit sm:min-w-[500px] max-w-[80%] p-6 bg-bg-elevated"
-						onClick={(e) => e.stopPropagation()}
-						data-modal="true"
-					>
-						<div className="flex justify-center items-center gap-4 ">
-							<Trash2 className="text-red-500" />
-							<h2 className="">Delete {showModal.type}</h2>
-						</div>
-						<p className="text-balance">
-							Are you sure you want to delete this{" "}
-							{showModal.type.toLowerCase()}?
-						</p>
-						<p>This action cannot be undone.</p>
-						<div className="flex gap-3 self-end mt-5">
-							<Button
-								onClick={() => {
-									closeModal();
-								}}
-							>
-								Cancel
-							</Button>
-							<Button
-								variant="primary"
-								onClick={() => {
-									showModal.onConfirm();
-									closeModal();
-								}}
-							>
-								Confirm
-							</Button>
-						</div>
+				// <div
+				// 	className="absolute inset-0 z-50 bg-black/70 flex justify-center items-center"
+				// 	onClick={(e) => e.stopPropagation()}
+				// 	data-modal="true"
+				// >
+				// 	<div
+				// 		className=" flex flex-col gap-4 justify-center items-center border border-border-medium rounded-md h-fit w-fit sm:min-w-[500px] max-w-[80%] p-6 bg-bg-elevated"
+				// 		onClick={(e) => e.stopPropagation()}
+				// 		data-modal="true"
+				// 	>
+				<Modal>
+					<div className="flex justify-center items-center gap-4 text-center">
+						<Trash2 className="text-red-500" />
+						<h2 className="">Delete {showModal.type}</h2>
 					</div>
-				</div>
+					<p className="text-balance">
+						Are you sure you want to delete this {showModal.type.toLowerCase()}?
+					</p>
+					<p className="text-balance">This action cannot be undone.</p>
+					<div className="flex gap-3 self-end mt-5">
+						<Button
+							onClick={() => {
+								closeModal();
+							}}
+						>
+							Cancel
+						</Button>
+						<Button
+							variant="primary"
+							onClick={() => {
+								showModal.onConfirm();
+								closeModal();
+							}}
+						>
+							Confirm
+						</Button>
+					</div>
+				</Modal>
+				// 	</div>
+				// </div>
 			)}
 		</DeleteModalContext.Provider>
 	);

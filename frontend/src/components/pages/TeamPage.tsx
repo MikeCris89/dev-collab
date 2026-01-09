@@ -35,7 +35,7 @@ const TeamPage = () => {
 							  new Date(b.createdAt).getTime()
 					)
 					.map((m) => {
-						const isAdmin = m.role === "ADMIN";
+						const isAdmin = m.role === ROLES.admin;
 						return (
 							<div
 								key={m.id}

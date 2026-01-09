@@ -1,3 +1,4 @@
+import { useGlobal } from "@/context/GlobalContext";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { FORMS } from "@shared/contract";
 import clsx from "clsx";
@@ -66,6 +67,7 @@ const Button = ({
 }>) => {
 	const { pathname } = useLocation();
 	const [action, formId] = useGetSearchParams(["action", "formId"]);
+	const { setFormDirty } = useGlobal();
 	const showForm = !!action && !!formId;
 	const isNoteForm = FORMS.n;
 	const isReplace = (showForm && !isNoteForm) || replace;
@@ -98,7 +100,10 @@ const Button = ({
 					type={type}
 					className={clsx(btnInitStyle, btnVariants[variant], className)}
 					disabled={disabled}
-					onClick={onClick}
+					onClick={() => {
+						// if (showForm) setFormDirty(false);
+						if (onClick) onClick();
+					}}
 					form={form}
 				>
 					{children}

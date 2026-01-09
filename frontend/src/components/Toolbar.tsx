@@ -2,7 +2,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGlobal } from "../context/GlobalContext";
 import Button from "./Button";
 import clsx from "clsx";
-import { FORMS } from "@shared/contract";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { useEffect, useState } from "react";
 import { Trash2, UserCircle2, Users2, X } from "lucide-react";
@@ -12,7 +11,7 @@ import { useDeleteFolder } from "@/hooks/useFolders";
 import { useDeleteProject } from "@/hooks/useProjects";
 
 const FormBar = () => {
-	const { allowNav, setSelected, formDirty } = useGlobal();
+	const { allowNav, setSelected, formDirty, setFormDirty } = useGlobal();
 	const location = useLocation();
 	const navigate = useNavigate();
 
@@ -75,6 +74,7 @@ const FormBar = () => {
 								onClick={() => {
 									const from = location.state?.from;
 									allowNav();
+									setFormDirty(false);
 
 									if (!from) {
 										navigate(isTeamPage ? "/team" : "/", {
@@ -86,7 +86,8 @@ const FormBar = () => {
 								}}
 								className="flex gap-2 items-center"
 							>
-								<i className="h-[15px] text-sm">❌</i> <span>cancel</span>
+								<i className="h-[17px] md:h-[16px] text-sm">❌</i>{" "}
+								<span>{formDirty ? "cancel" : "close"}</span>
 							</Button>
 							<Button
 								type="submit"
@@ -94,6 +95,24 @@ const FormBar = () => {
 								variant="primary"
 								disabled={!formDirty}
 								className="flex gap-2 items-center"
+								onClick={() => {
+									setTimeout(() => {
+										setFormDirty(false);
+									}, 50);
+								}}
+								// onClick={() => {
+								// 	if (isNote) return;
+								// 	const from = location.state?.from;
+								// 	allowNav();
+
+								// 	if (!from) {
+								// 		navigate(isTeamPage ? "/team" : "/", {
+								// 			replace: !isNote || isTeamPage,
+								// 		});
+								// 	} else {
+								// 		navigate(-1);
+								// 	}
+								// }}
 							>
 								<i className="h-[15px] text-sm">{formDirty ? "✅" : "☑️"} </i>
 								<span>save</span>
