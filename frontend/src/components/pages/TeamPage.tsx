@@ -3,8 +3,10 @@ import { FORMS, LIMITS, ROLES } from "@shared/contract";
 import Button from "../Button";
 import clsx from "clsx";
 import { useNavigate } from "react-router-dom";
+import useRequireAuth from "@/hooks/useRequireAuth";
 
 const TeamPage = () => {
+	const { user } = useRequireAuth();
 	const { data: members = [], isLoading } = useTeamMembers();
 	const navigate = useNavigate();
 
@@ -13,26 +15,30 @@ const TeamPage = () => {
 	return (
 		<section className="flex-1  min-h-0 overflow-y-auto overflow-x-hidden ">
 			<div className="flex flex-col gap-5 justify-center items-center">
-				<Button
-					variant="primary"
-					className="w-fit m-auto"
-					href={`?action=add&formId=${FORMS.userAdd}`}
-				>
-					add member
-				</Button>
+				{user.isAdmin && (
+					<>
+						<Button
+							variant="primary"
+							className="w-fit m-auto"
+							href={`?action=add&formId=${FORMS.userAdd}`}
+						>
+							Add User
+						</Button>
 
-				<p className="text-text-muted text-sm ">
-					Members: {members.length} / {LIMITS.MAX_USERS_PER_TEAM}
-				</p>
+						<p className="text-text-muted text-sm ">
+							Members: {members.length} / {LIMITS.MAX_USERS_PER_TEAM}
+						</p>
+					</>
+				)}
 				{members
 					.slice()
 					.sort((a, b) =>
 						a.role === ROLES.admin
 							? -1
 							: b.role === ROLES.admin
-							? 1
-							: new Date(a.createdAt).getTime() -
-							  new Date(b.createdAt).getTime()
+								? 1
+								: new Date(a.createdAt).getTime() -
+									new Date(b.createdAt).getTime(),
 					)
 					.map((m) => {
 						const isAdmin = m.role === ROLES.admin;
@@ -40,15 +46,20 @@ const TeamPage = () => {
 							<div
 								key={m.id}
 								className={clsx(
-									"card text-left w-[400px] max-w-[90%] cursor-pointer",
-									"hover:outline-accent"
+									"card text-left w-[400px] max-w-[90%]",
+									user.isAdmin && "cursor-pointer hover:outline-accent",
+									"",
 								)}
-								onClick={() => {
-									navigate(
-										`?action=edit&formId=${FORMS.userEdit}&memberId=${m.id}`,
-										{ state: { from: "/team" } }
-									);
-								}}
+								onClick={
+									user.isAdmin
+										? () => {
+												navigate(
+													`?action=edit&formId=${FORMS.userEdit}&memberId=${m.id}`,
+													{ state: { from: "/team" } },
+												);
+											}
+										: undefined
+								}
 							>
 								<div className="flex gap-10 justify-center items-center w-full">
 									<i className="text-4xl shrink-0">👤</i>

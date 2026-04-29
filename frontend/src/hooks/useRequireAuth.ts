@@ -8,6 +8,7 @@ const useRequireAuth = () => {
 	return {
 		...auth,
 		user: auth.user,
+		isAdmin: auth.user.isAdmin,
 	};
 };
 

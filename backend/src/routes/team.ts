@@ -152,8 +152,6 @@ router.put("/password-change", async (req, res) => {
 		throw new UnauthorizedError("Only admins can change user passwords.");
 
 	const hash = await bcrypt.hash(password, 10);
-	console.log(id);
-	console.log(user.teamId);
 
 	await prisma.user.update({
 		where: {

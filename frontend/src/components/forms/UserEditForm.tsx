@@ -21,6 +21,7 @@ import Button from "../Button";
 import CheckboxContainer from "./CheckboxContainer";
 import FormInput from "./FormInput";
 import { arraysEqual } from "@/lib/utils";
+import useRequireAuth from "@/hooks/useRequireAuth";
 
 interface ContentProps {
 	existing: UserWithProjects;
@@ -48,6 +49,8 @@ const UserEditFormContent = ({
 	submitHandler,
 }: ContentProps) => {
 	const { setShowModal, setUserId } = usePasswordModal();
+	const { user } = useRequireAuth();
+
 	const { nav } = useGlobal();
 
 	return (
@@ -72,20 +75,24 @@ const UserEditFormContent = ({
 					autoFocus
 					disabled={isPending}
 				/>
-				<div className="flex flex-col gap-1">
-					<label className="text-sm text-text-muted self-start">Password</label>
-					<Button
-						onClick={() => {
-							setUserId(existing.id);
-							setShowModal(true);
-						}}
-					>
-						Change Password
-					</Button>
-				</div>
+				{(user.isAdmin || existing.id === user.sub) && (
+					<div className="flex flex-col gap-1">
+						<label className="text-sm text-text-muted self-start">
+							Password
+						</label>
+						<Button
+							onClick={() => {
+								setUserId(existing.id);
+								setShowModal(true);
+							}}
+						>
+							Change Password
+						</Button>
+					</div>
+				)}
 			</div>
 
-			{!isAdmin && (
+			{user.isAdmin && !isAdmin && (
 				<div className="w-full max-w-sm flex flex-col gap-5 shrink-0">
 					<span className="text-xs font-semibold uppercase tracking-widest text-text-muted border-b border-border-light pb-1 w-full">
 						Project Access
