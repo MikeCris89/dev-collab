@@ -12,7 +12,7 @@ const PublicHome = () => {
 	const isLogin = pathname.includes("login");
 
 	return (
-		<div className="flex flex-col justify-center items-center h-full w-full relative max-w-[90%] m-auto">
+		<div className="flex flex-col justify-center items-center h-full w-full relative max-w-[90%] m-auto overflow-y-hidden">
 			<div className="absolute top-0 right-0  h-10 w-10 p-6">
 				<ThemeSwitcher />
 			</div>
