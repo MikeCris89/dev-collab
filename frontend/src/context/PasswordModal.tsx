@@ -1,6 +1,7 @@
 import Button from "@/components/Button";
 import Modal from "@/components/Modal";
 import FormInput from "@/components/forms/FormInput";
+import { usePasswordChange } from "@/hooks/useTeam";
 import { LIMITS } from "@shared/contract";
 import {
 	createContext,
@@ -12,15 +13,20 @@ import {
 interface ModalCtx {
 	showModal: boolean;
 	setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+	userId: string | null;
+	setUserId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const ModalCtx = createContext<ModalCtx | null>(null);
 
 const PasswordModalUI = () => {
-	const { showModal, setShowModal } = usePasswordModal();
+	const { showModal, setShowModal, userId } = usePasswordModal();
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [passwordError, setPasswordError] = useState<string | null>(null);
+	const [success, setSuccess] = useState(false);
+
+	const { mutateAsync: changePassword, isPending } = usePasswordChange();
 
 	const resetForm = () => {
 		setNewPassword("");
@@ -33,17 +39,36 @@ const PasswordModalUI = () => {
 		setShowModal(false);
 	};
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (newPassword !== confirmPassword) {
 			setPasswordError("Passwords do not match.");
 			return;
 		}
-		console.log("Change password stub:", { newPassword });
-		handleClose();
+		if (!userId) {
+			setPasswordError("User ID not provided.");
+			return;
+		}
+		try {
+			console.log(userId);
+			await changePassword({ id: userId, password: newPassword });
+			setSuccess(true);
+		} catch (e) {
+			setPasswordError(
+				e instanceof Error ? e.message : "Error setting password",
+			);
+		}
 	};
 
 	if (!showModal) return null;
+
+	if (success)
+		return (
+			<Modal>
+				<p>Password updated successfully.</p>
+				<Button onClick={handleClose}>Close</Button>
+			</Modal>
+		);
 
 	return (
 		<Modal>
@@ -63,6 +88,7 @@ const PasswordModalUI = () => {
 					required
 					minLength={LIMITS.PASSWORD_MIN_LENGTH}
 					autoFocus
+					disabled={isPending}
 				/>
 				<FormInput
 					id="confirm-password"
@@ -75,14 +101,17 @@ const PasswordModalUI = () => {
 					}}
 					required
 					minLength={LIMITS.PASSWORD_MIN_LENGTH}
+					disabled={isPending}
 				/>
 				{passwordError && (
 					<p className="text-red-500 text-sm">{passwordError}</p>
 				)}
 				<div className="flex gap-3 self-end mt-2">
-					<Button onClick={handleClose}>Cancel</Button>
-					<Button variant="primary" type="submit">
-						Update Password
+					<Button onClick={handleClose} disabled={isPending}>
+						Cancel
+					</Button>
+					<Button variant="primary" type="submit" disabled={isPending}>
+						{isPending ? "Saving..." : "Update Password"}
 					</Button>
 				</div>
 			</form>
@@ -92,9 +121,10 @@ const PasswordModalUI = () => {
 
 export const PasswordModalProvider = ({ children }: PropsWithChildren) => {
 	const [showModal, setShowModal] = useState<boolean>(false);
+	const [userId, setUserId] = useState<string | null>(null);
 
 	return (
-		<ModalCtx.Provider value={{ showModal, setShowModal }}>
+		<ModalCtx.Provider value={{ showModal, setShowModal, setUserId, userId }}>
 			{children}
 			<PasswordModalUI />
 		</ModalCtx.Provider>

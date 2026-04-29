@@ -1,11 +1,19 @@
 import { useGlobal } from "@/context/GlobalContext";
-import { PasswordModalProvider, usePasswordModal } from "@/context/PasswordModal";
+import {
+	PasswordModalProvider,
+	usePasswordModal,
+} from "@/context/PasswordModal";
 import {
 	useEditTeamMember,
 	useTeamMember,
 	useTeamProjects,
 } from "@/hooks/useTeam";
-import { ROLES, type EditUser, type ProjectWithUsers, type UserWithProjects } from "@shared/contract";
+import {
+	ROLES,
+	type EditUser,
+	type ProjectWithUsers,
+	type UserWithProjects,
+} from "@shared/contract";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "../Loading";
@@ -39,7 +47,7 @@ const UserEditFormContent = ({
 	isAdmin,
 	submitHandler,
 }: ContentProps) => {
-	const { setShowModal } = usePasswordModal();
+	const { setShowModal, setUserId } = usePasswordModal();
 	const { nav } = useGlobal();
 
 	return (
@@ -66,7 +74,14 @@ const UserEditFormContent = ({
 				/>
 				<div className="flex flex-col gap-1">
 					<label className="text-sm text-text-muted self-start">Password</label>
-					<Button onClick={() => setShowModal(true)}>Change Password</Button>
+					<Button
+						onClick={() => {
+							setUserId(existing.id);
+							setShowModal(true);
+						}}
+					>
+						Change Password
+					</Button>
 				</div>
 			</div>
 

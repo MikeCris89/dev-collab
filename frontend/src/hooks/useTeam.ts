@@ -1,6 +1,7 @@
 import { deleter, fetcher, poster, putter } from "@/lib/api";
 import type {
 	EditUser,
+	PasswordChangeDTO,
 	ProjectWithUsers,
 	SignupRequest,
 	TeamMember,
@@ -111,6 +112,13 @@ export const useEditTeamMember = () => {
 		// 		};
 		// 	});
 		// },
+	});
+};
+
+export const usePasswordChange = () => {
+	return useMutation({
+		mutationFn: (data: PasswordChangeDTO) =>
+			putter<PasswordChangeDTO, void>(`${BASE}/password-change`, data),
 	});
 };
 

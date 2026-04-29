@@ -143,6 +143,31 @@ router.post("/", adminOnly, async (req, res) => {
 	res.status(201).json(userData);
 });
 
+router.put("/password-change", async (req, res) => {
+	const user = reqUser(req);
+	const userInput = req.body as PasswordChangeDTO;
+	const { id, password } = userInput;
+
+	if (!user.isAdmin && user.sub !== id)
+		throw new UnauthorizedError("Only admins can change user passwords.");
+
+	const hash = await bcrypt.hash(password, 10);
+	console.log(id);
+	console.log(user.teamId);
+
+	await prisma.user.update({
+		where: {
+			id,
+			teamId: user.teamId,
+		},
+		data: {
+			password: hash,
+		},
+	});
+
+	res.sendStatus(204);
+});
+
 router.put("/:id", async (req, res) => {
 	const { isAdmin, teamId, sub } = reqUser(req);
 	const { id } = req.params;
@@ -185,29 +210,6 @@ router.put("/:id", async (req, res) => {
 	const userData = sanitizeTeamUser(user);
 
 	res.json(userData);
-});
-
-router.put("/password-change", async (req, res) => {
-	const user = reqUser(req);
-	const userInput = req.body as PasswordChangeDTO;
-	const { id, password } = userInput;
-
-	if (user.role !== "ADMIN" && user.sub !== id)
-		throw new UnauthorizedError("Only admins can change user passwords.");
-
-	const hash = await bcrypt.hash(password, 10);
-
-	await prisma.user.update({
-		data: {
-			password: hash,
-		},
-		where: {
-			id,
-			teamId: user.teamId,
-		},
-	});
-
-	res.sendStatus(204);
 });
 
 export default router;
