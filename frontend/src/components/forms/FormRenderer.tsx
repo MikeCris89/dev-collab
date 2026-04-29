@@ -3,9 +3,10 @@ import NoteForm from "./NoteForm";
 import ProjectForm from "./ProjectForm";
 import UserEditForm from "./UserEditForm";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
+import UserAddForm from "./UserAddForm";
 
 const formReg = {
-	// "user-add-form": UserAddForm,
+	"user-add-form": UserAddForm,
 	"user-edit-form": UserEditForm,
 	"project-form": ProjectForm,
 	"folder-form": FolderForm,
