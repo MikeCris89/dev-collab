@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import {
 	EditUser,
 	LIMITS,
+	PasswordChangeDTO,
 	ROLES,
 	SignupRequest,
 	TeamWithAll,
@@ -39,7 +40,7 @@ router.get("/", async (req, res) => {
 									projectId: true,
 									createdAt: true,
 								},
-						  }
+							}
 						: false,
 				},
 			},
@@ -48,7 +49,7 @@ router.get("/", async (req, res) => {
 					? {}
 					: {
 							projectsUsers: { some: { userId } },
-					  },
+						},
 				include: {
 					projectsUsers: { select: { userId: true, createdAt: true } },
 					_count: { select: { folders: true } },
@@ -132,7 +133,7 @@ router.post("/", adminOnly, async (req, res) => {
 						createMany: {
 							data: projectIds.map((projectId) => ({ projectId })),
 						},
-				  }
+					}
 				: {},
 		},
 	});
@@ -176,7 +177,7 @@ router.put("/:id", async (req, res) => {
 						createMany: {
 							data: projectIds.map((projectId) => ({ projectId })),
 						},
-				  }
+					}
 				: {},
 		},
 	});
@@ -184,6 +185,29 @@ router.put("/:id", async (req, res) => {
 	const userData = sanitizeTeamUser(user);
 
 	res.json(userData);
+});
+
+router.put("/password-change", async (req, res) => {
+	const user = reqUser(req);
+	const userInput = req.body as PasswordChangeDTO;
+	const { id, password } = userInput;
+
+	if (user.role !== "ADMIN" && user.sub !== id)
+		throw new UnauthorizedError("Only admins can change user passwords.");
+
+	const hash = await bcrypt.hash(password, 10);
+
+	await prisma.user.update({
+		data: {
+			password: hash,
+		},
+		where: {
+			id,
+			teamId: user.teamId,
+		},
+	});
+
+	res.sendStatus(204);
 });
 
 export default router;

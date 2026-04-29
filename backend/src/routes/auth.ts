@@ -47,7 +47,7 @@ const getToken = (user: User) => {
 			secret,
 			{
 				expiresIn: "7d",
-			}
+			},
 		);
 	} catch (e) {
 		console.log("token error: ", e);
@@ -55,6 +55,10 @@ const getToken = (user: User) => {
 	}
 
 	return token;
+};
+
+const hashPassword = async (password: string) => {
+	return await bcrypt.hash(password, 10);
 };
 
 router.get("/me", requireAuth, async (req, res) => {
@@ -69,7 +73,7 @@ router.get("/me", requireAuth, async (req, res) => {
 	// Prevent browser caching
 	res.setHeader(
 		"Cache-Control",
-		"no-store, no-cache, must-revalidate, private"
+		"no-store, no-cache, must-revalidate, private",
 	);
 	res.setHeader("Pragma", "no-cache");
 	res.setHeader("Expires", "0");
@@ -87,7 +91,7 @@ router.post("/signup", validateUserInput, async (req, res) => {
 
 	if (existing) throw new BadRequestError("Username taken");
 
-	const hash = await bcrypt.hash(password, 10);
+	const hash = await hashPassword(password);
 
 	const user = await userQueries.createUser({
 		username,

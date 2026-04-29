@@ -44,6 +44,11 @@ export type SignupRequest = {
 	projectIds?: string[];
 };
 
+export type PasswordChangeDTO = {
+	id: string;
+	password: string;
+};
+
 export type LoginRequest = {
 	username: string;
 	password: string;

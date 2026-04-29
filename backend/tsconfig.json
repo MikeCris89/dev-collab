@@ -48,13 +48,14 @@
 
 {
 	"compilerOptions": {
+		"ignoreDeprecations": "6.0",
 		"baseUrl": ".",
 		// "paths": {
 		// 	"@contract": ["../contract/types.js"],
 		// 	"@contract/*": ["../contract"]
 		// },
 		// "verbatimModuleSyntax": true,
-
+		"rootDir": "./src",
 		"rootDirs": ["./src", "../contract"],
 		"outDir": "./dist",
 		"target": "ES2022",
