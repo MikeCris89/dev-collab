@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import InputWrapper from "./InputWrapper";
 
 const FormInput = ({
@@ -13,6 +14,7 @@ const FormInput = ({
 	maxLength,
 	autoFocus,
 	className,
+	large = false,
 }: {
 	id: string;
 	label: string;
@@ -26,9 +28,15 @@ const FormInput = ({
 	maxLength?: number;
 	autoFocus?: boolean;
 	className?: string;
+	large?: boolean;
 }) => {
 	return (
-		<InputWrapper htmlFor={id} label={label} labelClassName="text-sm text-text-muted" className={className}>
+		<InputWrapper
+			htmlFor={id}
+			label={label}
+			labelClassName={clsx(!large && "text-sm text-text-muted")}
+			className={className}
+		>
 			<input
 				id={id}
 				type={type}
@@ -40,7 +48,11 @@ const FormInput = ({
 				minLength={minLength}
 				maxLength={maxLength}
 				autoFocus={autoFocus}
-				className="w-full px-3 py-2 rounded-lg text-sm bg-bg-surface border border-border-light focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 placeholder:text-text-muted/50 transition-colors disabled:opacity-50"
+				className={clsx(
+					large && "w-[250px]",
+					!large &&
+						"w-full px-3 py-2 rounded-lg text-sm bg-bg-surface border border-border-light focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 placeholder:text-text-muted/50 transition-colors disabled:opacity-50",
+				)}
 			/>
 		</InputWrapper>
 	);

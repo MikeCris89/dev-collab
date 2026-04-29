@@ -1,6 +1,6 @@
 import Button from "@/components/Button";
 import Modal from "@/components/Modal";
-import FormInput from "@/components/forms/FormInput";
+import PasswordFields from "@/components/forms/PasswordFields";
 import { usePasswordChange } from "@/hooks/useTeam";
 import { LIMITS } from "@shared/contract";
 import {
@@ -76,36 +76,18 @@ const PasswordModalUI = () => {
 				Change Password
 			</h2>
 			<form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
-				<FormInput
-					id="new-password"
-					label="New Password"
-					type="password"
-					value={newPassword}
-					onChange={(e) => {
-						setNewPassword(e.target.value);
-						setPasswordError(null);
-					}}
-					required
+				<PasswordFields
+					password={newPassword}
+					confirmPassword={confirmPassword}
+					onPasswordChange={(val) => { setNewPassword(val); setPasswordError(null); }}
+					onConfirmChange={(val) => { setConfirmPassword(val); setPasswordError(null); }}
+					error={passwordError}
 					minLength={LIMITS.PASSWORD_MIN_LENGTH}
 					autoFocus
 					disabled={isPending}
+					passwordLabel="New Password"
+					confirmLabel="Confirm New Password"
 				/>
-				<FormInput
-					id="confirm-password"
-					label="Confirm New Password"
-					type="password"
-					value={confirmPassword}
-					onChange={(e) => {
-						setConfirmPassword(e.target.value);
-						setPasswordError(null);
-					}}
-					required
-					minLength={LIMITS.PASSWORD_MIN_LENGTH}
-					disabled={isPending}
-				/>
-				{passwordError && (
-					<p className="text-red-500 text-sm">{passwordError}</p>
-				)}
 				<div className="flex gap-3 self-end mt-2">
 					<Button onClick={handleClose} disabled={isPending}>
 						Cancel

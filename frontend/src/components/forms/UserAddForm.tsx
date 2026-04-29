@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../Button";
 import CheckboxContainer from "./CheckboxContainer";
 import FormInput from "./FormInput";
+import PasswordFields from "./PasswordFields";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -23,6 +24,8 @@ const UserAddForm = () => {
 		password: "",
 		name: "",
 	});
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [passwordError, setPasswordError] = useState<string | null>(null);
 	const [projectIds, setProjectIds] = useState<string[]>([]);
 
 	if (!isAdmin) {
@@ -36,10 +39,15 @@ const UserAddForm = () => {
 		!loadingProjects &&
 		formData.username.trim().length > 0 &&
 		formData.password.length > 0 &&
+		confirmPassword.length > 0 &&
 		!usernameIsEmail;
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
+		if (formData.password !== confirmPassword) {
+			setPasswordError("Passwords do not match.");
+			return;
+		}
 		if (!canSubmit) return;
 		createUser(
 			{ ...formData, teamId: user.teamId, projectIds },
@@ -79,15 +87,18 @@ const UserAddForm = () => {
 						</p>
 					)}
 				</div>
-				<FormInput
-					id="password"
-					label="Password"
-					type="password"
-					value={formData.password}
-					onChange={(e) =>
-						setFormData((prev) => ({ ...prev, password: e.target.value }))
-					}
-					required
+				<PasswordFields
+					password={formData.password}
+					confirmPassword={confirmPassword}
+					onPasswordChange={(val) => {
+						setFormData((prev) => ({ ...prev, password: val }));
+						setPasswordError(null);
+					}}
+					onConfirmChange={(val) => {
+						setConfirmPassword(val);
+						setPasswordError(null);
+					}}
+					error={passwordError}
 					disabled={isPending}
 				/>
 				<FormInput

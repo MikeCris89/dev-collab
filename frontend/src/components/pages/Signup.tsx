@@ -3,6 +3,7 @@ import Button from "../Button";
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import InputWrapper from "../forms/InputWrapper";
+import PasswordFields from "../forms/PasswordFields";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -12,6 +13,8 @@ const Signup = () => {
 		username: "",
 		password: "",
 	});
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [passwordError, setPasswordError] = useState<string | null>(null);
 	const [privacyChecked, setPrivacyChecked] = useState(false);
 	const [deletionChecked, setDeletionChecked] = useState(false);
 
@@ -26,12 +29,21 @@ const Signup = () => {
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
+		if (userData.password !== confirmPassword) {
+			setPasswordError("Passwords do not match.");
+			return;
+		}
 		if (userData.username && userData.password && !usernameIsEmail)
 			signup(userData);
 	};
 
 	const canSubmit =
-		!isLoading && !usernameIsEmail && privacyChecked && deletionChecked;
+		!isLoading &&
+		!usernameIsEmail &&
+		userData.password.length > 0 &&
+		confirmPassword.length > 0 &&
+		privacyChecked &&
+		deletionChecked;
 
 	return (
 		<div className="max-h-[500px] min-h-0 overflow-y-auto">
@@ -65,18 +77,21 @@ const Signup = () => {
 
 				{/* // TODO generate random passwords instead, do not let users create their own passwords */}
 
-				<InputWrapper htmlFor="password" label="Password">
-					<input
-						name="password"
-						id="password"
-						type="password"
-						value={userData.password}
-						required
-						onChange={handleChange}
-						disabled={isLoading}
-						className="w-[250px]"
-					/>
-				</InputWrapper>
+				<PasswordFields
+					password={userData.password}
+					confirmPassword={confirmPassword}
+					onPasswordChange={(val) => {
+						setUserData((prev) => ({ ...prev, password: val }));
+						setPasswordError(null);
+					}}
+					onConfirmChange={(val) => {
+						setConfirmPassword(val);
+						setPasswordError(null);
+					}}
+					error={passwordError}
+					disabled={isLoading}
+					large
+				/>
 
 				<InputWrapper htmlFor="name" label="Name">
 					<input
