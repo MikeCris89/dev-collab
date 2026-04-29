@@ -67,7 +67,6 @@ const Button = ({
 }>) => {
 	const { pathname } = useLocation();
 	const [action, formId] = useGetSearchParams(["action", "formId"]);
-	const { setFormDirty } = useGlobal();
 	const showForm = !!action && !!formId;
 	const isNoteForm = FORMS.n;
 	const isReplace = (showForm && !isNoteForm) || replace;

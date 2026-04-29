@@ -13,7 +13,7 @@ interface ShowModal {
 }
 
 export const DeleteModalContext = createContext<ModalCtx | undefined>(
-	undefined
+	undefined,
 );
 
 const ModalProvider = ({ children }: React.PropsWithChildren) => {
@@ -29,16 +29,6 @@ const ModalProvider = ({ children }: React.PropsWithChildren) => {
 		>
 			{children}
 			{showModal && (
-				// <div
-				// 	className="absolute inset-0 z-50 bg-black/70 flex justify-center items-center"
-				// 	onClick={(e) => e.stopPropagation()}
-				// 	data-modal="true"
-				// >
-				// 	<div
-				// 		className=" flex flex-col gap-4 justify-center items-center border border-border-medium rounded-md h-fit w-fit sm:min-w-[500px] max-w-[80%] p-6 bg-bg-elevated"
-				// 		onClick={(e) => e.stopPropagation()}
-				// 		data-modal="true"
-				// 	>
 				<Modal>
 					<div className="flex justify-center items-center gap-4 text-center">
 						<Trash2 className="text-red-500" />
@@ -57,24 +47,21 @@ const ModalProvider = ({ children }: React.PropsWithChildren) => {
 							Cancel
 						</Button>
 						<Button
-							variant="primary"
+							variant="default"
+							className="bg-red-500"
 							onClick={() => {
 								showModal.onConfirm();
 								closeModal();
 							}}
 						>
-							Confirm
+							Delete
 						</Button>
 					</div>
 				</Modal>
-				// 	</div>
-				// </div>
 			)}
 		</DeleteModalContext.Provider>
 	);
 };
-
-//top-[50%] left-[50%] -translate-y-[50%] -translate-x-[50%]
 
 export default ModalProvider;
 

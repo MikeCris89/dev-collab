@@ -22,9 +22,6 @@ const PublicHome = () => {
 			<div className="card flex flex-col gap-2 w-[500px] max-w-[90%]">
 				<div className="flex justify-between px-4 items-center">
 					<h2>{isLogin ? "Login" : "Sign Up"}</h2>
-					{/* <Link to={isLogin ? "/signup" : "/login"} className="">
-						{isLogin ? "Sign Up" : "Login"}
-					</Link> */}
 					<Button
 						href={isLogin ? "/signup" : "/login"}
 						className="flex gap-2 items-center"

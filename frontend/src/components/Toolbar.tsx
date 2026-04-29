@@ -72,17 +72,17 @@ const FormBar = () => {
 						<div className="flex gap-3 justify-self-end">
 							<Button
 								onClick={() => {
-									const from = location.state?.from;
+									// const from = location.state?.from;
 									allowNav();
 									setFormDirty(false);
 
-									if (!from) {
-										navigate(isTeamPage ? "/team" : "/", {
-											replace: !isNote || isTeamPage,
-										});
-									} else {
-										navigate(-1);
-									}
+									// if (!from) {
+									navigate(isTeamPage ? "/team" : "/", {
+										replace: !isNote || isTeamPage,
+									});
+									// } else {
+									// 	navigate(-1);
+									// }
 								}}
 								className="flex gap-2 items-center"
 							>
@@ -184,7 +184,7 @@ const Toolbar = () => {
 		<div
 			id="note-bar"
 			className={clsx(
-				"flex items-center justify-center w-full bg-bg-elevated border-b border-b-border-light min-h-[70px] relative flex-nowrap p-2"
+				"flex items-center justify-center w-full bg-bg-elevated border-b border-b-border-light min-h-[70px] relative flex-nowrap p-2",
 			)}
 		>
 			{!isNote && !isForm && title.title && (

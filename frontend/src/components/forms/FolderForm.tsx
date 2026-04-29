@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import InputWrapper from "./InputWrapper";
 import { useCreateFolder, useEditFolder, useFolder } from "@/hooks/useFolders";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGlobal } from "@/context/GlobalContext";
@@ -7,6 +6,7 @@ import Loading from "../Loading";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { LIMITS, type Folder } from "@shared/contract";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
+import FormInput from "./FormInput";
 
 const FolderForm = () => {
 	const { setSelected, closeForm, setFormDirty, formDirty } = useGlobal();
@@ -75,22 +75,27 @@ const FolderForm = () => {
 
 	return (
 		<form id="folder-form" className="form" onSubmit={handleSubmit}>
-			<h1>{isEdit ? "Edit" : "Create New"} Folder</h1>
-			<InputWrapper htmlFor="title" label="Title">
-				<input
+			<div className="text-center w-full">
+				<h1>{isEdit ? "Edit Folder" : "New Folder"}</h1>
+			</div>
+
+			<div className="w-full max-w-sm flex flex-col gap-5">
+				<span className="text-xs font-semibold uppercase tracking-widest text-text-muted border-b border-border-light pb-1 w-full">
+					Details
+				</span>
+				<FormInput
 					id="title"
-					name="title"
+					label="Title"
 					value={title}
 					onChange={(e) => setTitle(e.target.value)}
 					disabled={isPending}
-					autoComplete="off"
-					className="w-[250px]"
 					required
 					maxLength={LIMITS.TITLE_MAX_LENGTH}
 					autoFocus
 				/>
-			</InputWrapper>
-			{error && <p className="text-red-500">{error.message}</p>}
+			</div>
+
+			{error && <p className="text-red-500 text-sm">{error.message}</p>}
 		</form>
 	);
 };

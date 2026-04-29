@@ -93,9 +93,9 @@ const Sidebar = () => {
 			selected.page === "f"
 				? projects.find((p) => p.id === selected.p)?.title || null
 				: selected.page === "n"
-				? project?.folders.find((f) => f.id === selected.f)?.title || null
-				: null,
-		[selected, projects, project]
+					? project?.folders.find((f) => f.id === selected.f)?.title || null
+					: null,
+		[selected, projects, project],
 	);
 
 	const filtered = useMemo(() => {
@@ -111,7 +111,7 @@ const Sidebar = () => {
 				(el) =>
 					el.title?.toLowerCase().includes(search.toLowerCase()) ||
 					("body" in el &&
-						el.body?.toLowerCase().includes(search.toLowerCase()))
+						el.body?.toLowerCase().includes(search.toLowerCase())),
 			);
 		}
 
@@ -126,7 +126,7 @@ const Sidebar = () => {
 			errorProjects?.message ??
 				errorProject?.message ??
 				errorFolder?.message ??
-				"Error fetching project data"
+				"Error fetching project data",
 		);
 
 	const handleDelete = () => {
@@ -160,13 +160,13 @@ const Sidebar = () => {
 				"absolute left-0 -translate-x-full md:static md:inset-auto  md:translate-x-0",
 				"flex flex-col",
 				" h-screen w-[250px] max-w-screen md:h-full md:w-[300px] bg-bg-surface  p-1 py-4 border-r border-r-border-medium shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] transition-all duration-300 z-[49] backdrop-blur-sm ",
-				showMenu && "translate-x-0"
+				showMenu && "translate-x-0",
 			)}
 		>
 			{/* Mobile Menu Button */}
 			<Button
 				className={clsx(
-					"md:hidden absolute left-full !rounded-[0_14px_14px_0] !py-2 !px-0 !min-w-[50px] top-3"
+					"md:hidden absolute left-full !rounded-[0_14px_14px_0] !py-2 !px-0 !min-w-[50px] top-3",
 				)}
 				variant="menu"
 				onClick={toggleMenu}
@@ -185,7 +185,7 @@ const Sidebar = () => {
 				<NavLink
 					className={clsx(
 						"flex items-center hover:text-accent gap-2 p-2 rounded-md",
-						pathname.includes("/account") && "bg-accent-hover text-accent"
+						pathname.includes("/account") && "bg-accent-hover text-accent",
 					)}
 					to="/account"
 					onClick={() => setShowMenu(false)}
@@ -195,7 +195,7 @@ const Sidebar = () => {
 				<NavLink
 					className={clsx(
 						"flex items-center gap-2 hover:text-accent p-2 rounded-md ",
-						pathname.includes("/team") && "bg-accent-hover text-accent"
+						pathname.includes("/team") && "bg-accent-hover text-accent",
 					)}
 					to="/team"
 					onClick={() => setShowMenu(false)}
@@ -306,8 +306,8 @@ const Sidebar = () => {
 									selected.n !== el.id
 										? `/p/${selected.p}/f/${selected.f}/n/${el.id}?action=edit&formId=${FORMS.n}`
 										: paramSel || !!noteId
-										? undefined
-										: "/"
+											? undefined
+											: "/"
 								}
 								onClick={() => {
 									setTimeout(() => {

@@ -1,12 +1,11 @@
 import FolderForm from "./FolderForm";
 import NoteForm from "./NoteForm";
 import ProjectForm from "./ProjectForm";
-import UserAddForm from "./UserAddForm";
 import UserEditForm from "./UserEditForm";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 
 const formReg = {
-	"user-add-form": UserAddForm,
+	// "user-add-form": UserAddForm,
 	"user-edit-form": UserEditForm,
 	"project-form": ProjectForm,
 	"folder-form": FolderForm,

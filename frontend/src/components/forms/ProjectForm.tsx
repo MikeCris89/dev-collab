@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import InputWrapper from "./InputWrapper";
 import { useCreateProject, useUpdateProject } from "@/hooks/useProjects";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTeamMembers, useTeamProject } from "@/hooks/useTeam";
@@ -9,6 +8,7 @@ import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { useGlobal } from "@/context/GlobalContext";
 import { LIMITS, type Project } from "@shared/contract";
 import CheckboxContainer from "./CheckboxContainer";
+import FormInput from "./FormInput";
 import useRequireAuth from "@/hooks/useRequireAuth";
 import { User } from "lucide-react";
 import { arraysEqual } from "@/lib/utils";
@@ -94,36 +94,39 @@ const ProjectForm = () => {
 
 	return (
 		<form id="project-form" className="form" onSubmit={handleSubmit}>
-			<h1>{isEdit ? "Edit" : "Create New"} Project</h1>
-			<div className="flex flex-wrap gap-4 justify-center items-start">
-				<div className="p-3">
-					<InputWrapper htmlFor="title" label="Title">
-						<input
-							name="title"
-							id="title"
-							required
-							value={title}
-							onChange={(e) => setTitle(e.target.value)}
-							disabled={isLoading}
-							className="w-[250px]"
-							maxLength={LIMITS.TITLE_MAX_LENGTH}
-							autoFocus
-						/>
-					</InputWrapper>
-				</div>
+			<div className="text-center w-full">
+				<h1>{isEdit ? "Edit Project" : "New Project"}</h1>
+			</div>
 
-				<div className="flex flex-col gap-4">
-					<label>Team Access</label>
-					<CheckboxContainer
-						items={members
-							.filter((m) => m.id !== user.sub)
-							.map((m) => ({ label: m.name || m.username, id: m.id }))}
-						state={userIds}
-						setState={setUserIds}
-						noneLabel="No Team Members"
-						icon={<User />}
-					/>
-				</div>
+			<div className="w-full max-w-sm flex flex-col gap-5">
+				<span className="text-xs font-semibold uppercase tracking-widest text-text-muted border-b border-border-light pb-1 w-full">
+					Details
+				</span>
+				<FormInput
+					id="title"
+					label="Title"
+					value={title}
+					onChange={(e) => setTitle(e.target.value)}
+					disabled={isLoading}
+					required
+					maxLength={LIMITS.TITLE_MAX_LENGTH}
+					autoFocus
+				/>
+			</div>
+
+			<div className="w-full max-w-sm flex flex-col gap-5 shrink-0">
+				<span className="text-xs font-semibold uppercase tracking-widest text-text-muted border-b border-border-light pb-1 w-full">
+					Team Access
+				</span>
+				<CheckboxContainer
+					items={members
+						.filter((m) => m.id !== user.sub)
+						.map((m) => ({ label: m.name || m.username, id: m.id }))}
+					state={userIds}
+					setState={setUserIds}
+					noneLabel="No Team Members"
+					icon={<User />}
+				/>
 			</div>
 		</form>
 	);

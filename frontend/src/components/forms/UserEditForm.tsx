@@ -1,41 +1,117 @@
 import { useGlobal } from "@/context/GlobalContext";
+import { PasswordModalProvider, usePasswordModal } from "@/context/PasswordModal";
 import {
 	useEditTeamMember,
 	useTeamMember,
 	useTeamProjects,
 } from "@/hooks/useTeam";
-import { ROLES, type EditUser } from "@shared/contract";
+import { ROLES, type EditUser, type ProjectWithUsers, type UserWithProjects } from "@shared/contract";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "../Loading";
-import CheckboxContainer from "./CheckboxContainer";
-import { arraysEqual } from "@/lib/utils";
-import { useAuth } from "@/context/AuthContext";
 import Button from "../Button";
+import CheckboxContainer from "./CheckboxContainer";
+import FormInput from "./FormInput";
+import { arraysEqual } from "@/lib/utils";
+
+interface ContentProps {
+	existing: UserWithProjects;
+	isPending: boolean;
+	error: Error | null;
+	formData: EditUser;
+	setFormData: React.Dispatch<React.SetStateAction<EditUser>>;
+	projectIds: string[];
+	setProjectIds: React.Dispatch<React.SetStateAction<string[]>>;
+	projects: ProjectWithUsers[];
+	isAdmin: boolean;
+	submitHandler: (e: React.FormEvent) => void;
+}
+
+const UserEditFormContent = ({
+	existing,
+	isPending,
+	error,
+	formData,
+	setFormData,
+	projectIds,
+	setProjectIds,
+	projects,
+	isAdmin,
+	submitHandler,
+}: ContentProps) => {
+	const { setShowModal } = usePasswordModal();
+	const { nav } = useGlobal();
+
+	return (
+		<form onSubmit={submitHandler} id="user-edit-form" className="form">
+			<div className="text-center w-full">
+				<h1 className="mb-1">Edit Team Member</h1>
+				<p className="text-text-muted text-sm">{existing.username}</p>
+			</div>
+
+			<div className="w-full max-w-sm flex flex-col gap-5">
+				<span className="text-xs font-semibold uppercase tracking-widest text-text-muted border-b border-border-light pb-1 w-full">
+					Profile
+				</span>
+				<FormInput
+					id="name"
+					label="Name"
+					value={formData.name ?? ""}
+					onChange={(e) =>
+						setFormData((prev) => ({ ...prev, name: e.target.value }))
+					}
+					required
+					autoFocus
+					disabled={isPending}
+				/>
+				<div className="flex flex-col gap-1">
+					<label className="text-sm text-text-muted self-start">Password</label>
+					<Button onClick={() => setShowModal(true)}>Change Password</Button>
+				</div>
+			</div>
+
+			{!isAdmin && (
+				<div className="w-full max-w-sm flex flex-col gap-5 shrink-0">
+					<span className="text-xs font-semibold uppercase tracking-widest text-text-muted border-b border-border-light pb-1 w-full">
+						Project Access
+					</span>
+					<CheckboxContainer
+						items={projects.map((p) => ({ label: p.title, id: p.id }))}
+						state={projectIds}
+						setState={setProjectIds}
+						noneLabel="No Projects"
+						icon={nav.p.icon}
+					/>
+				</div>
+			)}
+
+			{error && (
+				<p className="text-red-500 text-sm">
+					{error.message ?? "Error has occurred"}
+				</p>
+			)}
+		</form>
+	);
+};
 
 const UserEditForm = () => {
 	const [searchParams] = useSearchParams();
 	const memberId = searchParams.get("memberId");
-	const { formDirty, setFormDirty, nav } = useGlobal();
-	const { user } = useAuth();
+	const { formDirty, setFormDirty } = useGlobal();
 	const navigate = useNavigate();
 	const location = useLocation();
 
 	const { data: existing, isLoading } = useTeamMember(memberId);
+	const { data: projects = [], isLoading: loadingProjects } = useTeamProjects();
+	const { isPending, error, mutate: editUser } = useEditTeamMember();
 
 	const [formData, setFormData] = useState<EditUser>({
 		name: existing?.name || "",
 	});
-
 	const [projectIds, setProjectIds] = useState<string[]>(
-		existing?.projectsUsers || []
+		existing?.projectsUsers || [],
 	);
 
-	const { data: projects, isLoading: loadingProjects } = useTeamProjects();
-
-	const { isPending, error, mutate: editUser } = useEditTeamMember();
-
-	// initialize data
 	useEffect(() => {
 		if (existing) {
 			setFormData({ name: existing.name });
@@ -44,12 +120,10 @@ const UserEditForm = () => {
 		setFormDirty(false);
 	}, [existing, memberId, setFormDirty]);
 
-	// check if form isDirty
 	useEffect(() => {
 		const isDirty =
 			formData.name !== (existing?.name || "") ||
 			!arraysEqual(projectIds, existing?.projectsUsers ?? []);
-
 		setFormDirty(isDirty);
 	}, [formData, setFormDirty, existing, projectIds]);
 
@@ -58,67 +132,32 @@ const UserEditForm = () => {
 	if (!memberId) throw new Error("memberId not provided.");
 	if (!existing) throw new Error("Team Member not found.");
 
-	const isAdminUser = user?.role === ROLES.admin;
 	const isAdmin = existing.role === ROLES.admin;
 
 	const submitHandler = async (e: React.FormEvent) => {
 		e.preventDefault();
-
 		if (!formDirty) return;
-
 		editUser({ id: existing.id, data: { ...formData, projectIds } });
 		const from = location.state?.from;
-
-		if (!from) {
-			navigate("/team", {
-				replace: true,
-			});
-		} else {
-			navigate(-1);
-		}
+		if (!from) navigate("/team", { replace: true });
+		else navigate(-1);
 	};
 
 	return (
-		<form onSubmit={submitHandler} id="user-edit-form" className="form ">
-			<h1 className="w-full text-center">Edit Team Member</h1>
-			<Button className="ml-50">change password</Button>
-			{existing && <h2 className="text-4xl">{existing.username}</h2>}
-			<input
-				value={formData.name}
-				placeholder="name"
-				required
-				onChange={(e) =>
-					setFormData((prev) => ({ ...prev, name: e.target.value }))
-				}
-				className="text-[28px] text-center max-w-[95%]"
-				disabled={isPending}
-				autoFocus
+		<PasswordModalProvider>
+			<UserEditFormContent
+				existing={existing}
+				isPending={isPending}
+				error={error}
+				formData={formData}
+				setFormData={setFormData}
+				projectIds={projectIds}
+				setProjectIds={setProjectIds}
+				projects={projects}
+				isAdmin={isAdmin}
+				submitHandler={submitHandler}
 			/>
-
-			{!isAdmin && (
-				<div className="shrink-0 flex flex-col gap-4">
-					<h3 className="text-center">Project Access</h3>
-
-					<CheckboxContainer
-						items={
-							projects?.map((p) => ({
-								label: p.title,
-								id: p.id,
-							})) || []
-						}
-						state={projectIds || []}
-						setState={setProjectIds}
-						noneLabel="No Projects"
-						icon={nav.p.icon}
-					/>
-				</div>
-			)}
-			{error && (
-				<div className="text-red-500 text-sm">
-					{error.message ?? "Error has occurred"}
-				</div>
-			)}
-		</form>
+		</PasswordModalProvider>
 	);
 };
 
