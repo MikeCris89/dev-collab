@@ -100,6 +100,7 @@ const UserAddForm = () => {
 					}}
 					error={passwordError}
 					disabled={isPending}
+					direction="row"
 				/>
 				<FormInput
 					id="name"

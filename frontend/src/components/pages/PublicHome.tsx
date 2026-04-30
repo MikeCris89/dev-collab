@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
 import ThemeSwitcher from "../ThemeSwitcher";
@@ -12,32 +12,41 @@ const PublicHome = () => {
 	const isLogin = pathname.includes("login");
 
 	return (
-		<div className="flex flex-col justify-center items-center h-full w-full relative max-w-[90%] m-auto overflow-y-hidden">
-			<div className="absolute top-0 right-0  h-10 w-10 p-6">
+		<div className="flex flex-col justify-center items-center h-full w-full relative">
+			<div className="absolute top-4 right-4">
 				<ThemeSwitcher />
 			</div>
 
-			<h1 className="p-3">DevCollab</h1>
+			<div className="flex flex-col items-center gap-1 mb-4">
+				<h1 className="p-0 m-0">DevCollab</h1>
+				<p className="text-text-muted text-sm m-0">
+					{isLogin ? "Welcome back." : "Create your account to get started."}
+				</p>
+			</div>
 
-			<div className="card flex flex-col gap-2 w-[500px] max-w-[90%]">
-				<div className="flex justify-between px-4 items-center">
-					<h2>{isLogin ? "Login" : "Sign Up"}</h2>
+			<div className="card flex flex-col w-[600px] max-w-[92vw]">
+				<div className="flex justify-between px-5 py-3 items-center border-b border-border-light">
+					<h2 className="text-xl font-semibold m-0">
+						{isLogin ? "Sign In" : "Sign Up"}
+					</h2>
 					<Button
 						href={isLogin ? "/signup" : "/login"}
-						className="flex gap-2 items-center"
+						className="flex gap-2 items-center text-sm"
 						replace
 					>
-						{isLogin ? "Sign Up" : "Login"} <ArrowRight size={16} />
+						{isLogin ? "New account" : "Sign in"} <ArrowRight size={14} />
 					</Button>
 				</div>
 
-				<Outlet />
+				<div className="px-5 py-4">
+					<Outlet />
 
-				{error && (
-					<p role="alert" className="text-red-500">
-						{error}
-					</p>
-				)}
+					{error && (
+						<p role="alert" className="text-red-500 text-sm mt-2 text-center">
+							{error}
+						</p>
+					)}
+				</div>
 			</div>
 		</div>
 	);

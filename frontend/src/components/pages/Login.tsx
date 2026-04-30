@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import type { LoginRequest } from "@shared/contract";
 import Button from "../Button";
-import InputWrapper from "../forms/InputWrapper";
+import FormInput from "../forms/FormInput";
 import LoadingSpinner from "../LoadingSpinner";
 
 const Login = () => {
@@ -12,13 +12,6 @@ const Login = () => {
 	});
 	const { isLoading, login, setError } = useAuth();
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setUserData((prev) => ({
-			...prev,
-			[e.target.name]: e.target.value,
-		}));
-	};
-
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		if (userData.username && userData.password) login(userData);
@@ -26,51 +19,43 @@ const Login = () => {
 	};
 
 	return (
-		<>
-			<form
-				id="user-form"
-				onSubmit={handleSubmit}
-				className="flex flex-col gap-4 items-center justify-center w-full max-w-[500px] "
-				autoComplete="off"
+		<form
+			id="user-form"
+			onSubmit={handleSubmit}
+			className="flex flex-col gap-3 w-full"
+			autoComplete="off"
+		>
+			<FormInput
+				id="username"
+				label="Username"
+				value={userData.username}
+				onChange={(e) => setUserData((prev) => ({ ...prev, username: e.target.value }))}
+				disabled={isLoading}
+				autoFocus
+				required
+			/>
+
+			{/* // TODO generate random passwords instead, do not let users create their own passwords */}
+
+			<FormInput
+				id="password"
+				label="Password"
+				type="password"
+				value={userData.password}
+				onChange={(e) => setUserData((prev) => ({ ...prev, password: e.target.value }))}
+				disabled={isLoading}
+				required
+			/>
+
+			<Button
+				type="submit"
+				disabled={isLoading}
+				variant="primary"
+				className="w-full mt-2"
 			>
-				<InputWrapper htmlFor="username" label="Username">
-					<input
-						name="username"
-						id="username"
-						value={userData.username}
-						onChange={handleChange}
-						className="w-[250px]"
-						disabled={isLoading}
-						autoComplete="off"
-						required
-					/>
-				</InputWrapper>
-
-				{/* // TODO generate random passwords instead, do not let users create their own passwords */}
-
-				<InputWrapper htmlFor="password" label="Password">
-					<input
-						name="password"
-						id="password"
-						type="password"
-						value={userData.password}
-						onChange={handleChange}
-						className="w-[250px]"
-						disabled={isLoading}
-						required
-					/>
-				</InputWrapper>
-
-				<Button
-					type="submit"
-					disabled={isLoading}
-					variant="primary"
-					className="w-[150px]"
-				>
-					{isLoading ? <LoadingSpinner /> : "Submit"}
-				</Button>
-			</form>
-		</>
+				{isLoading ? <LoadingSpinner /> : "Sign In"}
+			</Button>
+		</form>
 	);
 };
 

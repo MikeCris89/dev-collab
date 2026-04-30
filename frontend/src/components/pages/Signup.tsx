@@ -2,7 +2,7 @@ import type { SignupRequest } from "@shared/contract";
 import Button from "../Button";
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import InputWrapper from "../forms/InputWrapper";
+import FormInput from "../forms/FormInput";
 import PasswordFields from "../forms/PasswordFields";
 import LoadingSpinner from "../LoadingSpinner";
 
@@ -20,13 +20,6 @@ const Signup = () => {
 	const [deletionChecked, setDeletionChecked] = useState(false);
 
 	const usernameIsEmail = EMAIL_REGEX.test(userData.username.trim());
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setUserData((prev) => ({
-			...prev,
-			[e.target.name]: e.target.value,
-		}));
-	};
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -47,100 +40,96 @@ const Signup = () => {
 		deletionChecked;
 
 	return (
-		<div className="max-h-[500px] min-h-0 overflow-y-auto">
-			<form
-				id="user-form"
-				onSubmit={handleSubmit}
-				className="flex flex-col gap-4 items-center justify-center w-full max-w-[500px]"
-				autoComplete="off"
-			>
-				<InputWrapper htmlFor="username" label="Username">
-					<input
-						name="username"
-						id="username"
-						required
-						value={userData.username}
-						onChange={handleChange}
-						disabled={isLoading}
-						autoComplete="off"
-						className="w-[250px]"
-					/>
-				</InputWrapper>
-				{usernameIsEmail ? (
-					<p className="text-red-500 text-xs -mt-3 text-center">
-						Please use a username, not an email address.
-					</p>
-				) : (
-					<p className="text-gray-400 text-xs -mt-3 text-center">
-						Use a username, not your email address.
-					</p>
-				)}
-
-				{/* // TODO generate random passwords instead, do not let users create their own passwords */}
-
-				<PasswordFields
-					password={userData.password}
-					confirmPassword={confirmPassword}
-					onPasswordChange={(val) => {
-						setUserData((prev) => ({ ...prev, password: val }));
-						setPasswordError(null);
-					}}
-					onConfirmChange={(val) => {
-						setConfirmPassword(val);
-						setPasswordError(null);
-					}}
-					error={passwordError}
+		<form
+			id="user-form"
+			onSubmit={handleSubmit}
+			className="flex flex-col gap-3 w-full"
+			autoComplete="off"
+		>
+			<div>
+				<FormInput
+					id="username"
+					label="Username"
+					value={userData.username}
+					onChange={(e) =>
+						setUserData((prev) => ({ ...prev, username: e.target.value }))
+					}
 					disabled={isLoading}
-					large
+					autoFocus
+					required
 				/>
+				<p
+					className={`text-xs mt-0.5 ${usernameIsEmail ? "text-red-500" : "text-text-muted"}`}
+				>
+					{usernameIsEmail
+						? "Please use a username, not an email address."
+						: "Use a username, not your email address."}
+				</p>
+			</div>
 
-				<InputWrapper htmlFor="name" label="Name">
+			{/* // TODO generate random passwords instead, do not let users create their own passwords */}
+
+			<PasswordFields
+				password={userData.password}
+				confirmPassword={confirmPassword}
+				onPasswordChange={(val) => {
+					setUserData((prev) => ({ ...prev, password: val }));
+					setPasswordError(null);
+				}}
+				onConfirmChange={(val) => {
+					setConfirmPassword(val);
+					setPasswordError(null);
+				}}
+				error={passwordError}
+				disabled={isLoading}
+				minLength={8}
+				direction="row"
+			/>
+
+			<FormInput
+				id="name"
+				label="Name"
+				value={userData.name ?? ""}
+				onChange={(e) =>
+					setUserData((prev) => ({ ...prev, name: e.target.value }))
+				}
+				disabled={isLoading}
+				placeholder="(optional)"
+			/>
+
+			<div className="flex flex-col gap-2 text-sm text-text-muted border border-border-light rounded-lg p-3">
+				<label className="flex items-start gap-2 cursor-pointer text-sm">
 					<input
-						name="name"
-						id="name"
-						value={userData.name ?? undefined}
-						onChange={handleChange}
-						disabled={isLoading}
-						autoComplete="off"
-						className="w-[250px]"
-						placeholder="(optional)"
+						type="checkbox"
+						checked={privacyChecked}
+						onChange={(e) => setPrivacyChecked(e.target.checked)}
+						className="mt-0.5 shrink-0"
 					/>
-				</InputWrapper>
+					<span>
+						I understand this is a demo portfolio app and I will{" "}
+						<strong className="text-text-primary">not</strong> enter any
+						sensitive or personal information.
+					</span>
+				</label>
+				<label className="flex items-start gap-2 cursor-pointer text-sm">
+					<input
+						type="checkbox"
+						checked={deletionChecked}
+						onChange={(e) => setDeletionChecked(e.target.checked)}
+						className="mt-0.5 shrink-0"
+					/>
+					<span>
+						I understand that my account and all data will be{" "}
+						<strong className="text-text-primary">permanently deleted 7 days</strong>{" "}
+						after creation.
+					</span>
+				</label>
+			</div>
 
-				<div className="flex flex-col gap-3 w-full max-w-[380px] text-sm text-gray-300 border border-neutral-200 rounded-lg p-4">
-					<label className="flex items-start gap-3 cursor-pointer text-[16px]">
-						<input
-							type="checkbox"
-							checked={privacyChecked}
-							onChange={(e) => setPrivacyChecked(e.target.checked)}
-							className="mt-0.5 shrink-0"
-						/>
-						<span>
-							I understand this is a demo portfolio app and I will{" "}
-							<strong>not</strong> enter any sensitive or personal information.
-						</span>
-					</label>
-					<label className="flex items-start gap-3 cursor-pointer text-[16px]">
-						<input
-							type="checkbox"
-							checked={deletionChecked}
-							onChange={(e) => setDeletionChecked(e.target.checked)}
-							className="mt-0.5 shrink-0"
-						/>
-						<span>
-							I understand that my account and all associated data will be{" "}
-							<strong>permanently deleted 7 days</strong> after creation.
-						</span>
-					</label>
-				</div>
-
-				<div className="flex gap-2  p-3">
-					<Button type="submit" disabled={!canSubmit} variant="primary">
-						{isLoading ? <LoadingSpinner /> : "Submit"}
-					</Button>
-				</div>
-			</form>
-		</div>
+			<Button type="submit" disabled={!canSubmit} variant="primary" className="w-full">
+				{isLoading ? <LoadingSpinner /> : "Create Account"}
+			</Button>
+		</form>
 	);
 };
 
