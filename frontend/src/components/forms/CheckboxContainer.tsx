@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import Checkbox, { type CheckItem } from "./Checkbox";
+import { RotateCcw } from "lucide-react";
 
 const CheckboxContainer = ({
 	items,
@@ -7,6 +8,7 @@ const CheckboxContainer = ({
 	setState,
 	noneLabel,
 	icon,
+	avatarIcon,
 	initial,
 }: {
 	items: CheckItem[];
@@ -14,75 +16,84 @@ const CheckboxContainer = ({
 	setState: React.Dispatch<React.SetStateAction<string[]>>;
 	noneLabel: string;
 	icon?: React.ReactNode;
+	avatarIcon?: boolean;
 	initial?: string[];
 }) => {
 	const itemIds = useMemo(() => items.map((i) => i.id), [items]);
 
 	const selectAll = useMemo(() => {
 		if (itemIds.length === 0 || itemIds.length !== state.length) return false;
-
 		const stateSet = new Set(state);
 		return itemIds.every((id) => stateSet.has(id));
 	}, [itemIds, state]);
 
-	// No need for useState + useEffect!
-
 	const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const checked = e.target.checked;
-		if (checked) setState([...itemIds]);
+		if (e.target.checked) setState([...itemIds]);
 		else setState([]);
 	};
 
 	return (
-		<div className="flex flex-col items-stretch justify-center rounded-md outline outline-border-medium p-2 w-[300px] max-w-[95%] max-h-[700px] overflow-y-auto overflow-x-hiden">
-			<div className="flex justify-between w-full items-cente p-1 mb-2">
+		<div className="bg-bg-surface border border-border-light rounded-2xl overflow-hidden w-[300px] max-w-full">
+			{/* Header */}
+			<div className="flex items-center justify-between px-4 py-2.5 border-b border-border-light">
 				{initial ? (
-					<p
-						className="text-sm text-text-muted w-fit cursor-pointer"
+					<button
+						type="button"
 						onClick={() => setState([...initial])}
+						className="flex items-center gap-1.5 text-xs text-text-muted hover:text-accent transition-colors"
 					>
-						reset
-					</p>
+						<RotateCcw size={11} />
+						Reset
+					</button>
 				) : (
-					<div></div>
+					<div />
 				)}
-				<label
-					htmlFor="selectAll"
-					className="flex flex-row gap-2 items-center cursor-pointer w-fit self-end"
-				>
-					<small>select all</small>
-					<input
-						type="checkbox"
-						name="selectAll"
-						id="selectAll"
-						onChange={handleSelectAll}
-						className="w-[10px] h-[10px]"
-						checked={selectAll}
-					/>
+				<label className="flex items-center gap-2 cursor-pointer">
+					<span className="text-xs text-text-muted">Select all</span>
+					<div className="relative">
+						<input
+							type="checkbox"
+							name="selectAll"
+							id="selectAll"
+							onChange={handleSelectAll}
+							checked={selectAll}
+							className="hidden peer"
+						/>
+						<div className="w-4 h-4 rounded border border-border-medium peer-checked:bg-accent peer-checked:border-accent flex items-center justify-center transition-colors">
+							{selectAll && (
+								<svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+									<path d="M2 5l2.5 2.5L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+								</svg>
+							)}
+						</div>
+					</div>
 				</label>
 			</div>
-			{/* </InputWrapper> */}
-			{items && items.length > 0 ? (
-				items.map((item) => {
-					const checked = state.includes(item.id);
-					const onChange = (checked: boolean) => {
-						if (checked) setState((prev) => [...prev, item.id]);
-						else setState((prev) => prev.filter((i) => i !== item.id));
-					};
 
-					return (
-						<Checkbox
-							item={item}
-							icon={icon}
-							checked={checked}
-							onChange={onChange}
-							key={item.id}
-						/>
-					);
-				})
-			) : (
-				<p className="text-text-muted text-sm self-center"> - {noneLabel} - </p>
-			)}
+			{/* Items */}
+			<div className="max-h-[280px] overflow-y-auto">
+				{items.length > 0 ? (
+					items.map((item) => {
+						const checked = state.includes(item.id);
+						const onChange = (checked: boolean) => {
+							if (checked) setState((prev) => [...prev, item.id]);
+							else setState((prev) => prev.filter((i) => i !== item.id));
+						};
+						return (
+							<Checkbox
+								key={item.id}
+								item={item}
+								icon={icon}
+								avatarIcon={avatarIcon}
+								checked={checked}
+								onChange={onChange}
+							/>
+						);
+					})
+				) : (
+					<p className="text-text-muted text-sm text-center py-6">— {noneLabel} —</p>
+				)}
+			</div>
 		</div>
 	);
 };

@@ -10,7 +10,6 @@ import { LIMITS, type Project } from "@shared/contract";
 import CheckboxContainer from "./CheckboxContainer";
 import FormInput from "./FormInput";
 import useRequireAuth from "@/hooks/useRequireAuth";
-import { User } from "lucide-react";
 import { arraysEqual } from "@/lib/utils";
 
 const ProjectForm = () => {
@@ -125,7 +124,7 @@ const ProjectForm = () => {
 					state={userIds}
 					setState={setUserIds}
 					noneLabel="No Team Members"
-					icon={<User />}
+					avatarIcon
 				/>
 			</div>
 		</form>
