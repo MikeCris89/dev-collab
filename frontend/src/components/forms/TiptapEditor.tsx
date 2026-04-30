@@ -1,5 +1,18 @@
 import { EditorContent, Editor } from "@tiptap/react";
 import { LIMITS } from "@shared/contract";
+import {
+	Bold,
+	Italic,
+	Strikethrough,
+	Heading1,
+	Heading2,
+	Heading3,
+	List,
+	ListOrdered,
+	ListChecks,
+	Code2,
+	Quote,
+} from "lucide-react";
 
 interface TiptapEditorProps {
 	placeholder?: string;
@@ -8,48 +21,15 @@ interface TiptapEditorProps {
 }
 
 export function TiptapEditor({ placeholder, id, editor }: TiptapEditorProps) {
-	// const editor = useEditor({
-	// 	extensions: [
-	// 		StarterKit,
-	// 		TaskList,
-	// 		TaskItem.configure({
-	// 			nested: true,
-	// 		}),
-	// 	],
-	// 	content,
-	// 	onUpdate: ({ editor }) => {
-	// 		onChange(editor.getHTML());
-	// 	},
-	// 	onTransaction: () => {
-	// 		forceUpdate({}); // Force toolbar to re-render on cursor move
-	// 	},
-	// 	editorProps: {
-	// 		attributes: {
-	// 			class:
-	// 				"prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[200px] p-4",
-	// 		},
-	// 	},
-	// });
-
-	// Update editor content when prop changes
-	// useEffect(() => {
-	// 	if (editor && content !== editor.getHTML()) {
-	// 		editor.commands.setContent(content);
-	// 	}
-	// }, [content, editor]);
-
 	if (!editor) {
 		return null;
 	}
 
-	const oldStyle = "border border-border-medium rounded-lg ";
-	const oldToolbar = " rounded-lg ";
-
 	return (
-		<div className="flex flex-col overflow-hidden bg-bg-elevated h-full w-full ">
+		<div className="flex flex-col overflow-hidden bg-bg-elevated h-full w-full">
 			{/* Toolbar */}
 			<div
-				className="flex gap-1 p-2 bg-bg-muted border-y border-border-medium flex-wrap overflow-hidden"
+				className="flex items-center gap-0.5 px-2 py-1.5 bg-bg-muted border-y border-border-light overflow-x-auto"
 				tabIndex={-1}
 			>
 				<ToolbarButton
@@ -57,26 +37,24 @@ export function TiptapEditor({ placeholder, id, editor }: TiptapEditorProps) {
 					isActive={editor.isActive("bold")}
 					title="Bold"
 				>
-					<strong>B</strong>
+					<Bold size={16} />
 				</ToolbarButton>
-
 				<ToolbarButton
 					onClick={() => editor.chain().focus().toggleItalic().run()}
 					isActive={editor.isActive("italic")}
 					title="Italic"
 				>
-					<em>I</em>
+					<Italic size={16} />
 				</ToolbarButton>
-
 				<ToolbarButton
 					onClick={() => editor.chain().focus().toggleStrike().run()}
 					isActive={editor.isActive("strike")}
 					title="Strikethrough"
 				>
-					<s>S</s>
+					<Strikethrough size={16} />
 				</ToolbarButton>
 
-				<div className="w-px bg-border-light mx-1" />
+				<Separator />
 
 				<ToolbarButton
 					onClick={() =>
@@ -85,9 +63,8 @@ export function TiptapEditor({ placeholder, id, editor }: TiptapEditorProps) {
 					isActive={editor.isActive("heading", { level: 1 })}
 					title="Heading 1"
 				>
-					H1
+					<Heading1 size={16} />
 				</ToolbarButton>
-
 				<ToolbarButton
 					onClick={() =>
 						editor.chain().focus().toggleHeading({ level: 2 }).run()
@@ -95,9 +72,8 @@ export function TiptapEditor({ placeholder, id, editor }: TiptapEditorProps) {
 					isActive={editor.isActive("heading", { level: 2 })}
 					title="Heading 2"
 				>
-					H2
+					<Heading2 size={16} />
 				</ToolbarButton>
-
 				<ToolbarButton
 					onClick={() =>
 						editor.chain().focus().toggleHeading({ level: 3 }).run()
@@ -105,69 +81,64 @@ export function TiptapEditor({ placeholder, id, editor }: TiptapEditorProps) {
 					isActive={editor.isActive("heading", { level: 3 })}
 					title="Heading 3"
 				>
-					H3
+					<Heading3 size={16} />
 				</ToolbarButton>
 
-				<div className="w-px bg-border-light mx-1" />
+				<Separator />
 
 				<ToolbarButton
 					onClick={() => editor.chain().focus().toggleBulletList().run()}
 					isActive={editor.isActive("bulletList")}
 					title="Bullet List"
 				>
-					• List
+					<List size={16} />
 				</ToolbarButton>
-
 				<ToolbarButton
 					onClick={() => editor.chain().focus().toggleOrderedList().run()}
 					isActive={editor.isActive("orderedList")}
 					title="Numbered List"
 				>
-					1. List
+					<ListOrdered size={16} />
 				</ToolbarButton>
-
 				<ToolbarButton
 					onClick={() => editor.chain().focus().toggleTaskList().run()}
 					isActive={editor.isActive("taskList")}
 					title="Task List"
 				>
-					✓ Tasks
+					<ListChecks size={16} />
 				</ToolbarButton>
 
-				<div className="w-px bg-border-light mx-1" />
+				<Separator />
 
 				<ToolbarButton
 					onClick={() => editor.chain().focus().toggleCodeBlock().run()}
 					isActive={editor.isActive("codeBlock")}
 					title="Code Block"
 				>
-					{"</>"}
+					<Code2 size={16} />
 				</ToolbarButton>
-
 				<ToolbarButton
 					onClick={() => editor.chain().focus().toggleBlockquote().run()}
 					isActive={editor.isActive("blockquote")}
 					title="Quote"
 				>
-					" "
+					<Quote size={16} />
 				</ToolbarButton>
 			</div>
 
 			{/* Editor */}
 			<div className="flex-1 flex overflow-hidden h-full">
 				<EditorContent
-					// key={id}
 					editor={editor}
 					placeholder={placeholder}
 					maxLength={LIMITS.NOTE_BODY_MAX_LENGTH}
-					className="flex-1 text-left min-h-0 overflow-y-auto overflow-x-hidden  [&_.tiptap]:pb-16"
+					className="flex-1 text-left min-h-0 overflow-y-auto overflow-x-hidden [&_.tiptap]:pb-16"
 				/>
 			</div>
 		</div>
 	);
 }
 
-// Toolbar Button Component
 interface ToolbarButtonProps {
 	onClick: () => void;
 	isActive: boolean;
@@ -175,26 +146,25 @@ interface ToolbarButtonProps {
 	title?: string;
 }
 
-function ToolbarButton({
-	onClick,
-	isActive,
-	children,
-	title,
-}: ToolbarButtonProps) {
+function ToolbarButton({ onClick, isActive, children, title }: ToolbarButtonProps) {
 	return (
 		<button
 			type="button"
 			onClick={onClick}
 			title={title}
-			className={`px-3 py-1.5 rounded text-sm font-medium transition-colors
-        ${
+			tabIndex={-1}
+			className={`flex items-center justify-center w-8 h-8 rounded-lg transition-colors shrink-0
+				${
 					isActive
 						? "bg-accent-hover text-accent"
-						: "bg-bg-elevated hover:bg-hover-medium text-text-primary border border-border-medium"
+						: "text-text-muted hover:text-text-primary hover:bg-hover-light"
 				}`}
-			tabIndex={-1}
 		>
 			{children}
 		</button>
 	);
+}
+
+function Separator() {
+	return <div className="w-px h-5 bg-border-medium mx-1 shrink-0" />;
 }
