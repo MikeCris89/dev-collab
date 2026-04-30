@@ -223,3 +223,7 @@ ul[data-type="taskList"] li[data-checked="true"] > div > p {
 .ProseMirror ol ol {
 	margin: 0.25rem 0;
 }
+
+.tiptap ::selection {
+	background-color: rgba(78, 205, 196, 0.3);
+}

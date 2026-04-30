@@ -45,11 +45,11 @@ const NoteForm = () => {
 		error: errUpdating,
 	} = useUpdateNote();
 
-	const checkIsDirty = (body: string) => {
+	const checkIsDirty = (body: string, isEditorEmpty = false) => {
 		const isDirty = existing
 			? title.trim() !== existing.title.trim() ||
 				body.trim() !== existing.body.trim()
-			: title.trim() !== "" || body.trim() !== "";
+			: title.trim() !== "" || !isEditorEmpty;
 		setFormDirty(isDirty);
 	};
 
@@ -64,7 +64,7 @@ const NoteForm = () => {
 			],
 			content: existing?.body ?? "",
 			onUpdate: ({ editor }) => {
-				checkIsDirty(editor.getHTML());
+				checkIsDirty(editor.getHTML(), editor.isEmpty);
 			},
 			onTransaction: () => {
 				forceUpdate({}); // Force toolbar to re-render on cursor move
@@ -108,7 +108,7 @@ const NoteForm = () => {
 	useEffect(() => {
 		if (!editor) return;
 
-		checkIsDirty(editor.getHTML());
+		checkIsDirty(editor.getHTML(), editor.isEmpty);
 	}, [title, existing, editor]);
 
 	// Block navigation for unsaved changes

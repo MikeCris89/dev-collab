@@ -20,6 +20,7 @@ const ModalProvider = ({ children }: React.PropsWithChildren) => {
 	const [showModal, setShowModal] = useState<ShowModal | null>(null);
 
 	const closeModal = () => setShowModal(null);
+	const isNote = showModal?.type.toLowerCase() === "note";
 
 	return (
 		<DeleteModalContext.Provider
@@ -35,7 +36,8 @@ const ModalProvider = ({ children }: React.PropsWithChildren) => {
 						<h2 className="">Delete {showModal.type}</h2>
 					</div>
 					<p className="text-balance">
-						Are you sure you want to delete this {showModal.type.toLowerCase()}?
+						Are you sure you want to delete this {showModal.type.toLowerCase()}
+						{!isNote && " and it's contents "}?
 					</p>
 					<p className="text-balance">This action cannot be undone.</p>
 					<div className="flex gap-3 self-end mt-5">

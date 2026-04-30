@@ -46,6 +46,8 @@ const FormBar = () => {
 			navigate("/", { replace: true });
 			setSelected((prev) => ({ ...prev, n: null, f: null, p: null }));
 			deleteProject(projectId);
+		} else if (isTeamPage) {
+			return;
 		}
 	};
 

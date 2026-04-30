@@ -235,34 +235,33 @@ const Sidebar = () => {
 					</div>
 				</div>
 
-				{page === "n" && (
-					<div className="flex gap-2 items-center text-sm font-semibold p-2 text-left text-balance">
-						<>
-							<span>
-								<Layers size={16} />
-							</span>
-							<span>{nav.f.parentTitle}</span>
-						</>
+				{page !== "p" && (
+					<div className="flex gap-2 items-center text-xs font-semibold p-2 text-left text-balance">
+						<div
+							className="flex items-center gap-1 text-left cursor-pointer hover:text-accent group py-2"
+							onClick={() => {
+								if (selected.f) setSelected((prev) => ({ ...prev, f: null }));
+								else if (selected.p)
+									setSelected((prev) => ({ ...prev, p: null }));
+							}}
+						>
+							<ChevronLeft size={14} className="shrink-0" />
+							{/* <div className="h-6 w-6">{nav[page].icon}</div> */}
+							<span>{page === "f" ? "All Projects" : nav.f.parentTitle}</span>
+						</div>
 					</div>
 				)}
 				{/* SECTION / back btn */}
 				<div className="flex justify-between gap-4 items-center w-full p-2 ">
 					{(selected.p || selected.f) && (
 						<>
-							<div
-								className="flex items-center gap-1 text-left cursor-pointer hover:text-accent group py-2"
-								onClick={() => {
-									if (selected.f) setSelected((prev) => ({ ...prev, f: null }));
-									else if (selected.p)
-										setSelected((prev) => ({ ...prev, p: null }));
-								}}
-							>
-								<ChevronLeft size={16} className="shrink-0" />
+							<div className="flex gap-2 items-center ml-5">
 								<i className="shrink-0">{nav[page].parentIcon}</i>
 								<p className="text-sm font-bold text-balance line-clamp-2 text-ellipsis group-hover:text-accent text-left">
 									{parentTitle}
 								</p>
 							</div>
+
 							{/* Edit / Delete Btns */}
 							<div className="flex gap-5 items-center justify-end">
 								<NavLink
