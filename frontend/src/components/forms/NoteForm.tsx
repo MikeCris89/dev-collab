@@ -154,14 +154,17 @@ const NoteForm = () => {
 	const isLoading = isAdding || isUpdating;
 	const error = errAdding || errUpdating;
 
-	const formatDate = (iso: string) =>
-		new Date(iso).toLocaleString(undefined, {
+	const formatDate = (iso: string) => {
+		const d = new Date(iso);
+		const now = new Date();
+		return d.toLocaleString(undefined, {
 			month: "short",
 			day: "numeric",
-			year: "numeric",
+			year: d.getFullYear() !== now.getFullYear() ? "numeric" : undefined,
 			hour: "numeric",
 			minute: "2-digit",
 		});
+	};
 
 	return (
 		<form
@@ -169,28 +172,25 @@ const NoteForm = () => {
 			onSubmit={handleSubmit}
 			className="form h-full p-0 gap-0"
 		>
-			{isEdit && existing && (
-				<div className="flex gap-4 px-2 md:px-3 pt-3 text-xs text-text-muted">
-					<span>
-						<span className="font-semibold">Created: </span>
-						{formatDate(existing.createdAt)}
-					</span>
-					<span>
-						<span className="font-semibold">Updated: </span>
-						{formatDate(existing.updatedAt)}
-					</span>
-				</div>
-			)}
-			<input
-				value={title}
-				placeholder="title"
-				required
-				onChange={(e) => setTitle(e.target.value)}
-				className="text-[30px] md:text-[36px] text-accent text-left w-full p-0 m-0 py-4 pl-2 md:pl-3 border-none outline-none h-fit"
-				disabled={isLoading}
-				maxLength={LIMITS.TITLE_MAX_LENGTH}
-				autoFocus={!isEdit}
-			/>
+			<div className="w-full px-2 md:px-3 pt-3 pb-2 border-b border-border-light">
+				<input
+					value={title}
+					placeholder="title"
+					required
+					onChange={(e) => setTitle(e.target.value)}
+					className="text-[30px] md:text-[36px] text-accent text-left w-full p-0 m-0 pt-1 pb-2 border-none outline-none h-fit bg-transparent"
+					disabled={isLoading}
+					maxLength={LIMITS.TITLE_MAX_LENGTH}
+					autoFocus={!isEdit}
+				/>
+				{isEdit && existing && (
+					<div className="flex items-center gap-1.5 text-[11px] text-text-muted leading-none pb-1">
+						<span>Created {formatDate(existing.createdAt)}</span>
+						<span className="text-accent/40">·</span>
+						<span>Updated {formatDate(existing.updatedAt)}</span>
+					</div>
+				)}
+			</div>
 
 			<TiptapEditor
 				// key={existing?.id || "new"}
