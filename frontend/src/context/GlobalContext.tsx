@@ -111,7 +111,7 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				...prev,
 				n: params.noteId ?? null,
 			})),
-		[params]
+		[params],
 	);
 
 	// set selected.page based on selected id's
@@ -170,8 +170,10 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				icon: <NotepadText />,
 			},
 		}),
-		[selected, folder, project]
+		[selected, folder, project],
 	);
+
+	console.log("GLB CTX - show menu:", showMenu);
 
 	return (
 		<GlobalContext.Provider

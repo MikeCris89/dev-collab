@@ -23,7 +23,7 @@ const NoteForm = () => {
 	const { data: existing, isLoading: noteLoading } = useNote(
 		projectId,
 		folderId,
-		noteId
+		noteId,
 	);
 
 	const initialTitle = existing?.title ?? "";
@@ -48,7 +48,7 @@ const NoteForm = () => {
 	const checkIsDirty = (body: string) => {
 		const isDirty = existing
 			? title.trim() !== existing.title.trim() ||
-			  body.trim() !== existing.body.trim()
+				body.trim() !== existing.body.trim()
 			: title.trim() !== "" || body.trim() !== "";
 		setFormDirty(isDirty);
 	};
@@ -76,7 +76,7 @@ const NoteForm = () => {
 				},
 			},
 		},
-		[noteId]
+		[noteId],
 	);
 
 	// Initialize states
@@ -146,7 +146,7 @@ const NoteForm = () => {
 			}
 			navigate(
 				`/p/${projectId}/f/${folderId}/n/${resp.id}?action=edit&formId=${FORMS.n}`,
-				{ replace: true }
+				{ replace: true },
 			);
 		}
 	};
@@ -171,8 +171,14 @@ const NoteForm = () => {
 		>
 			{isEdit && existing && (
 				<div className="flex gap-4 px-2 md:px-3 pt-3 text-xs text-text-muted">
-					<span><span className="font-semibold">Created: </span>{formatDate(existing.createdAt)}</span>
-					<span><span className="font-semibold">Updated: </span>{formatDate(existing.updatedAt)}</span>
+					<span>
+						<span className="font-semibold">Created: </span>
+						{formatDate(existing.createdAt)}
+					</span>
+					<span>
+						<span className="font-semibold">Updated: </span>
+						{formatDate(existing.updatedAt)}
+					</span>
 				</div>
 			)}
 			<input

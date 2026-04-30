@@ -1,7 +1,5 @@
 import { EditorContent, Editor } from "@tiptap/react";
-
 import { LIMITS } from "@shared/contract";
-import { useEffect } from "react";
 
 interface TiptapEditorProps {
 	placeholder?: string;
@@ -156,13 +154,13 @@ export function TiptapEditor({ placeholder, id, editor }: TiptapEditorProps) {
 			</div>
 
 			{/* Editor */}
-			<div className="flex-1 flex overflow-hidden h-full ">
+			<div className="flex-1 flex overflow-hidden h-full">
 				<EditorContent
 					// key={id}
 					editor={editor}
 					placeholder={placeholder}
 					maxLength={LIMITS.NOTE_BODY_MAX_LENGTH}
-					className="flex-1 text-left min-h-0 overflow-y-auto overflow-x-hidden [&_div]:h-full"
+					className="flex-1 text-left min-h-0 overflow-y-auto overflow-x-hidden  [&_.tiptap]:pb-16"
 				/>
 			</div>
 		</div>
