@@ -14,8 +14,13 @@ const InputWrapper = ({
 	labelClassName?: string;
 }) => {
 	return (
-		<div className={clsx("flex flex-col gap-1", className)}>
-			<label htmlFor={htmlFor} className={clsx("self-start", labelClassName)}>
+		<div
+			className={clsx("flex flex-col gap-1 max-w-[250px] mx-auto", className)}
+		>
+			<label
+				htmlFor={htmlFor}
+				className={clsx("self-start text-sm text-text-muted", labelClassName)}
+			>
 				{label}
 			</label>
 			{children}

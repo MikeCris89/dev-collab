@@ -46,25 +46,39 @@ const Signup = () => {
 			className="flex flex-col gap-3 w-full"
 			autoComplete="off"
 		>
-			<div>
-				<FormInput
-					id="username"
-					label="Username"
-					value={userData.username}
-					onChange={(e) =>
-						setUserData((prev) => ({ ...prev, username: e.target.value }))
-					}
-					disabled={isLoading}
-					autoFocus
-					required
-				/>
-				<p
-					className={`text-xs mt-0.5 ${usernameIsEmail ? "text-red-500" : "text-text-muted"}`}
-				>
-					{usernameIsEmail
-						? "Please use a username, not an email address."
-						: "Use a username, not your email address."}
-				</p>
+			<div className="grid grid-cols-2 gap-3 w-full">
+				<div>
+					<FormInput
+						id="username"
+						label="Username*"
+						value={userData.username}
+						onChange={(e) =>
+							setUserData((prev) => ({ ...prev, username: e.target.value }))
+						}
+						disabled={isLoading}
+						autoFocus
+						required
+					/>
+					<p
+						className={`text-xs mt-0.5 ${usernameIsEmail ? "text-red-500" : "text-text-muted"}`}
+					>
+						{usernameIsEmail
+							? "Please use a username, not an email address."
+							: "Use a username, not your email address."}
+					</p>
+				</div>
+				<div>
+					<FormInput
+						id="name"
+						label="Name"
+						value={userData.name ?? ""}
+						onChange={(e) =>
+							setUserData((prev) => ({ ...prev, name: e.target.value }))
+						}
+						disabled={isLoading}
+						placeholder="(optional)"
+					/>
+				</div>
 			</div>
 
 			{/* // TODO generate random passwords instead, do not let users create their own passwords */}
@@ -84,17 +98,6 @@ const Signup = () => {
 				disabled={isLoading}
 				minLength={8}
 				direction="row"
-			/>
-
-			<FormInput
-				id="name"
-				label="Name"
-				value={userData.name ?? ""}
-				onChange={(e) =>
-					setUserData((prev) => ({ ...prev, name: e.target.value }))
-				}
-				disabled={isLoading}
-				placeholder="(optional)"
 			/>
 
 			<div className="flex flex-col gap-2 text-sm text-text-muted border border-border-light rounded-lg p-3">
@@ -120,13 +123,20 @@ const Signup = () => {
 					/>
 					<span>
 						I understand that my account and all data will be{" "}
-						<strong className="text-text-primary">permanently deleted 7 days</strong>{" "}
+						<strong className="text-text-primary">
+							permanently deleted 7 days
+						</strong>{" "}
 						after creation.
 					</span>
 				</label>
 			</div>
 
-			<Button type="submit" disabled={!canSubmit} variant="primary" className="w-full">
+			<Button
+				type="submit"
+				disabled={!canSubmit}
+				variant="primary"
+				className="w-full"
+			>
 				{isLoading ? <LoadingSpinner /> : "Create Account"}
 			</Button>
 		</form>

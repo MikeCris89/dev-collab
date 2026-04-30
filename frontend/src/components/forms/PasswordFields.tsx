@@ -24,8 +24,8 @@ const PasswordFields = ({
 	disabled,
 	autoFocus,
 	minLength,
-	passwordLabel = "Password",
-	confirmLabel = "Confirm Password",
+	passwordLabel = "Password*",
+	confirmLabel = "Confirm Password*",
 	large = false,
 	direction = "col",
 }: PasswordFieldsProps) => {

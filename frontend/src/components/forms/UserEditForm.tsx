@@ -60,52 +60,56 @@ const UserEditFormContent = ({
 				<p className="text-text-muted text-sm">{existing.username}</p>
 			</div>
 
-			<div className="w-full max-w-sm flex flex-col gap-5">
-				<span className="text-xs font-semibold uppercase tracking-widest text-text-muted border-b border-border-light pb-1 w-full">
-					Profile
-				</span>
-				<FormInput
-					id="name"
-					label="Name"
-					value={formData.name ?? ""}
-					onChange={(e) =>
-						setFormData((prev) => ({ ...prev, name: e.target.value }))
-					}
-					required
-					autoFocus
-					disabled={isPending}
-				/>
-				{(user.isAdmin || existing.id === user.sub) && (
-					<div className="flex flex-col gap-1">
-						<label className="text-sm text-text-muted self-start">
-							Password
-						</label>
-						<Button
-							onClick={() => {
-								setUserId(existing.id);
-								setShowModal(true);
-							}}
-						>
-							Change Password
-						</Button>
+			<div className="flex flex-wrap gap-4 justify-center items-start">
+				<div className="max-w-sm flex flex-col gap-4 flex-1">
+					<span className="text-xs font-semibold uppercase tracking-widest text-text-muted border-b border-border-light pb-1 w-full">
+						Profile
+					</span>
+					<FormInput
+						id="name"
+						label="Name"
+						value={formData.name ?? ""}
+						onChange={(e) =>
+							setFormData((prev) => ({ ...prev, name: e.target.value }))
+						}
+						required
+						autoFocus
+						disabled={isPending}
+						className="w-full max-w-[250px]"
+						placeholder="(optional)"
+					/>
+					{(user.isAdmin || existing.id === user.sub) && (
+						<div className="flex flex-col gap-1 w-full max-w-[250px] mx-auto">
+							<label className="text-sm text-text-muted self-start">
+								Password
+							</label>
+							<Button
+								onClick={() => {
+									setUserId(existing.id);
+									setShowModal(true);
+								}}
+							>
+								Change Password
+							</Button>
+						</div>
+					)}
+				</div>
+
+				{user.isAdmin && !isAdmin && (
+					<div className="max-w-sm flex flex-col gap-5 shrink-0 px-6 flex-1">
+						<span className="text-xs font-semibold uppercase tracking-widest text-text-muted border-b border-border-light pb-1 w-full">
+							Project Access
+						</span>
+						<CheckboxContainer
+							items={projects.map((p) => ({ label: p.title, id: p.id }))}
+							state={projectIds}
+							setState={setProjectIds}
+							noneLabel="No Projects"
+							icon={nav.p.icon}
+						/>
 					</div>
 				)}
 			</div>
-
-			{user.isAdmin && !isAdmin && (
-				<div className="w-full max-w-sm flex flex-col gap-5 shrink-0">
-					<span className="text-xs font-semibold uppercase tracking-widest text-text-muted border-b border-border-light pb-1 w-full">
-						Project Access
-					</span>
-					<CheckboxContainer
-						items={projects.map((p) => ({ label: p.title, id: p.id }))}
-						state={projectIds}
-						setState={setProjectIds}
-						noneLabel="No Projects"
-						icon={nav.p.icon}
-					/>
-				</div>
-			)}
 
 			{error && (
 				<p className="text-red-500 text-sm">

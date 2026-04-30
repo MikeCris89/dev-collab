@@ -33,7 +33,7 @@ const CheckboxContainer = ({
 	};
 
 	return (
-		<div className="bg-bg-surface border border-border-light rounded-2xl overflow-hidden w-[300px] max-w-full">
+		<div className="bg-bg-surface border border-border-light rounded-2xl overflow-hidden w-[300px] max-w-full mx-auto ">
 			{/* Header */}
 			<div className="flex items-center justify-between px-4 py-2.5 border-b border-border-light">
 				{initial ? (
@@ -62,7 +62,13 @@ const CheckboxContainer = ({
 						<div className="w-4 h-4 rounded border border-border-medium peer-checked:bg-accent peer-checked:border-accent flex items-center justify-center transition-colors">
 							{selectAll && (
 								<svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-									<path d="M2 5l2.5 2.5L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+									<path
+										d="M2 5l2.5 2.5L8 3"
+										stroke="white"
+										strokeWidth="1.5"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									/>
 								</svg>
 							)}
 						</div>
@@ -91,7 +97,9 @@ const CheckboxContainer = ({
 						);
 					})
 				) : (
-					<p className="text-text-muted text-sm text-center py-6">— {noneLabel} —</p>
+					<p className="text-text-muted text-sm text-center py-6">
+						— {noneLabel} —
+					</p>
 				)}
 			</div>
 		</div>
