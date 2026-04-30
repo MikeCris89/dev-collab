@@ -29,7 +29,9 @@ const Login = () => {
 				id="username"
 				label="Username"
 				value={userData.username}
-				onChange={(e) => setUserData((prev) => ({ ...prev, username: e.target.value }))}
+				onChange={(e) =>
+					setUserData((prev) => ({ ...prev, username: e.target.value }))
+				}
 				disabled={isLoading}
 				autoFocus
 				required
@@ -42,7 +44,9 @@ const Login = () => {
 				label="Password"
 				type="password"
 				value={userData.password}
-				onChange={(e) => setUserData((prev) => ({ ...prev, password: e.target.value }))}
+				onChange={(e) =>
+					setUserData((prev) => ({ ...prev, password: e.target.value }))
+				}
 				disabled={isLoading}
 				required
 			/>
@@ -51,7 +55,7 @@ const Login = () => {
 				type="submit"
 				disabled={isLoading}
 				variant="primary"
-				className="w-full mt-2"
+				className="w-full max-w-[250px] mx-auto mt-2"
 			>
 				{isLoading ? <LoadingSpinner /> : "Sign In"}
 			</Button>

@@ -15,7 +15,10 @@ const InputWrapper = ({
 }) => {
 	return (
 		<div
-			className={clsx("flex flex-col gap-1 max-w-[250px] mx-auto", className)}
+			className={clsx(
+				"flex flex-col gap-1 w-full max-w-[250px] mx-auto",
+				className,
+			)}
 		>
 			<label
 				htmlFor={htmlFor}

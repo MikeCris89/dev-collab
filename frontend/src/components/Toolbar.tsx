@@ -4,7 +4,7 @@ import Button from "./Button";
 import clsx from "clsx";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { useEffect, useState } from "react";
-import { Trash2, UserCircle2, Users2, X } from "lucide-react";
+import { Check, Trash2, UserCircle2, Users2, X } from "lucide-react";
 import { useDeleteNote } from "@/hooks/useNotes";
 import { useDeleteModal } from "@/context/DeleteModalContext";
 import { useDeleteFolder } from "@/hooks/useFolders";
@@ -29,8 +29,8 @@ const FormBar = () => {
 	const isProject = !noteId && !folderId && projectId;
 
 	const isTeamPage = pathname.startsWith("/team");
-
 	const showForm = !!action && !!formId;
+	const isAddAction = action === "add";
 
 	const handleDelete = () => {
 		allowNav();
@@ -56,85 +56,55 @@ const FormBar = () => {
 	};
 
 	return (
-		<div className="flex flex-col w-full h-fit px-5 py-3 gap-3">
+		<div className="flex flex-col w-full px-3 md:px-5 py-2 gap-2">
 			{showForm && (
-				<>
-					<div className="flex ml-[30px] md:ml-0 justify-around md:justify-between items-center w-full">
+				<div className="flex items-center justify-between w-full gap-2">
+					{/* Left: delete or spacer */}
+					<div className="min-w-[75px]">
+						{!isAddAction && (
+							<Button
+								className="flex gap-1.5 items-center text-text-muted hover:text-red-500 transition-colors duration-200 p-0 min-w-0"
+								onClick={() => setShowModal(deleteModal)}
+								variant="link"
+							>
+								<Trash2 size={16} />
+								<span className="hidden md:inline text-sm">delete</span>
+							</Button>
+						)}
+					</div>
+
+					{/* Right: cancel + save */}
+					<div className="flex gap-2 items-center">
 						<Button
-							className="flex gap-2 items-center cursor-pointer hover:text-red-500"
-							onClick={() => setShowModal(deleteModal)}
-							variant="link"
+							onClick={() => {
+								allowNav();
+								setFormDirty(false);
+								navigate(isTeamPage ? "/team" : "/", {
+									replace: !isNote || isTeamPage,
+								});
+							}}
+							className="flex gap-1.5 items-center"
 						>
-							<Trash2 size={18} />{" "}
-							<span className="hidden md:block">delete</span>
+							<X size={15} />
+							<span>{formDirty ? "cancel" : "close"}</span>
 						</Button>
-
-						<div className="flex gap-3 justify-self-end">
-							<Button
-								onClick={() => {
-									// const from = location.state?.from;
-									allowNav();
+						<Button
+							type="submit"
+							form={formId}
+							variant="primary"
+							disabled={!formDirty}
+							className="flex gap-1.5 items-center"
+							onClick={() => {
+								setTimeout(() => {
 									setFormDirty(false);
-
-									// if (!from) {
-									navigate(isTeamPage ? "/team" : "/", {
-										replace: !isNote || isTeamPage,
-									});
-									// } else {
-									// 	navigate(-1);
-									// }
-								}}
-								className="flex gap-2 items-center"
-							>
-								<i className="h-[17px] md:h-[16px] text-sm">❌</i>{" "}
-								<span>{formDirty ? "cancel" : "close"}</span>
-							</Button>
-							<Button
-								type="submit"
-								form={formId}
-								variant="primary"
-								disabled={!formDirty}
-								className="flex gap-2 items-center"
-								onClick={() => {
-									setTimeout(() => {
-										setFormDirty(false);
-									}, 50);
-								}}
-								// onClick={() => {
-								// 	if (isNote) return;
-								// 	const from = location.state?.from;
-								// 	allowNav();
-
-								// 	if (!from) {
-								// 		navigate(isTeamPage ? "/team" : "/", {
-								// 			replace: !isNote || isTeamPage,
-								// 		});
-								// 	} else {
-								// 		navigate(-1);
-								// 	}
-								// }}
-							>
-								<i className="h-[15px] text-sm">{formDirty ? "✅" : "☑️"} </i>
-								<span>save</span>
-							</Button>
-						</div>
+								}, 50);
+							}}
+						>
+							<Check size={15} />
+							<span>save</span>
+						</Button>
 					</div>
-					<div className="flex justify-between w-full text-left">
-						<p className="text-xs text-text-muted font-bold md:p-1 m-0 text-balance">
-							created: <br />
-							{/* {selected
-									? new Date(selected.n.createdAt).toLocaleString()
-									: " - "} */}
-						</p>
-
-						<p className="text-right md:text-left text-text-muted text-xs text-balance md:p-1 m-0">
-							last updated: <br />
-							{/* {selected
-									? new Date(selected.n.updatedAt).toLocaleString()
-									: " - "} */}
-						</p>
-					</div>
-				</>
+				</div>
 			)}
 		</div>
 	);
@@ -184,12 +154,12 @@ const Toolbar = () => {
 		<div
 			id="note-bar"
 			className={clsx(
-				"flex items-center justify-center w-full bg-bg-elevated border-b border-b-border-light min-h-[70px] relative flex-nowrap p-2",
+				"flex items-center justify-center w-full bg-bg-elevated border-b border-b-border-light min-h-[56px] md:min-h-[64px] relative flex-nowrap",
 			)}
 		>
 			{!isNote && !isForm && title.title && (
 				<div className="grid grid-cols-[70px_1fr_70px]">
-					<div className=" col-start-2 flex gap-2 items-center justify-center flex-nowrap">
+					<div className="col-start-2 flex gap-2 items-center justify-center flex-nowrap">
 						<i className="text-accent shrink-0">{title.icon}</i>
 						<h1 className="w-fit p-0 m-0 text-2xl text-left text-balance">
 							{title.title}

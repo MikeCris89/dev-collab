@@ -46,7 +46,7 @@ const FormInput = ({
 				className={clsx(
 					large && "w-[250px]",
 					!large &&
-						"w-full px-3 py-2 rounded-lg text-sm bg-bg-surface border border-border-light focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 placeholder:text-text-muted/50 transition-colors disabled:opacity-50 mx-auto",
+						"w-full max-w-[250px] px-3 py-2 rounded-lg text-sm bg-bg-surface border border-border-light focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 placeholder:text-text-muted/50 transition-colors disabled:opacity-50 mx-auto",
 				)}
 			/>
 		</InputWrapper>

@@ -2,20 +2,18 @@ import { useGlobal } from "@/context/GlobalContext";
 import { useCreateTeamMember, useTeamProjects } from "@/hooks/useTeam";
 import useRequireAuth from "@/hooks/useRequireAuth";
 import type { SignupRequest } from "@shared/contract";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../Button";
 import CheckboxContainer from "./CheckboxContainer";
 import FormInput from "./FormInput";
 import PasswordFields from "./PasswordFields";
-import InputWrapper from "./InputWrapper";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const UserAddForm = () => {
 	const { isAdmin, user } = useRequireAuth();
 	const navigate = useNavigate();
-	const { nav } = useGlobal();
+	const { nav, setFormDirty } = useGlobal();
 
 	const { data: projects = [], isLoading: loadingProjects } = useTeamProjects();
 	const { isPending, error, mutate: createUser } = useCreateTeamMember();
@@ -29,11 +27,6 @@ const UserAddForm = () => {
 	const [passwordError, setPasswordError] = useState<string | null>(null);
 	const [projectIds, setProjectIds] = useState<string[]>([]);
 
-	if (!isAdmin) {
-		navigate("/team", { replace: true });
-		return null;
-	}
-
 	const usernameIsEmail = EMAIL_REGEX.test(formData.username.trim());
 	const canSubmit =
 		!isPending &&
@@ -42,6 +35,19 @@ const UserAddForm = () => {
 		formData.password.length > 0 &&
 		confirmPassword.length > 0 &&
 		!usernameIsEmail;
+
+	useEffect(() => {
+		setFormDirty(canSubmit);
+	}, [canSubmit]);
+
+	useEffect(() => {
+		return () => setFormDirty(false);
+	}, []);
+
+	if (!isAdmin) {
+		navigate("/team", { replace: true });
+		return null;
+	}
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -138,12 +144,6 @@ const UserAddForm = () => {
 					{error.message ?? "Error has occurred"}
 				</p>
 			)}
-
-			{/* <div className="flex gap-2 p-3"> */}
-			<Button type="submit" disabled={!canSubmit} variant="primary">
-				Add User
-			</Button>
-			{/* </div> */}
 		</form>
 	);
 };

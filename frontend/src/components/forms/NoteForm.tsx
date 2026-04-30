@@ -154,12 +154,27 @@ const NoteForm = () => {
 	const isLoading = isAdding || isUpdating;
 	const error = errAdding || errUpdating;
 
+	const formatDate = (iso: string) =>
+		new Date(iso).toLocaleString(undefined, {
+			month: "short",
+			day: "numeric",
+			year: "numeric",
+			hour: "numeric",
+			minute: "2-digit",
+		});
+
 	return (
 		<form
 			id="note-form"
 			onSubmit={handleSubmit}
 			className="form h-full p-0 gap-0"
 		>
+			{isEdit && existing && (
+				<div className="flex gap-4 px-2 md:px-3 pt-3 text-xs text-text-muted">
+					<span><span className="font-semibold">Created: </span>{formatDate(existing.createdAt)}</span>
+					<span><span className="font-semibold">Updated: </span>{formatDate(existing.updatedAt)}</span>
+				</div>
+			)}
 			<input
 				value={title}
 				placeholder="title"
