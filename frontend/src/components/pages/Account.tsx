@@ -11,6 +11,7 @@ import {
 } from "@/context/PasswordModal";
 import { useState } from "react";
 import { Pencil, Check, X } from "lucide-react";
+import Avatar from "../Avatar";
 
 const AccountContent = () => {
 	const { logout } = useAuth();
@@ -50,18 +51,12 @@ const AccountContent = () => {
 		if (e.key === "Escape") cancelEditing();
 	};
 
-	const initials = (userData.name || userData.username)
-		.charAt(0)
-		.toUpperCase();
-
 	return (
 		<section className="flex flex-col items-center w-full pt-8 px-4">
 			<div className="flex flex-col gap-5 w-[460px] max-w-full mx-auto">
 				{/* Avatar + username */}
 				<div className="flex flex-col items-center gap-2 mb-2">
-					<div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center text-2xl font-bold text-accent select-none">
-						{initials}
-					</div>
+					<Avatar name={userData.name || userData.username} size="lg" />
 					<p className="text-text-muted text-sm">{userData.username}</p>
 				</div>
 
