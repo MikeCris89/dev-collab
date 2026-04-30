@@ -3,6 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import type { LoginRequest } from "@shared/contract";
 import Button from "../Button";
 import InputWrapper from "../forms/InputWrapper";
+import LoadingSpinner from "../LoadingSpinner";
 
 const Login = () => {
 	const [userData, setUserData] = useState<LoginRequest>({
@@ -66,7 +67,7 @@ const Login = () => {
 					variant="primary"
 					className="w-[150px]"
 				>
-					Submit
+					{isLoading ? <LoadingSpinner /> : "Submit"}
 				</Button>
 			</form>
 		</>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import InputWrapper from "../forms/InputWrapper";
 import PasswordFields from "../forms/PasswordFields";
+import LoadingSpinner from "../LoadingSpinner";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -135,7 +136,7 @@ const Signup = () => {
 
 				<div className="flex gap-2  p-3">
 					<Button type="submit" disabled={!canSubmit} variant="primary">
-						Submit
+						{isLoading ? <LoadingSpinner /> : "Submit"}
 					</Button>
 				</div>
 			</form>
