@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUnsavedChanges } from "../../hooks/useUnsavedChanges";
 import { FORMS, LIMITS, type Note } from "@shared/contract";
 import { useCreateNote, useUpdateNote } from "@/hooks/useNotes";
@@ -32,6 +32,7 @@ const NoteForm = () => {
 	const [title, setTitle] = useState<string>(initialTitle);
 	// const [body, setBody] = useState<string>(initialBody);
 	const [, forceUpdate] = useState({}); // Trick to force re-render
+	const initialBodyRef = useRef<string>(existing?.body ?? "");
 
 	const {
 		mutateAsync: addNote,
@@ -48,7 +49,7 @@ const NoteForm = () => {
 	const checkIsDirty = (body: string, isEditorEmpty = false) => {
 		const isDirty = existing
 			? title.trim() !== existing.title.trim() ||
-				body.trim() !== existing.body.trim()
+				body.trim() !== initialBodyRef.current.trim()
 			: title.trim() !== "" || !isEditorEmpty;
 		setFormDirty(isDirty);
 	};
@@ -90,6 +91,7 @@ const NoteForm = () => {
 				editor.commands.setContent(existing.body, {
 					emitUpdate: false,
 				});
+				initialBodyRef.current = editor.getHTML();
 			}
 		} else {
 			setTitle("");
@@ -100,6 +102,7 @@ const NoteForm = () => {
 				editor.commands.setContent("", {
 					emitUpdate: false,
 				});
+				initialBodyRef.current = editor.getHTML();
 			}
 		}
 	}, [existing, noteId, setFormDirty, editor]);

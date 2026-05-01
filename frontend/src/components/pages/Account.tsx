@@ -80,7 +80,7 @@ const AccountContent = () => {
 		type: "team",
 		onConfirm: handleDeleteTeam,
 		isLoading: isDeleting,
-		err: errDeleting,
+		err: errDeleting?.message,
 		msg: "Are you sure you want to delete all your team data ?",
 	};
 
