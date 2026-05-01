@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import Modal from "@/components/Modal";
 import { Trash2 } from "lucide-react";
 import { createContext, useContext, useState } from "react";
@@ -10,6 +11,9 @@ interface ModalCtx {
 interface ShowModal {
 	type: string;
 	onConfirm: () => void;
+	msg?: string;
+	err?: string | null;
+	isLoading?: boolean;
 }
 
 export const DeleteModalContext = createContext<ModalCtx | undefined>(
@@ -37,8 +41,9 @@ const ModalProvider = ({ children }: React.PropsWithChildren) => {
 						<h2 className="">Delete {showModal.type}</h2>
 					</div>
 					<p className="text-balance">
-						Are you sure you want to delete this {showModal.type.toLowerCase()}
-						{(isProject || isFolder) && " and it's contents "}?
+						{showModal.msg ??
+							`Are you sure you want to delete this ${showModal.type.toLowerCase()}
+						${isProject || isFolder ? " and it's contents " : ""}?`}
 					</p>
 					<p className="text-balance">This action cannot be undone.</p>
 					<div className="flex gap-3 self-end mt-5">
@@ -46,6 +51,7 @@ const ModalProvider = ({ children }: React.PropsWithChildren) => {
 							onClick={() => {
 								closeModal();
 							}}
+							disabled={showModal.isLoading}
 						>
 							Cancel
 						</Button>
@@ -56,10 +62,14 @@ const ModalProvider = ({ children }: React.PropsWithChildren) => {
 								showModal.onConfirm();
 								closeModal();
 							}}
+							disabled={showModal.isLoading}
 						>
-							Delete
+							{showModal.isLoading ? <LoadingSpinner /> : "Delete"}
 						</Button>
 					</div>
+					{showModal.err && (
+						<p className="text-sm text-red-500">{showModal.err}</p>
+					)}
 				</Modal>
 			)}
 		</DeleteModalContext.Provider>

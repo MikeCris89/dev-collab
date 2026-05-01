@@ -23,7 +23,6 @@ import CheckboxContainer from "./CheckboxContainer";
 import FormInput from "./FormInput";
 import { arraysEqual } from "@/lib/utils";
 import useRequireAuth from "@/hooks/useRequireAuth";
-import LoadingSpinner from "../LoadingSpinner";
 import { useDeleteModal } from "@/context/DeleteModalContext";
 
 interface ContentProps {
@@ -61,9 +60,11 @@ const UserEditFormContent = ({
 	} = useDeleteTeamMember();
 
 	const { nav } = useGlobal();
+	const navigate = useNavigate();
 
 	const handleDelete = async () => {
-		const resp = await deleteUser(existing.id);
+		await deleteUser(existing.id);
+		navigate("/team", { replace: true });
 	};
 
 	const deleteModal = {

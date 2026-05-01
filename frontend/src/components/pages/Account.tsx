@@ -1,6 +1,10 @@
 import { useAuth } from "@/context/AuthContext";
 import Button from "../Button";
-import { useTeamMember, useEditTeamMember } from "@/hooks/useTeam";
+import {
+	useTeamMember,
+	useEditTeamMember,
+	useDeleteTeam,
+} from "@/hooks/useTeam";
 import useRequireAuth from "@/hooks/useRequireAuth";
 import Loading from "../Loading";
 import ThemeSwitcher from "../ThemeSwitcher";
@@ -12,6 +16,8 @@ import {
 import { useState } from "react";
 import { Pencil, Check, X } from "lucide-react";
 import Avatar from "../Avatar";
+import { useDeleteModal } from "@/context/DeleteModalContext";
+import { useNavigate } from "react-router-dom";
 
 const AccountContent = () => {
 	const { logout } = useAuth();
@@ -20,7 +26,13 @@ const AccountContent = () => {
 	const queryClient = useQueryClient();
 	const { setShowModal, setUserId } = usePasswordModal();
 	const { mutate: editUser, isPending: isSaving } = useEditTeamMember();
-
+	const {
+		mutateAsync: deleteTeam,
+		isPending: isDeleting,
+		error: errDeleting,
+	} = useDeleteTeam();
+	const { setShowModal: setShowDeleteModal } = useDeleteModal();
+	const navigate = useNavigate();
 	const [editingName, setEditingName] = useState(false);
 	const [nameValue, setNameValue] = useState("");
 
@@ -53,10 +65,23 @@ const AccountContent = () => {
 
 	const Label = ({ children }: { children: React.ReactNode }) => {
 		return (
-			<span className="text-sm text-text-muted w-24 shrink-0 text-left">
+			<span className="text-sm text-text-muted w-fit shrink-0 text-left">
 				{children}
 			</span>
 		);
+	};
+
+	const handleDeleteTeam = async () => {
+		await deleteTeam();
+		logout();
+	};
+
+	const deleteModal = {
+		type: "team",
+		onConfirm: handleDeleteTeam,
+		isLoading: isDeleting,
+		err: errDeleting,
+		msg: "Are you sure you want to delete all your team data ?",
 	};
 
 	return (
@@ -143,6 +168,15 @@ const AccountContent = () => {
 					<div className="flex items-center justify-between px-5 py-4">
 						<Label>Theme</Label>
 						<ThemeSwitcher />
+					</div>
+					<div className="flex items-center justify-between px-5 py-4">
+						<Label>Delete Account</Label>
+						<Button
+							onClick={() => setShowDeleteModal(deleteModal)}
+							className="bg-red-500 hover:bg-red-500/80 min-w-[150px]"
+						>
+							Delete All Data
+						</Button>
 					</div>
 				</div>
 

@@ -136,7 +136,7 @@ export const useDeleteTeam = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: () => deleter(`${BASE}/`),
+		mutationFn: () => deleter(`${BASE}`),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [TEAMKEY] });
 		},
