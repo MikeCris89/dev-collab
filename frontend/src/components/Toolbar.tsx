@@ -46,8 +46,6 @@ const FormBar = () => {
 			navigate("/", { replace: true });
 			setSelected((prev) => ({ ...prev, n: null, f: null, p: null }));
 			deleteProject(projectId);
-		} else if (isTeamPage) {
-			return;
 		}
 	};
 
@@ -63,7 +61,7 @@ const FormBar = () => {
 				<div className="flex items-center justify-between w-full gap-2">
 					{/* Left: delete or spacer */}
 					<div className="min-w-[75px]">
-						{!isAddAction && (
+						{!isAddAction && !isTeamPage && (
 							<Button
 								className="flex gap-1.5 items-center text-text-muted hover:text-red-500 transition-colors duration-200 p-0 min-w-0"
 								onClick={() => setShowModal(deleteModal)}

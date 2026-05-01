@@ -4,6 +4,7 @@ import {
 	usePasswordModal,
 } from "@/context/PasswordModal";
 import {
+	useDeleteTeamMember,
 	useEditTeamMember,
 	useTeamMember,
 	useTeamProjects,
@@ -22,6 +23,8 @@ import CheckboxContainer from "./CheckboxContainer";
 import FormInput from "./FormInput";
 import { arraysEqual } from "@/lib/utils";
 import useRequireAuth from "@/hooks/useRequireAuth";
+import LoadingSpinner from "../LoadingSpinner";
+import { useDeleteModal } from "@/context/DeleteModalContext";
 
 interface ContentProps {
 	existing: UserWithProjects;
@@ -50,8 +53,26 @@ const UserEditFormContent = ({
 }: ContentProps) => {
 	const { setShowModal, setUserId } = usePasswordModal();
 	const { user } = useRequireAuth();
+	const { setShowModal: setShowDeleteModal } = useDeleteModal();
+	const {
+		mutateAsync: deleteUser,
+		isPending: isDeleting,
+		error: deleteError,
+	} = useDeleteTeamMember();
 
 	const { nav } = useGlobal();
+
+	const handleDelete = async () => {
+		const resp = await deleteUser(existing.id);
+	};
+
+	const deleteModal = {
+		type: "User",
+		name: "",
+		onConfirm: handleDelete,
+	};
+
+	if (deleteError) console.log(deleteError);
 
 	return (
 		<form onSubmit={submitHandler} id="user-edit-form" className="form">
@@ -93,6 +114,11 @@ const UserEditFormContent = ({
 							</Button>
 						</div>
 					)}
+					{/* {user.isAdmin && !isAdmin && (
+						<div className="hidden md:block">
+							<DeleteUser />
+						</div>
+					)} */}
 				</div>
 
 				{user.isAdmin && !isAdmin && (
@@ -110,6 +136,20 @@ const UserEditFormContent = ({
 					</div>
 				)}
 			</div>
+			{user.isAdmin && !isAdmin && (
+				<div className="flex flex-col gap-1 w-full max-w-[250px] mx-auto py-4">
+					{/* <label className="text-sm text-text-muted self-start">
+						Remove Team Member
+					</label> */}
+					<Button
+						className="bg-red-500 hover:bg-red-500/80"
+						onClick={() => setShowDeleteModal(deleteModal)}
+						disabled={isPending}
+					>
+						Delete User
+					</Button>
+				</div>
+			)}
 
 			{error && (
 				<p className="text-red-500 text-sm">
