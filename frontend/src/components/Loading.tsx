@@ -1,7 +1,12 @@
+import LoadingSpinner from "./LoadingSpinner";
+
 const Loading = () => {
 	return (
 		<div className="flex justify-center items-center h-full w-full">
-			<p>Loading...</p>
+			<div className="flex flex-col gap-4 ">
+				<LoadingSpinner size={32} />
+				<p>Loading...</p>
+			</div>
 		</div>
 	);
 };

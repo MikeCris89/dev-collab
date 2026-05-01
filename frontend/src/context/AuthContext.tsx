@@ -11,6 +11,7 @@ import type { AxiosError } from "axios";
 
 interface AuthCtx {
 	isLoading: boolean;
+	isPending: boolean;
 	error: string | null;
 	setError: React.Dispatch<React.SetStateAction<string | null>>;
 	user: UserAuth | null;
@@ -24,12 +25,13 @@ export const AuthContext = createContext<AuthCtx | undefined>(undefined);
 
 const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	const [isLoading, setIsLoading] = useState(false);
+	const [isPending, setIsPending] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [user, setUser] = useState<JwtUser | null>(null);
 
 	const refresh = async () => {
 		try {
-			setIsLoading(true);
+			setIsPending(true);
 			const resp = await fetcher<JwtUser>("/auth/me");
 			console.log("AUTH: ", resp);
 			setUser(resp);
@@ -37,14 +39,13 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 			console.log("User not logged in, rendering login page");
 			setUser(null);
 		} finally {
-			setIsLoading(false);
+			setIsPending(false);
 		}
 	};
 
 	useEffect(() => {
 		(async () => {
 			setError(null);
-			console.log("AUTH Refreshing");
 			await refresh();
 		})();
 
@@ -67,7 +68,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 			setIsLoading(true);
 			const resp = await poster<SignupRequest, JwtUser>(
 				"/auth/signup",
-				userData
+				userData,
 			);
 			setUser(resp);
 			return resp;
@@ -97,13 +98,13 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	const logout = async () => {
 		try {
 			setError(null);
-			setIsLoading(true);
+			setIsPending(true);
 			await api.post("/auth/logout");
 			setUser(null);
 		} catch (e) {
 			setError("Unable to logout at this time.");
 		} finally {
-			setIsLoading(false);
+			setIsPending(false);
 		}
 	};
 
@@ -111,6 +112,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 		<AuthContext.Provider
 			value={{
 				isLoading,
+				isPending,
 				user,
 				error,
 				setError,
