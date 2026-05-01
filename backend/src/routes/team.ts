@@ -210,4 +210,34 @@ router.put("/:id", async (req, res) => {
 	res.json(userData);
 });
 
+// DELETE
+
+router.delete("/", adminOnly, async (req, res) => {
+	const user = reqUser(req);
+
+	await prisma.team.delete({
+		where: {
+			id: user.teamId,
+		},
+	});
+
+	res.sendStatus(204);
+});
+
+router.delete("/user/:id", adminOnly, async (req, res) => {
+	const { id } = req.params as { id: string };
+	const user = reqUser(req);
+
+	if (id === user.sub) throw new BadRequestError("Cannot delete yourself");
+
+	await prisma.user.delete({
+		where: {
+			id,
+			teamId: user.teamId,
+		},
+	});
+
+	res.sendStatus(204);
+});
+
 export default router;
