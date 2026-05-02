@@ -6,7 +6,7 @@ import Loading from "./components/Loading";
 function App() {
 	const { isPending } = useAuth();
 
-	if (isPending) return <Loading />;
+	if (isPending) return <Loading withText />;
 
 	return (
 		<main className="h-full w-full relative overflow-hidden">
