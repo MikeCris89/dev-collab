@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap");
 @import "tailwindcss";
 @import "./styles/theme.css";
 @import "./styles/tiptap.css";
@@ -18,7 +19,7 @@
 	}
 
 	h1 {
-		@apply mb-2 text-[36px] leading-[1.1] text-accent font-semibold;
+		@apply mb-2 text-[36px] leading-[1.1] text-accent font-semibold font-retro;
 	}
 
 	h2 {
@@ -83,9 +84,4 @@
 		scrollbar-width: thin;
 		scrollbar-color: rgba(78, 205, 196, 0.3) transparent;
 	}
-
-	/* *::selection {
-		background-color: #FFF
-		color: inherit;
-	} */
 }

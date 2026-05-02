@@ -180,9 +180,15 @@ const Sidebar = () => {
 					showMenu && "translate-x-0",
 				)}
 			>
-				<h3 className="text-accent text-sm md:text-base font-bold p-0 m-0">
+				<img
+					src="/devcollab_logo_text.png"
+					width={120}
+					className="mx-auto"
+					alt="DevCollab Logo"
+				/>
+				{/* <h3 className="text-accent text-sm md:text-base font-bold p-0 m-0">
 					DevCollab
-				</h3>
+				</h3> */}
 
 				{/* Account & Team buttons */}
 				<div className="flex justify-between items-center w-full p-2 mb-2">

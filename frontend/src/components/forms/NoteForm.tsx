@@ -175,19 +175,19 @@ const NoteForm = () => {
 			onSubmit={handleSubmit}
 			className="form h-full p-0 gap-0"
 		>
-			<div className="w-full px-2 md:px-3 pt-3 pb-2 border-b border-border-light">
+			<div className="w-full px-2 md:px-3 pt-2 pb-1 md:pt-3 md:pb-2 border-b border-border-light">
 				<input
 					value={title}
 					placeholder="title"
 					required
 					onChange={(e) => setTitle(e.target.value)}
-					className="text-[30px] md:text-[36px] text-accent text-left w-full p-0 m-0 pt-1 pb-2 border-none outline-none h-fit bg-transparent"
+					className="font-retro text-[24px] md:text-[36px] text-accent text-left w-full p-0 m-0 md:pt-1 md:pb-2 border-none outline-none h-fit bg-transparent"
 					disabled={isLoading}
 					maxLength={LIMITS.TITLE_MAX_LENGTH}
 					autoFocus={!isEdit}
 				/>
 				{isEdit && existing && (
-					<div className="flex items-center gap-1.5 text-[11px] text-text-muted leading-none pb-1">
+					<div className="flex items-center gap-1.5 text-[10px] md:text-[11px] text-text-muted leading-none md:pb-1">
 						<span>Created {formatDate(existing.createdAt)}</span>
 						<span className="text-accent/40">·</span>
 						<span>Updated {formatDate(existing.updatedAt)}</span>

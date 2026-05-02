@@ -17,7 +17,6 @@ import { useState } from "react";
 import { Pencil, Check, X } from "lucide-react";
 import Avatar from "../Avatar";
 import { useDeleteModal } from "@/context/DeleteModalContext";
-import { useNavigate } from "react-router-dom";
 
 const AccountContent = () => {
 	const { logout } = useAuth();
@@ -32,7 +31,6 @@ const AccountContent = () => {
 		error: errDeleting,
 	} = useDeleteTeam();
 	const { setShowModal: setShowDeleteModal } = useDeleteModal();
-	const navigate = useNavigate();
 	const [editingName, setEditingName] = useState(false);
 	const [nameValue, setNameValue] = useState("");
 

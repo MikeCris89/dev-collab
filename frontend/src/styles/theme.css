@@ -1,6 +1,7 @@
-/* @import "tailwindcss"; */
-
 @theme {
+	--font-retro: "Share Tech Mono", monospace;
+	--font-silk: "Silkscreen", monospace;
+
 	/* Light Mode Colors */
 
 	/* Backgrounds */

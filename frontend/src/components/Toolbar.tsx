@@ -158,14 +158,14 @@ const Toolbar = () => {
 			)}
 		>
 			{!isNote && !isForm && title.title && (
-				<div className="grid grid-cols-[70px_1fr_70px]">
-					<div className="col-start-2 flex gap-2 items-center justify-center flex-nowrap">
-						<i className="text-accent shrink-0">{title.icon}</i>
-						<h1 className="w-fit p-0 m-0 text-2xl text-left text-balance">
-							{title.title}
-						</h1>
-					</div>
-				</div>
+				// <div className="grid grid-cols-[70px_1fr_70px]">
+				// <div className="col-start-2 flex gap-2 items-center justify-center flex-nowrap">
+				// {/* <i className="text-accent shrink-0 ">{title.icon}</i> */}
+				<h1 className="w-fit p-0 m-0 text-3xl md:text-4xl text-center">
+					{title.title}
+				</h1>
+				// </div>
+				// </div>
 			)}
 
 			{(isNote || isForm) && <FormBar />}

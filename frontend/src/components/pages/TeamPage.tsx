@@ -14,23 +14,28 @@ const TeamPage = () => {
 
 	if (isLoading) return <Loading />;
 
-	const sorted = members.slice().sort((a, b) =>
-		a.role === ROLES.admin ? -1 : b.role === ROLES.admin ? 1
-			: new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-	);
+	const sorted = members
+		.slice()
+		.sort((a, b) =>
+			a.role === ROLES.admin
+				? -1
+				: b.role === ROLES.admin
+					? 1
+					: new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+		);
 
 	return (
 		<section className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
 			<div className="flex flex-col gap-6 w-[520px] max-w-full mx-auto pt-8 px-4">
 				{user.isAdmin && (
 					<div className="flex items-center justify-between">
-						<div>
-							<h1 className="text-lg font-semibold">Team</h1>
-							<p className="text-text-muted text-sm mt-0.5">
-								{members.length} / {LIMITS.MAX_USERS_PER_TEAM} members
-							</p>
-						</div>
-						<Button variant="primary" href={`?action=add&formId=${FORMS.userAdd}`}>
+						<p className="text-text-muted text-sm mt-0.5 self-end">
+							{members.length} / {LIMITS.MAX_USERS_PER_TEAM} members
+						</p>
+						<Button
+							variant="primary"
+							href={`?action=add&formId=${FORMS.userAdd}`}
+						>
 							Add Member
 						</Button>
 					</div>
@@ -48,7 +53,11 @@ const TeamPage = () => {
 								} ${user.isAdmin ? "cursor-pointer hover:bg-accent/5" : ""}`}
 								onClick={
 									user.isAdmin
-										? () => navigate(`?action=edit&formId=${FORMS.userEdit}&memberId=${m.id}`, { state: { from: "/team" } })
+										? () =>
+												navigate(
+													`?action=edit&formId=${FORMS.userEdit}&memberId=${m.id}`,
+													{ state: { from: "/team" } },
+												)
 										: undefined
 								}
 							>
@@ -62,7 +71,9 @@ const TeamPage = () => {
 											<ShieldCheck size={14} className="text-accent shrink-0" />
 										)}
 									</div>
-									<p className="text-xs text-text-muted truncate">{m.username}</p>
+									<p className="text-xs text-text-muted truncate">
+										{m.username}
+									</p>
 								</div>
 								<div className="text-right shrink-0">
 									<span
