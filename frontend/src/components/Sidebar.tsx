@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import ListItem from "./ListItem";
 import { useTeamProjects } from "@/hooks/useTeam";
-import { NavLink, useLocation, useParams } from "react-router-dom";
+import { Link, NavLink, useLocation, useParams } from "react-router-dom";
 import Loading from "./Loading";
 import { useFolderNotes } from "@/hooks/useNotes";
 import { FORMS } from "@shared/contract";
@@ -180,18 +180,20 @@ const Sidebar = () => {
 					showMenu && "translate-x-0",
 				)}
 			>
-				<img
-					src="/devcollab_logo_text.png"
-					width={120}
-					className="mx-auto"
-					alt="DevCollab Logo"
-				/>
+				<Link to="/">
+					<img
+						src="/devcollab_logo_text.png"
+						width={200}
+						className="mx-auto "
+						alt="DevCollab Logo"
+					/>
+				</Link>
 				{/* <h3 className="text-accent text-sm md:text-base font-bold p-0 m-0">
 					DevCollab
 				</h3> */}
 
 				{/* Account & Team buttons */}
-				<div className="flex justify-between items-center w-full p-2 mb-2">
+				<div className="flex justify-between items-center w-full md:p-2 my-2">
 					<NavLink
 						className={clsx(
 							"flex items-center hover:text-accent gap-2 p-2 rounded-md",
@@ -242,7 +244,7 @@ const Sidebar = () => {
 				</div>
 
 				{page !== "p" && (
-					<div className="flex gap-2 items-center text-xs font-semibold p-2 text-left text-balance">
+					<div className="flex gap-2 items-center text-xs font-semibold p-1 text-left text-balance">
 						<div
 							className="flex items-center gap-1 text-left cursor-pointer hover:text-accent group py-2"
 							onClick={() => {
@@ -261,14 +263,14 @@ const Sidebar = () => {
 				<div className="flex justify-between gap-4 items-center w-full p-2 ">
 					{(selected.p || selected.f) && (
 						<>
-							<div className="flex gap-2 items-center ml-5">
+							<div className="flex gap-2 items-center">
 								<i className="shrink-0">{nav[page].parentIcon}</i>
 								<p className="text-sm font-bold text-balance line-clamp-2 text-ellipsis group-hover:text-accent text-left">
 									{parentTitle}
 								</p>
 							</div>
 
-							{/* Edit / Delete Btns */}
+							{/* Edit btn */}
 							<div className="flex gap-5 items-center justify-end">
 								<NavLink
 									className="cursor-pointer hover:text-accent"
@@ -278,13 +280,6 @@ const Sidebar = () => {
 								>
 									<Edit2 size={20} />
 								</NavLink>
-								{/* Delete button moved to edit forms */}
-								{/* <i
-								className="cursor-pointer hover:text-red-500"
-								onClick={() => setShowModal(deleteModal)}
-							>
-								<Trash2 size={20} />
-							</i> */}
 							</div>
 						</>
 					)}
