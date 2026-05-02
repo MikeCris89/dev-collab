@@ -9,7 +9,14 @@ import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import FormInput from "./FormInput";
 
 const FolderForm = () => {
-	const { setSelected, closeForm, setFormDirty, formDirty } = useGlobal();
+	const {
+		setSelected,
+		closeForm,
+		setFormDirty,
+		formDirty,
+		setIsSaving,
+		setFormError,
+	} = useGlobal();
 	const { projectId, folderId } = useParams();
 	const [action] = useGetSearchParams(["action"]);
 	const navigate = useNavigate();
@@ -48,7 +55,20 @@ const FolderForm = () => {
 		setFormDirty(isDirty);
 	}, [title, setFormDirty, existing]);
 
-	if (isLoading) return <Loading />;
+	const isPending = pendingAdd || pendingEdit;
+	const error = errAdd || errEdit;
+
+	useEffect(() => {
+		setIsSaving(isPending);
+		return () => setIsSaving(false);
+	}, [isPending, setIsSaving]);
+
+	useEffect(() => {
+		setFormError(error?.message ?? null);
+		return () => setFormError(null);
+	}, [error, setFormError]);
+
+	if (isLoading) return <Loading withText />;
 	if (!projectId) throw new Error("Project ID Missing.");
 	if (isEdit && !folderId) throw new Error("Folder ID Missing.");
 
@@ -69,9 +89,6 @@ const FolderForm = () => {
 			}
 		}
 	};
-
-	const isPending = pendingAdd || pendingEdit;
-	const error = errAdd || errEdit;
 
 	return (
 		<form id="folder-form" className="form" onSubmit={handleSubmit}>
@@ -95,7 +112,6 @@ const FolderForm = () => {
 				/>
 			</div>
 
-			{error && <p className="text-red-500 text-sm">{error.message}</p>}
 		</form>
 	);
 };

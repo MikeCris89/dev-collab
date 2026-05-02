@@ -9,9 +9,17 @@ import { useDeleteNote } from "@/hooks/useNotes";
 import { useDeleteModal } from "@/context/DeleteModalContext";
 import { useDeleteFolder } from "@/hooks/useFolders";
 import { useDeleteProject } from "@/hooks/useProjects";
+import LoadingSpinner from "./LoadingSpinner";
 
 const FormBar = () => {
-	const { allowNav, setSelected, formDirty, setFormDirty } = useGlobal();
+	const {
+		allowNav,
+		setSelected,
+		formDirty,
+		setFormDirty,
+		isSaving,
+		formError,
+	} = useGlobal();
 	const location = useLocation();
 	const navigate = useNavigate();
 
@@ -56,8 +64,9 @@ const FormBar = () => {
 	};
 
 	return (
-		<div className="flex flex-col w-full px-3 md:px-5 py-2 gap-2">
+		<div className="flex flex-col w-full px-3 md:px-5 py-2 gap-1">
 			{showForm && (
+				<>
 				<div className="flex items-center justify-between w-full gap-2">
 					{/* Left: delete or spacer */}
 					<div className="min-w-[75px]">
@@ -66,6 +75,7 @@ const FormBar = () => {
 								className="flex gap-1.5 items-center text-text-muted hover:text-red-500 transition-colors duration-200 p-0 min-w-0"
 								onClick={() => setShowModal(deleteModal)}
 								variant="link"
+								disabled={isSaving}
 							>
 								<Trash2 size={16} />
 								<span className="hidden md:inline text-sm">delete</span>
@@ -84,6 +94,7 @@ const FormBar = () => {
 								});
 							}}
 							className="flex gap-1.5 items-center"
+							disabled={isSaving}
 						>
 							<X size={15} />
 							<span>{formDirty ? "cancel" : "close"}</span>
@@ -92,7 +103,7 @@ const FormBar = () => {
 							type="submit"
 							form={formId}
 							variant="primary"
-							disabled={!formDirty}
+							disabled={!formDirty || isSaving}
 							className="flex gap-1.5 items-center"
 							onClick={() => {
 								setTimeout(() => {
@@ -100,11 +111,23 @@ const FormBar = () => {
 								}, 50);
 							}}
 						>
-							<Check size={15} />
-							<span>save</span>
+							{isSaving ? (
+								<LoadingSpinner size={15} />
+							) : (
+								<>
+									<Check size={15} />
+									<span>save</span>
+								</>
+							)}
 						</Button>
 					</div>
 				</div>
+				{formError && (
+					<p className="text-red-500 text-xs text-right w-full -mt-0.5">
+						{formError}
+					</p>
+				)}
+				</>
 			)}
 		</div>
 	);

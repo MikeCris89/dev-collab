@@ -14,7 +14,14 @@ import { arraysEqual } from "@/lib/utils";
 
 const ProjectForm = () => {
 	const { user } = useRequireAuth();
-	const { setSelected, closeForm, formDirty, setFormDirty } = useGlobal();
+	const {
+		setSelected,
+		closeForm,
+		formDirty,
+		setFormDirty,
+		setIsSaving,
+		setFormError,
+	} = useGlobal();
 	const { projectId } = useParams();
 	const navigate = useNavigate();
 
@@ -62,13 +69,22 @@ const ProjectForm = () => {
 		}
 	}, [existing]);
 
-	const isLoading = pendingAdd || pendingEdit || loadingProject;
+	const isSaving = pendingAdd || pendingEdit;
 	const error = errEdit || errProject || errAdd;
+
+	useEffect(() => {
+		setIsSaving(isSaving);
+		return () => setIsSaving(false);
+	}, [isSaving, setIsSaving]);
+
+	useEffect(() => {
+		setFormError(error?.message ?? null);
+		return () => setFormError(null);
+	}, [error, setFormError]);
 
 	if (isEdit && !projectId)
 		throw new Error("ProjectForm: Missing projectId param");
-	if (isLoading) return <Loading />;
-	if (error) throw new Error(error.message);
+	if (loadingProject) return <Loading withText />;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -106,7 +122,7 @@ const ProjectForm = () => {
 					label="Title"
 					value={title}
 					onChange={(e) => setTitle(e.target.value)}
-					disabled={isLoading}
+					disabled={isSaving}
 					required
 					maxLength={LIMITS.TITLE_MAX_LENGTH}
 					autoFocus

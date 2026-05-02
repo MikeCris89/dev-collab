@@ -9,10 +9,18 @@ import { ShieldCheck } from "lucide-react";
 
 const TeamPage = () => {
 	const { user } = useRequireAuth();
-	const { data: members = [], isLoading } = useTeamMembers();
+	const { data: members = [], isLoading, error } = useTeamMembers();
 	const navigate = useNavigate();
 
-	if (isLoading) return <Loading />;
+	if (isLoading) return <Loading withText />;
+	if (error)
+		return (
+			<div className="flex justify-center pt-8 px-4">
+				<p className="text-red-500 text-sm">
+					{error.message ?? "Couldn't load team members."}
+				</p>
+			</div>
+		);
 
 	const sorted = members
 		.slice()

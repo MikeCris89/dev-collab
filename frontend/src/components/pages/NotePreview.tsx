@@ -39,11 +39,16 @@ const NotePreview = () => {
 		}
 	}, [editor, note?.body]);
 
-	if (error) throw new Error(`Error getting noteId: ${noteId}`);
+	if (isLoading) return <Loading withText />;
 
-	if (isLoading) return <Loading />;
-
-	if (!note) throw new Error("Note not found");
+	if (error || !note)
+		return (
+			<section className="flex-1 flex justify-center items-center p-6">
+				<p className="text-red-500 text-sm">
+					{error?.message ?? "Couldn't load this note."}
+				</p>
+			</section>
+		);
 
 	if (!editor) return null;
 

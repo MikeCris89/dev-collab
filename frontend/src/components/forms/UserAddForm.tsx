@@ -13,7 +13,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const UserAddForm = () => {
 	const { isAdmin, user } = useRequireAuth();
 	const navigate = useNavigate();
-	const { nav, setFormDirty } = useGlobal();
+	const { nav, setFormDirty, setIsSaving, setFormError } = useGlobal();
 
 	const { data: projects = [], isLoading: loadingProjects } = useTeamProjects();
 	const { isPending, error, mutate: createUser } = useCreateTeamMember();
@@ -38,11 +38,21 @@ const UserAddForm = () => {
 
 	useEffect(() => {
 		setFormDirty(canSubmit);
-	}, [canSubmit]);
+	}, [canSubmit, formData.username, formData.password, confirmPassword]);
 
 	useEffect(() => {
 		return () => setFormDirty(false);
 	}, []);
+
+	useEffect(() => {
+		setIsSaving(isPending);
+		return () => setIsSaving(false);
+	}, [isPending, setIsSaving]);
+
+	useEffect(() => {
+		setFormError(passwordError ?? error?.message ?? null);
+		return () => setFormError(null);
+	}, [passwordError, error, setFormError]);
 
 	if (!isAdmin) {
 		navigate("/team", { replace: true });
@@ -139,11 +149,6 @@ const UserAddForm = () => {
 				</div>
 			</div>
 
-			{error && (
-				<p className="text-red-500 text-sm">
-					{error.message ?? "Error has occurred"}
-				</p>
-			)}
 		</form>
 	);
 };

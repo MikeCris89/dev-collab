@@ -24,7 +24,11 @@ const AccountContent = () => {
 	const { data: userData, isLoading, error } = useTeamMember(user.sub);
 	const queryClient = useQueryClient();
 	const { setShowModal, setUserId } = usePasswordModal();
-	const { mutate: editUser, isPending: isSaving } = useEditTeamMember();
+	const {
+		mutate: editUser,
+		isPending: isSaving,
+		error: editError,
+	} = useEditTeamMember();
 	const {
 		mutateAsync: deleteTeam,
 		isPending: isDeleting,
@@ -34,9 +38,15 @@ const AccountContent = () => {
 	const [editingName, setEditingName] = useState(false);
 	const [nameValue, setNameValue] = useState("");
 
-	if (isLoading) return <Loading />;
+	if (isLoading) return <Loading withText />;
 	if (!userData || error)
-		throw new Error(error?.message ?? "Account Page: Userdata fetch error");
+		return (
+			<div className="flex justify-center pt-8 px-4">
+				<p className="text-red-500 text-sm">
+					{error?.message ?? "Couldn't load account data."}
+				</p>
+			</div>
+		);
 
 	const startEditing = () => {
 		setNameValue(userData.name ?? "");
@@ -177,6 +187,12 @@ const AccountContent = () => {
 						</Button>
 					</div>
 				</div>
+
+				{(editError || errDeleting) && (
+					<p className="text-red-500 text-sm text-center">
+						{(editError ?? errDeleting)?.message ?? "Something went wrong"}
+					</p>
+				)}
 
 				{/* Logout */}
 				<div className="flex justify-center pt-2">

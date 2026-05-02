@@ -61,6 +61,10 @@ interface GlobalCtx {
 	allowNav: (value?: boolean) => void;
 	formDirty: boolean;
 	setFormDirty: React.Dispatch<React.SetStateAction<boolean>>;
+	isSaving: boolean;
+	setIsSaving: React.Dispatch<React.SetStateAction<boolean>>;
+	formError: string | null;
+	setFormError: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const GlobalContext = createContext<GlobalCtx | undefined>(undefined);
@@ -74,6 +78,8 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 	const [showMenu, setShowMenu] = useState(false);
 	useThemeSwitcher();
 	const [formDirty, setFormDirty] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
+	const [formError, setFormError] = useState<string | null>(null);
 
 	const { data: project } = useTeamProject(selected.p);
 	const { data: folder } = useFolder({
@@ -189,6 +195,10 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 				allowNav,
 				formDirty,
 				setFormDirty,
+				isSaving,
+				setIsSaving,
+				formError,
+				setFormError,
 			}}
 		>
 			{children}

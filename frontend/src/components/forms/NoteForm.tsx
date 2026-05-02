@@ -19,7 +19,7 @@ const NoteForm = () => {
 	const [action] = useGetSearchParams(["action"]);
 	const isEdit = action === "edit";
 
-	const { formDirty, setFormDirty } = useGlobal();
+	const { formDirty, setFormDirty, setIsSaving, setFormError } = useGlobal();
 	const { data: existing, isLoading: noteLoading } = useNote(
 		projectId,
 		folderId,
@@ -117,11 +117,28 @@ const NoteForm = () => {
 	// Block navigation for unsaved changes
 	const allowNav = useUnsavedChanges(formDirty);
 
+	const isLoading = isAdding || isUpdating;
+	const error = errAdding || errUpdating;
+
+	useEffect(() => {
+		setIsSaving(isLoading);
+		return () => setIsSaving(false);
+	}, [isLoading, setIsSaving]);
+
+	useEffect(() => {
+		setFormError(error?.message ?? null);
+		return () => setFormError(null);
+	}, [error, setFormError]);
+
+	useEffect(() => {
+		editor?.setEditable(!isLoading);
+	}, [editor, isLoading]);
+
 	if (!projectId || !folderId)
 		throw new Error(`Missing ID's. PID: ${projectId} FID: ${folderId}`);
 
 	if (isEdit && noteLoading) {
-		return <Loading />;
+		return <Loading withText />;
 	}
 
 	if (isEdit && !existing) throw new Error("Existing note data missing");
@@ -153,9 +170,6 @@ const NoteForm = () => {
 			);
 		}
 	};
-
-	const isLoading = isAdding || isUpdating;
-	const error = errAdding || errUpdating;
 
 	const formatDate = (iso: string) => {
 		const d = new Date(iso);
@@ -200,12 +214,6 @@ const NoteForm = () => {
 				id={existing?.id || "new"}
 				editor={editor}
 			/>
-
-			{error && (
-				<p className="text-red-500">
-					{error.message || "Something went wrong"}
-				</p>
-			)}
 		</form>
 	);
 };

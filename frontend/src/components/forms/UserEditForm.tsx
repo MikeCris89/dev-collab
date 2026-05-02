@@ -28,7 +28,6 @@ import { useDeleteModal } from "@/context/DeleteModalContext";
 interface ContentProps {
 	existing: UserWithProjects;
 	isPending: boolean;
-	error: Error | null;
 	formData: EditUser;
 	setFormData: React.Dispatch<React.SetStateAction<EditUser>>;
 	projectIds: string[];
@@ -41,7 +40,6 @@ interface ContentProps {
 const UserEditFormContent = ({
 	existing,
 	isPending,
-	error,
 	formData,
 	setFormData,
 	projectIds,
@@ -59,7 +57,7 @@ const UserEditFormContent = ({
 		error: deleteError,
 	} = useDeleteTeamMember();
 
-	const { nav } = useGlobal();
+	const { nav, setIsSaving, setFormError } = useGlobal();
 	const navigate = useNavigate();
 
 	const handleDelete = async () => {
@@ -73,7 +71,14 @@ const UserEditFormContent = ({
 		onConfirm: handleDelete,
 	};
 
-	if (deleteError) console.log(deleteError);
+	useEffect(() => {
+		setIsSaving(isDeleting);
+		return () => setIsSaving(false);
+	}, [isDeleting, setIsSaving]);
+
+	useEffect(() => {
+		if (deleteError) setFormError(deleteError.message);
+	}, [deleteError, setFormError]);
 
 	return (
 		<form onSubmit={submitHandler} id="user-edit-form" className="form">
@@ -145,18 +150,13 @@ const UserEditFormContent = ({
 					<Button
 						className="bg-red-500 hover:bg-red-500/80"
 						onClick={() => setShowDeleteModal(deleteModal)}
-						disabled={isPending}
+						disabled={isPending || isDeleting}
 					>
 						Delete User
 					</Button>
 				</div>
 			)}
 
-			{error && (
-				<p className="text-red-500 text-sm">
-					{error.message ?? "Error has occurred"}
-				</p>
-			)}
 		</form>
 	);
 };
@@ -164,13 +164,23 @@ const UserEditFormContent = ({
 const UserEditForm = () => {
 	const [searchParams] = useSearchParams();
 	const memberId = searchParams.get("memberId");
-	const { formDirty, setFormDirty } = useGlobal();
+	const { formDirty, setFormDirty, setIsSaving, setFormError } = useGlobal();
 	const navigate = useNavigate();
 	const location = useLocation();
 
 	const { data: existing, isLoading } = useTeamMember(memberId);
 	const { data: projects = [], isLoading: loadingProjects } = useTeamProjects();
 	const { isPending, error, mutate: editUser } = useEditTeamMember();
+
+	useEffect(() => {
+		setIsSaving(isPending);
+		return () => setIsSaving(false);
+	}, [isPending, setIsSaving]);
+
+	useEffect(() => {
+		setFormError(error?.message ?? null);
+		return () => setFormError(null);
+	}, [error, setFormError]);
 
 	const [formData, setFormData] = useState<EditUser>({
 		name: existing?.name || "",
@@ -194,7 +204,7 @@ const UserEditForm = () => {
 		setFormDirty(isDirty);
 	}, [formData, setFormDirty, existing, projectIds]);
 
-	if (isLoading || loadingProjects) return <Loading />;
+	if (isLoading || loadingProjects) return <Loading withText />;
 
 	if (!memberId) throw new Error("memberId not provided.");
 	if (!existing) throw new Error("Team Member not found.");
@@ -215,7 +225,6 @@ const UserEditForm = () => {
 			<UserEditFormContent
 				existing={existing}
 				isPending={isPending}
-				error={error}
 				formData={formData}
 				setFormData={setFormData}
 				projectIds={projectIds}
