@@ -4,7 +4,7 @@ const useThemeSwitcher = () => {
 	const [isDark, setIsDark] = useState(() => {
 		const t = localStorage.getItem("theme");
 		if (t) return t === "dark";
-		return matchMedia("(prefers-color-scheme: dark)").matches;
+		return true;
 	});
 
 	useEffect(() => {

@@ -12,10 +12,7 @@
 		<title>DevCollab</title>
 		<script>
 			const t = localStorage.getItem("theme");
-			if (
-				t === "dark" ||
-				(!t && matchMedia("(prefers-color-scheme: dark)").matches)
-			) {
+			if (t === "dark" || !t) {
 				document.documentElement.classList.add("dark");
 			}
 		</script>
@@ -24,7 +21,7 @@
 			#splash {
 				position: fixed;
 				inset: 0;
-				background: #fafafa;
+				background: oklch(0.98 0 0);
 				display: flex;
 				/* flex-direction: column; */
 				align-items: center;
@@ -35,7 +32,7 @@
 			}
 
 			.dark #splash {
-				background: #1a1a1a;
+				background: oklch(0.11 0 0);
 			}
 		</style>
 	</head>
