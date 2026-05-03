@@ -93,7 +93,7 @@ const AccountContent = () => {
 	};
 
 	return (
-		<section className="flex flex-col items-center w-full pt-8 px-4">
+		<section className="flex flex-col items-center w-full">
 			<div className="flex flex-col gap-5 w-[460px] max-w-full mx-auto">
 				{/* Avatar + username */}
 				<div className="flex flex-col items-center gap-2 mb-2">

@@ -24,11 +24,11 @@ router.get("/:projectId", async (req, res) => {
 			folders: {
 				include: {
 					notes: {
-						orderBy: { createdAt: "asc" },
+						orderBy: { updatedAt: "desc" },
 					},
 					_count: { select: { notes: true } },
 				},
-				orderBy: { createdAt: "asc" },
+				orderBy: { createdAt: "desc" },
 			},
 			_count: { select: { folders: true } },
 		},
@@ -79,7 +79,7 @@ router.post("/", async (req, res) => {
 
 	if (projectCount >= LIMITS.MAX_PROJECTS_PER_TEAM)
 		throw new BadRequestError(
-			`Maximum of ${LIMITS.MAX_PROJECTS_PER_TEAM} per team.`
+			`Maximum of ${LIMITS.MAX_PROJECTS_PER_TEAM} per team.`,
 		);
 
 	const body: ProjectInput = req.body;

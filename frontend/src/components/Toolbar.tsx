@@ -67,66 +67,66 @@ const FormBar = () => {
 		<div className="flex flex-col w-full px-3 md:px-5 py-2 gap-1">
 			{showForm && (
 				<>
-				<div className="flex items-center justify-between w-full gap-2">
-					{/* Left: delete or spacer */}
-					<div className="min-w-[75px]">
-						{!isAddAction && !isTeamPage && (
+					<div className="flex items-center justify-between w-full gap-2">
+						{/* Left: delete or spacer */}
+						<div className="min-w-[75px]">
+							{!isAddAction && !isTeamPage && (
+								<Button
+									className="flex gap-1.5 items-center text-text-muted hover:text-red-500 transition-colors duration-200 p-0 min-w-0"
+									onClick={() => setShowModal(deleteModal)}
+									variant="link"
+									disabled={isSaving}
+								>
+									<Trash2 size={16} />
+									<span className="hidden md:inline text-sm">delete</span>
+								</Button>
+							)}
+						</div>
+
+						{/* Right: cancel + save */}
+						<div className="flex gap-2 items-center">
 							<Button
-								className="flex gap-1.5 items-center text-text-muted hover:text-red-500 transition-colors duration-200 p-0 min-w-0"
-								onClick={() => setShowModal(deleteModal)}
-								variant="link"
+								onClick={() => {
+									allowNav();
+									setFormDirty(false);
+									navigate(isTeamPage ? "/team" : "/", {
+										replace: !isNote || isTeamPage,
+									});
+								}}
+								className="flex gap-1.5 items-center"
 								disabled={isSaving}
 							>
-								<Trash2 size={16} />
-								<span className="hidden md:inline text-sm">delete</span>
+								<X size={15} />
+								<span>{formDirty ? "cancel" : "close"}</span>
 							</Button>
-						)}
+							<Button
+								type="submit"
+								form={formId}
+								variant="primary"
+								disabled={!formDirty || isSaving}
+								className="flex gap-1.5 items-center"
+								onClick={() => {
+									setTimeout(() => {
+										setFormDirty(false);
+									}, 50);
+								}}
+							>
+								{isSaving ? (
+									<LoadingSpinner size={15} />
+								) : (
+									<>
+										<Check size={15} />
+										<span>save</span>
+									</>
+								)}
+							</Button>
+						</div>
 					</div>
-
-					{/* Right: cancel + save */}
-					<div className="flex gap-2 items-center">
-						<Button
-							onClick={() => {
-								allowNav();
-								setFormDirty(false);
-								navigate(isTeamPage ? "/team" : "/", {
-									replace: !isNote || isTeamPage,
-								});
-							}}
-							className="flex gap-1.5 items-center"
-							disabled={isSaving}
-						>
-							<X size={15} />
-							<span>{formDirty ? "cancel" : "close"}</span>
-						</Button>
-						<Button
-							type="submit"
-							form={formId}
-							variant="primary"
-							disabled={!formDirty || isSaving}
-							className="flex gap-1.5 items-center"
-							onClick={() => {
-								setTimeout(() => {
-									setFormDirty(false);
-								}, 50);
-							}}
-						>
-							{isSaving ? (
-								<LoadingSpinner size={15} />
-							) : (
-								<>
-									<Check size={15} />
-									<span>save</span>
-								</>
-							)}
-						</Button>
-					</div>
-				</div>
-				{formError && (
-					<p className="text-red-500 text-xs text-right w-full -mt-0.5">
-						{formError}
-					</p>
-				)}
+					{formError && (
+						<p className="text-red-500 text-xs text-right w-full -mt-0.5">
+							{formError}
+						</p>
+					)}
 				</>
 			)}
 		</div>
@@ -181,14 +181,14 @@ const Toolbar = () => {
 			)}
 		>
 			{!isNote && !isForm && title.title && (
-				// <div className="grid grid-cols-[70px_1fr_70px]">
-				// <div className="col-start-2 flex gap-2 items-center justify-center flex-nowrap">
-				// {/* <i className="text-accent shrink-0 ">{title.icon}</i> */}
-				<h1 className="w-fit p-0 m-0 text-3xl md:text-4xl text-center">
-					{title.title}
-				</h1>
-				// </div>
-				// </div>
+				<div className="grid grid-cols-[70px_1fr_70px]">
+					<div className="col-start-2 flex gap-2 items-center justify-center flex-nowrap">
+						<i className="text-accent mr-1">{title.icon}</i>
+						<h1 className="w-fit p-0 m-0 text-2xl md:text-4xl text-center">
+							{title.title}
+						</h1>
+					</div>
+				</div>
 			)}
 
 			{(isNote || isForm) && <FormBar />}

@@ -39,11 +39,11 @@ export const useCreateNote = () => {
 						...old,
 						folders: old.folders.map((f) =>
 							f.id === resp.folderId
-								? { ...f, notes: [...(f.notes ?? []), resp] }
-								: f
+								? { ...f, notes: [resp, ...(f.notes ?? [])] }
+								: f,
 						),
 					};
-				}
+				},
 			);
 		},
 	});
@@ -77,10 +77,10 @@ export const useUpdateNote = () => {
 					return {
 						...old,
 						folders: old.folders.map((f) =>
-							f.id === folderId ? newFolder : f
+							f.id === folderId ? newFolder : f,
 						),
 					};
-				}
+				},
 			);
 		},
 	});
@@ -112,10 +112,10 @@ export const useDeleteNote = () => {
 					return {
 						...old,
 						folders: old.folders.map((f) =>
-							f.id === folderId ? newFolder : f
+							f.id === folderId ? newFolder : f,
 						),
 					};
-				}
+				},
 			);
 		},
 	});
