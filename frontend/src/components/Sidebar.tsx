@@ -17,12 +17,14 @@ import { Link, NavLink, useLocation, useParams } from "react-router-dom";
 import Loading from "./Loading";
 import { useFolderNotes } from "@/hooks/useNotes";
 import { FORMS } from "@shared/contract";
+import useRequireAuth from "@/hooks/useRequireAuth";
 
 const Sidebar = () => {
 	const sidebarRef = useRef<HTMLDivElement>(null);
 	const menuBtnRef = useRef<HTMLDivElement>(null);
 	const { pathname } = useLocation();
 	const { projectId, folderId, noteId } = useParams();
+	const { isAdmin } = useRequireAuth();
 	// const navigate = useNavigate();
 
 	const { selected, setSelected, showMenu, setShowMenu, toggleMenu, nav } =
@@ -188,6 +190,7 @@ const Sidebar = () => {
 							}}
 							className="flex gap-1 items-center"
 							href={`${nav[page].formUrl}?action=add&formId=${nav[page].formId}`}
+							disabled={!isAdmin && page !== "n"}
 						>
 							{nav[page].icon} New
 						</Button>
@@ -231,14 +234,16 @@ const Sidebar = () => {
 
 							{/* Edit btn */}
 							<div className="flex gap-5 items-center justify-end">
-								<NavLink
-									className="cursor-pointer hover:text-accent"
-									to={`${nav[parent].formEditUrl}?action=edit&formId=${nav[parent].formId}`}
-									onClick={() => setShowMenu(false)}
-									state={{ from: pathname }}
-								>
-									<Edit2 size={20} />
-								</NavLink>
+								{isAdmin && (
+									<NavLink
+										className={clsx("cursor-pointer hover:text-accent")}
+										to={`${nav[parent].formEditUrl}?action=edit&formId=${nav[parent].formId}`}
+										onClick={() => setShowMenu(false)}
+										state={{ from: pathname }}
+									>
+										<Edit2 size={20} />
+									</NavLink>
+								)}
 							</div>
 						</>
 					)}

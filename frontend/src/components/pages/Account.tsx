@@ -20,7 +20,7 @@ import { useDeleteModal } from "@/context/DeleteModalContext";
 
 const AccountContent = () => {
 	const { logout } = useAuth();
-	const { user } = useRequireAuth();
+	const { user, isAdmin } = useRequireAuth();
 	const { data: userData, isLoading, error } = useTeamMember(user.sub);
 	const queryClient = useQueryClient();
 	const { setShowModal, setUserId } = usePasswordModal();
@@ -178,15 +178,17 @@ const AccountContent = () => {
 						<Label>Theme</Label>
 						<ThemeSwitcher />
 					</div>
-					<div className="flex items-center justify-between px-5 py-4">
-						<Label>Delete Account</Label>
-						<Button
-							onClick={() => setShowDeleteModal(deleteModal)}
-							className="bg-red-500 hover:bg-red-500/80 min-w-[150px]"
-						>
-							Delete All Data
-						</Button>
-					</div>
+					{isAdmin && (
+						<div className="flex items-center justify-between px-5 py-4">
+							<Label>Delete Account</Label>
+							<Button
+								onClick={() => setShowDeleteModal(deleteModal)}
+								className="bg-red-500 hover:bg-red-500/80 min-w-[150px]"
+							>
+								Delete All Data
+							</Button>
+						</div>
+					)}
 				</div>
 
 				{(editError || errDeleting) && (

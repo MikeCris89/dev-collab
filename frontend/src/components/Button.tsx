@@ -16,7 +16,7 @@ export const btnVariants: {
 	default: clsx(
 		"bg-bg-surface/60 text-[14px] outline-1 outline-border-light ",
 		"hover:outline-border-medium hover:bg-border-light",
-		"active:outline-border-medium active:bg-border-light"
+		"active:outline-border-medium active:bg-border-light",
 		// "focus:outline-border-medium focus:bg-border-light",
 		// "enabled:hover:outline-border-medium enabled:hover:bg-border-light",
 		// "enabled:focus:outline-border-medium enabled:focus:bg-border-light",
@@ -27,7 +27,7 @@ export const btnVariants: {
 		// "enabled:bg-accent border border-border-medium enabled:border-none",
 		"hover:bg-accent hover:shadow-[0_2px_20px] hover:shadow-accent hover:-translate-y-0.5",
 		"active:bg-accent active:shadow-[0_2px_20px] active:shadow-accent active:-translate-y-0.5 ",
-		"disabled:hover:shadow-none disabled:bg-bg-surface/60 disabled:hover:-translate-y-0"
+		"disabled:hover:shadow-none disabled:bg-bg-surface/60 disabled:hover:-translate-y-0",
 		// "enabled:hover:bg-accent enabled:hover:shadow-[0_2px_20px] enabled:hover:shadow-accent enabled:hover:-translate-y-0.5 "
 		// "enabled:focus:bg-accent ",
 		// "enabled:active:bg-accent active:shadow-[0_2px_20px] enabled:active:shadow-accent enabled:active:-translate-y-0.5 "
@@ -35,13 +35,13 @@ export const btnVariants: {
 	menu: clsx(
 		"text-[16px] text-white bg-accent focus:bg-accent font-bold text-center",
 		"hover:bg-accent hover:shadow-[0_2px_20px] hover:shadow-accent ",
-		"active:bg-accent active:shadow-[0_2px_20px] active:shadow-accent "
+		"active:bg-accent active:shadow-[0_2px_20px] active:shadow-accent ",
 		// "enabled:hover:bg-accent hover:shadow-[0_2px_20px] enabled:hover:shadow-accent ",
 		// "enabled:focus:bg-accent ",
 		// "enabled:active:bg-accent active:shadow-[0_2px_20px] enabled:active:shadow-accent "
 	),
 	link: clsx(
-		"text-[14px] hover:underline hover:underline-offset-4 cursor-pointer p-0 m-0"
+		"text-[14px] hover:underline hover:underline-offset-4 cursor-pointer p-0 m-0",
 	),
 };
 
@@ -84,13 +84,17 @@ const Button = ({
 					to={href}
 					className={clsx(
 						"hover:no-underline text-text-muted rounded-xl",
+						disabled &&
+							"pointer-events-none opacity-50 saturate-50 cursor-not-allowed shadow-none translate-x-0 translate-y-0",
 						btnInitStyle,
 						btnVariants[variant],
-						className
+						className,
 					)}
 					onClick={onClick}
 					state={{ from: pathname }}
 					replace={isReplace || undefined}
+					aria-disabled={disabled}
+					tabIndex={disabled ? -1 : undefined}
 				>
 					{children}
 				</NavLink>
