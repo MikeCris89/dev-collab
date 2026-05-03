@@ -125,6 +125,9 @@ export function TiptapEditor({ placeholder, id, editor }: TiptapEditorProps) {
 					<Quote size={16} />
 				</ToolbarButton>
 			</div>
+			<p className="text-xs bg-yellow-500/30 py-1">
+				⚠️ Portfolio Demo: Do not store any personal or sensitive info.
+			</p>
 
 			{/* Editor */}
 			<div className="flex-1 flex overflow-hidden h-full">
@@ -146,7 +149,12 @@ interface ToolbarButtonProps {
 	title?: string;
 }
 
-function ToolbarButton({ onClick, isActive, children, title }: ToolbarButtonProps) {
+function ToolbarButton({
+	onClick,
+	isActive,
+	children,
+	title,
+}: ToolbarButtonProps) {
 	return (
 		<button
 			type="button"
