@@ -20,11 +20,11 @@ const NoteForm = () => {
 	const isEdit = action === "edit";
 
 	const { formDirty, setFormDirty, setIsSaving, setFormError } = useGlobal();
-	const { data: existing, isLoading: noteLoading } = useNote(
-		projectId,
-		folderId,
-		noteId,
-	);
+	const {
+		data: existing,
+		isLoading: noteLoading,
+		error: noteError,
+	} = useNote(projectId, folderId, noteId);
 
 	const initialTitle = existing?.title ?? "";
 	// const initialBody = existing?.body ?? "";
@@ -134,14 +134,13 @@ const NoteForm = () => {
 		editor?.setEditable(!isLoading);
 	}, [editor, isLoading]);
 
-	if (!projectId || !folderId)
-		throw new Error(`Missing ID's. PID: ${projectId} FID: ${folderId}`);
+	if (!projectId || !folderId) throw new Error(`Missing data.`);
 
 	if (isEdit && noteLoading) {
 		return <Loading withText />;
 	}
 
-	if (isEdit && !existing) throw new Error("Existing note data missing");
+	if (isEdit && !existing) throw new Error("Note not found.");
 	if (!isEdit && existing) throw new Error("Existing note found for new entry");
 
 	const handleSubmit = async (e: React.FormEvent) => {

@@ -6,7 +6,6 @@ import { useProject } from "@/hooks/useProjects";
 import {
 	ChevronLeft,
 	Edit2,
-	Layers,
 	Menu,
 	UserCircle2Icon,
 	UsersRound,
@@ -49,18 +48,6 @@ const Sidebar = () => {
 		isLoading: loadingFolder,
 		error: errorFolder,
 	} = useFolderNotes({ projectId: selected.p, folderId: selected.f });
-
-	// Mutations
-	// const {
-	// 	mutateAsync: deleteFolder,
-	// 	isPending: pendingFolder,
-	// 	error: errorDeleteFolder,
-	// } = useDeleteFolder();
-
-	// const { mutateAsync: deleteProject, error: errorDeleteProject } =
-	// 	useDeleteProject();
-
-	// const { setShowModal } = useDeleteModal();
 
 	useEffect(() => {
 		if (!showMenu) return;
@@ -105,7 +92,6 @@ const Sidebar = () => {
 			f: project?.folders ?? [],
 			n: folderNotes ?? [],
 		};
-		// n: project?.folders.find((f) => f.id === selected.f)?.notes ?? [],
 
 		if (search) {
 			return data[selected.page].filter(
@@ -130,31 +116,7 @@ const Sidebar = () => {
 				"Error fetching project data",
 		);
 
-	// const handleDelete = () => {
-	// 	if (selected.p) {
-	// 		if (selected.f) {
-	// 			setSelected((prev) => ({ ...prev, f: null, n: null }));
-	// 			navigate("/", { replace: true });
-	// 			deleteFolder({ id: selected.f, projectId: selected.p });
-	// 		} else {
-	// 			setSelected((prev) => ({ ...prev, p: null, f: null, n: null }));
-	// 			navigate("/", { replace: true });
-	// 			deleteProject(selected.p);
-	// 		}
-	// 	}
-	// };
-
-	// const deleteModal = {
-	// 	type: selected.p ? (selected.f ? "Folder" : "Project") : "",
-	// 	onConfirm: handleDelete,
-	// };
-
 	const parent = page === "f" ? "p" : "f";
-
-	// if (errorDeleteFolder)
-	// 	console.log("Folder Delete Error: ", errorDeleteFolder);
-
-	console.log("show menu:", showMenu);
 
 	return (
 		<>
@@ -188,9 +150,6 @@ const Sidebar = () => {
 						alt="DevCollab Logo"
 					/>
 				</Link>
-				{/* <h3 className="text-accent text-sm md:text-base font-bold p-0 m-0">
-					DevCollab
-				</h3> */}
 
 				{/* Account & Team buttons */}
 				<div className="flex justify-between items-center w-full md:p-2 my-2">

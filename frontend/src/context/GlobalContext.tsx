@@ -179,8 +179,6 @@ const GlobalProvider = ({ children }: React.PropsWithChildren) => {
 		[selected, folder, project],
 	);
 
-	console.log("GLB CTX - show menu:", showMenu);
-
 	return (
 		<GlobalContext.Provider
 			value={{

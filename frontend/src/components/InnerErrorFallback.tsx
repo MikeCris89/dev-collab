@@ -12,22 +12,29 @@ const InnerErrorFallback = ({
 	const error = useRouteError();
 	const navigate = useNavigate();
 
-	const isDev = process.env.NODE_ENV !== "production";
+	const isDev = import.meta.env.DEV;
 
 	const message =
 		error instanceof Error
 			? error.message
-			: boundaryError?.message ?? "unknown error";
+			: (boundaryError?.message ?? "unknown error");
 
 	return (
 		<div className="flex flex-col justify-center items-center h-full w-full p-4">
-			<h2>Something went wrong</h2>
+			<h1>Something went wrong</h1>
 			{isDev && <pre className="text-red-500 text-wrap">{message}</pre>}
 			{isDev && boundaryError && <small>(react error boundary)</small>}
 			<br />
 			<div className="flex gap-4 items-center">
 				{boundaryError && (
-					<Button onClick={boundaryError.resetErrorBoundary}>Reset</Button>
+					<Button
+						onClick={() => {
+							boundaryError.resetErrorBoundary();
+							window.location.reload();
+						}}
+					>
+						Refresh
+					</Button>
 				)}
 				<Button
 					variant="primary"

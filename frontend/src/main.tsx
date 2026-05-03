@@ -21,11 +21,11 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<CustomErrorBoundary>
-			<AuthProvider>
-				<QueryClientProvider client={queryClient}>
+			<QueryClientProvider client={queryClient}>
+				<AuthProvider>
 					<App />
-				</QueryClientProvider>
-			</AuthProvider>
+				</AuthProvider>
+			</QueryClientProvider>
 		</CustomErrorBoundary>
 	</StrictMode>,
 );

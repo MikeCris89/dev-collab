@@ -8,6 +8,7 @@ import type {
 	UserAuth,
 } from "@shared/contract";
 import type { AxiosError } from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AuthCtx {
 	isLoading: boolean;
@@ -28,6 +29,8 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	const [isPending, setIsPending] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [user, setUser] = useState<JwtUser | null>(null);
+
+	const queryClient = useQueryClient();
 
 	const refresh = async () => {
 		try {
@@ -55,6 +58,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 			if (event.persisted) {
 				console.log("Page restored from bfcache, refreshing auth");
 				refresh();
+				queryClient.invalidateQueries();
 			}
 		};
 

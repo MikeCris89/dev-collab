@@ -81,6 +81,7 @@ const AccountContent = () => {
 
 	const handleDeleteTeam = async () => {
 		await deleteTeam();
+		queryClient.clear();
 		logout();
 	};
 
