@@ -16,7 +16,7 @@
 	"type": "module",
 	"dependencies": {
 		"@prisma/client": "^6.17.1",
-		"@shared/contract": "file:../contract",
+		"@shared/contract": "*",
 		"@types/pg": "^8.15.5",
 		"bcrypt": "^6.0.0",
 		"cookie-parser": "^1.4.7",

@@ -11,7 +11,7 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@shared/contract": "file:../contract",
+		"@shared/contract": "*",
 		"@tanstack/react-query": "^5.90.2",
 		"@tiptap/extension-task-item": "^3.13.0",
 		"@tiptap/extension-task-list": "^3.13.0",
