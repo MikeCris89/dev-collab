@@ -49,7 +49,7 @@
 {
 	"compilerOptions": {
 		// "ignoreDeprecations": "6.0",
-		"baseUrl": ".",
+		// "baseUrl": ".",
 		// "paths": {
 		// 	"@contract": ["../contract/types.js"],
 		// 	"@contract/*": ["../contract"]

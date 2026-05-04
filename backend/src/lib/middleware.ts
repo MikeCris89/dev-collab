@@ -2,14 +2,14 @@ import jwt from "jsonwebtoken";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { CustomError, UnauthorizedError } from "./errors.js";
 import { JwtUser, ROLES, Roles } from "@shared/contract";
-import { reqUser } from "src/types/types.js";
+import { reqUser } from "../types/types.js";
 import { Prisma } from "@prisma/client";
 
 export const errorHandler = (
 	err: unknown,
 	_req: Request,
 	res: Response,
-	_next: NextFunction
+	_next: NextFunction,
 ) => {
 	if (err instanceof CustomError) {
 		return res.status(err.statusCode).json(err.serialize());
@@ -39,7 +39,7 @@ export const requireAuth: RequestHandler = (req, _res, next) => {
 	try {
 		const payload = jwt.verify(
 			token,
-			process.env.JWT_SECRET!
+			process.env.JWT_SECRET!,
 		) as jwt.JwtPayload & JwtUser;
 		// normalize
 		req.user = {

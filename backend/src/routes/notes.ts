@@ -2,7 +2,7 @@ import express, { RequestHandler } from "express";
 import { BadRequestError, NotFoundError } from "../lib/errors.js";
 import { validateNoteInput } from "../lib/utils.js";
 import { NoteInput } from "@shared/contract";
-import { reqUser } from "src/types/types.js";
+import { reqUser } from "../types/types.js";
 import prisma from "../db/client.js";
 
 type NoteParams = {

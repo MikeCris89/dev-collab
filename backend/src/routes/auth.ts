@@ -6,9 +6,9 @@ import { CreateUserDTO, ROLES } from "@shared/contract";
 import { userQueries } from "../db/queries/index.js";
 import type { User } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { reqUser } from "src/types/types.js";
+import { reqUser } from "../types/types.js";
 import prisma from "../db/client.js";
-import { sanitizeAuthUser, validateUserInput } from "src/lib/utils.js";
+import { sanitizeAuthUser, validateUserInput } from "../lib/utils.js";
 
 const COOKIE_OPTIONS = {
 	httpOnly: true,

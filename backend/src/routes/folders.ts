@@ -1,10 +1,10 @@
 import { FolderInput, LIMITS } from "@shared/contract";
 import express from "express";
-import { adminOnly } from "src/lib/middleware.js";
+import { adminOnly } from "../lib/middleware.js";
 import prisma from "../db/client.js";
-import { BadRequestError, NotFoundError } from "src/lib/errors.js";
-import { reqUser } from "src/types/types.js";
-import { validateFolderInput } from "src/lib/utils.js";
+import { BadRequestError, NotFoundError } from "../lib/errors.js";
+import { reqUser } from "../types/types.js";
+import { validateFolderInput } from "../lib/utils.js";
 
 const router = express.Router();
 
@@ -50,7 +50,7 @@ router.post("/:projectId", async (req, res) => {
 
 	if (count >= LIMITS.MAX_FOLDERS_PER_PROJECT)
 		throw new BadRequestError(
-			`Maximum of ${LIMITS.MAX_FOLDERS_PER_PROJECT} per project.`
+			`Maximum of ${LIMITS.MAX_FOLDERS_PER_PROJECT} per project.`,
 		);
 
 	const resp = await prisma.folder.create({

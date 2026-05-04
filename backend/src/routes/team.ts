@@ -8,16 +8,16 @@ import {
 	TeamWithAll,
 } from "@shared/contract";
 import express from "express";
-import { adminOnly } from "src/lib/middleware.js";
-import { reqUser } from "src/types/types.js";
+import { adminOnly } from "../lib/middleware.js";
+import { reqUser } from "../types/types.js";
 import prisma from "../db/client.js";
 import {
 	BadRequestError,
 	NotFoundError,
 	UnauthorizedError,
-} from "src/lib/errors.js";
-import { userQueries } from "src/db/queries/users.js";
-import { sanitizeTeamUser } from "src/lib/utils.js";
+} from "../lib/errors.js";
+import { userQueries } from "../db/queries/users.js";
+import { sanitizeTeamUser } from "../lib/utils.js";
 
 const router = express.Router();
 
