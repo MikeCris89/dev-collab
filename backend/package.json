@@ -4,11 +4,11 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"prebuild": "npm --prefix ../contract run build",
 		"dev": "tsx watch src/server.ts",
-		"build": "tsc",
 		"start": "node dist/server.js",
-		"postbuild": "npx prisma migrate deploy && npx prisma generate"
+		"prebuild": "npm --prefix ../contract run build && npx prisma generate",
+		"build": "tsc",
+		"postbuild": "npx prisma migrate deploy"
 	},
 	"keywords": [],
 	"author": "",
