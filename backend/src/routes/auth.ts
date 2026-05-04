@@ -16,6 +16,7 @@ const COOKIE_OPTIONS = {
 	httpOnly: true,
 	sameSite: isProd ? ("none" as const) : ("strict" as const),
 	secure: isProd,
+	partitioned: isProd,
 	maxAge: 1000 * 60 * 60 * 24 * 7,
 };
 
@@ -26,7 +27,7 @@ const resetSession = (res: Response, token?: string) => {
 		httpOnly: true,
 		sameSite: isProd ? ("none" as const) : ("strict" as const),
 		secure: isProd,
-		maxAge: 1000 * 60 * 60 * 24 * 7,
+		partitioned: isProd,
 	});
 
 	if (token) {
