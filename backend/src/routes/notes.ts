@@ -14,7 +14,7 @@ const router = express.Router();
 
 const validateFolder: RequestHandler = async (req, _res, next) => {
 	const { teamId } = reqUser(req);
-	const { folderId } = req.params;
+	const { folderId } = req.params as NoteParams;
 
 	if (!folderId) throw new BadRequestError("Missing folder ID");
 
@@ -57,12 +57,11 @@ router.post("/:folderId", validateFolder, async (req, res) => {
 });
 
 router.put("/:folderId/:noteId", validateFolder, async (req, res) => {
-	const { sub: userId } = reqUser(req);
 	const { noteId, folderId } = req.params as NoteParams;
 	const body: NoteInput = req.body;
 
 	const resp = await prisma.note.update({
-		where: { id: noteId, userId, folderId },
+		where: { id: noteId, folderId },
 		data: body,
 	});
 
