@@ -57,7 +57,6 @@ export const useUpdateNote = () => {
 			noteId,
 			data,
 			folderId,
-			projectId,
 		}: {
 			noteId: string;
 			data: NoteInput;
@@ -93,7 +92,6 @@ export const useDeleteNote = () => {
 		mutationFn: ({
 			id,
 			folderId,
-			projectId,
 		}: {
 			id: string;
 			folderId: string;

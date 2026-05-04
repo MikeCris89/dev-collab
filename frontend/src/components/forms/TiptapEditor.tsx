@@ -20,7 +20,7 @@ interface TiptapEditorProps {
 	editor: Editor;
 }
 
-export function TiptapEditor({ placeholder, id, editor }: TiptapEditorProps) {
+export function TiptapEditor({ placeholder, editor }: TiptapEditorProps) {
 	if (!editor) {
 		return null;
 	}

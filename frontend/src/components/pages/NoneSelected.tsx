@@ -3,8 +3,6 @@ import clsx from "clsx";
 import { useGlobal } from "../../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { Edit3, FolderEditIcon, Layers2 } from "lucide-react";
-import { useTeamProject, useTeamProjects } from "@/hooks/useTeam";
-import { useProject } from "@/hooks/useProjects";
 
 const info = {
 	p: { label: "Project", icon: <Layers2 size={38} opacity={0.5} /> },
@@ -14,33 +12,17 @@ const info = {
 
 const NoneSelected = () => {
 	const { setShowMenu, selected, nav } = useGlobal();
-	const { data: allProjects } = useTeamProjects();
-	const { data: project } = useProject(selected.p);
 	const navigate = useNavigate();
 	const page = selected.page;
 
-	const title =
-		page === "f"
-			? allProjects?.find((p) => p.id === selected.p)?.title
-			: page === "n"
-			? project?.folders.find((f) => f.id === selected.f)?.title
-			: null;
-
 	return (
 		<>
-			{/* {title && (
-				<h1 className="text-3xl flex gap-2 items-center mx-auto">
-					{nav[page].parentIcon}
-					{title}
-				</h1>
-			)} */}
 			<div className="h-full w-full flex flex-col justify-center items-center gap-3">
 				<div
 					className={clsx(
-						"w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center text-4xl bg-neutral-500"
+						"w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center text-4xl bg-neutral-500",
 					)}
 				>
-					{/* <Edit3 size={32} className="opacity-50" /> */}
 					{info[page].icon}
 				</div>
 				<h3 className="text-text-muted text-4xl">
@@ -50,10 +32,9 @@ const NoneSelected = () => {
 				<Button
 					variant="primary"
 					onClick={() => {
-						// setShowForm((prev) => ({ ...prev, form: nav[page].newFormId }));
 						setShowMenu(false);
 						navigate(
-							`${nav[page].formUrl}?action=add&formId=${nav[page].formId}`
+							`${nav[page].formUrl}?action=add&formId=${nav[page].formId}`,
 						);
 					}}
 					className="w-[150px]"

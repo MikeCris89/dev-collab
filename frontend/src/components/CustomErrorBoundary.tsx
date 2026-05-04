@@ -12,7 +12,10 @@ export function CustomErrorBoundary({
 			onReset={() => (window.location.href = "/")}
 			fallbackRender={({ error, resetErrorBoundary }) => (
 				<ErrorFallback
-					boundaryError={{ message: error.message, resetErrorBoundary }}
+					boundaryError={{
+						message: error instanceof Error ? error.message : String(error),
+						resetErrorBoundary,
+					}}
 				/>
 			)}
 		>

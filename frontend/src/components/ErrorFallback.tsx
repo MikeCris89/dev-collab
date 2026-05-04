@@ -1,13 +1,15 @@
 import clsx from "clsx";
 import { btnInitStyle, btnVariants } from "./Button";
 
+export interface BoundaryError {
+	message: string;
+	resetErrorBoundary: (...args: any[]) => void;
+}
+
 const ErrorFallback = ({
 	boundaryError,
 }: {
-	boundaryError?: {
-		message: string;
-		resetErrorBoundary: (...args: any[]) => void;
-	};
+	boundaryError?: BoundaryError;
 }) => {
 	const isDev = import.meta.env.DEV;
 

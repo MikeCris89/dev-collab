@@ -33,14 +33,12 @@ const ListItem = ({
 	}, [selected]);
 
 	const isNote = page === "n";
-	const isFolder = page === "f";
-	const isProject = page === "p";
 
 	return (
 		<Button
 			className={clsx(
 				"list-item",
-				(selected || isSel) && "item-selected flex-nowrap"
+				(selected || isSel) && "item-selected flex-nowrap",
 			)}
 			onClick={() => {
 				if (!noteId) setIsSel(true);
@@ -55,7 +53,7 @@ const ListItem = ({
 						<p
 							className={clsx(
 								" text-left line-clamp-2 text-ellipsis text-base ",
-								isNote && ""
+								isNote && "",
 							)}
 						>
 							{title}

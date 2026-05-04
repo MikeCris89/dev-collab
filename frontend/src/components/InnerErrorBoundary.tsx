@@ -15,7 +15,7 @@ export function InnerErrorBoundary({
 			fallbackRender={({ error, resetErrorBoundary }) => (
 				<ErrorFallback
 					boundaryError={{
-						message: `(inner boundary): ${error.message}`,
+						message: `(inner boundary): ${error instanceof Error ? error.message : String(error)}`,
 						resetErrorBoundary,
 					}}
 				/>

@@ -1,4 +1,3 @@
-import { useGlobal } from "@/context/GlobalContext";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import { FORMS } from "@shared/contract";
 import clsx from "clsx";

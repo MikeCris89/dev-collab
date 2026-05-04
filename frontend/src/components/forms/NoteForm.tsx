@@ -182,6 +182,8 @@ const NoteForm = () => {
 		});
 	};
 
+	if (noteError) throw new Error("Error fetching note.");
+
 	return (
 		<form
 			id="note-form"
