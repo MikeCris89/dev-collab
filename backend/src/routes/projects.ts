@@ -1,4 +1,4 @@
-import { LIMITS, Project } from "@shared/contract";
+import { LIMITS } from "@shared/contract";
 import express from "express";
 import { adminOnly } from "src/lib/middleware.js";
 import { reqUser } from "src/types/types.js";
