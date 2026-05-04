@@ -15,18 +15,23 @@ dotenv.config({ path: ".env" });
 
 const app = express();
 const PORT = process.env.PORT ?? 4001;
+const publicUrl = process.env.PUBLIC_URL;
 
-app.use(cors({ origin: process.env.PUBLIC_URL, credentials: true }));
+if (!publicUrl) throw new Error("PUBLIC_URL env var required");
+
+// Cookie Headers
+app.use(helmet());
+
+app.use(cors({ origin: publicUrl, credentials: true }));
+
 app.use(cookieParser());
 
 // Body Parser
 app.use(express.json());
 
-// Cookie Headers
-app.use(helmet());
-
 // Morgan Logging
 app.use(morgan("tiny"));
+``;
 
 // Health for Playwright
 app.get("/health", (_req, res) => res.sendStatus(200));

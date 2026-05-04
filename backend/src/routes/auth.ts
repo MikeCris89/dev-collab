@@ -10,11 +10,13 @@ import { reqUser } from "../types/types.js";
 import prisma from "../db/client.js";
 import { sanitizeAuthUser, validateUserInput } from "../lib/utils.js";
 
+const isProd = process.env.NODE_ENV === "production";
+
 const COOKIE_OPTIONS = {
 	httpOnly: true,
-	sameSite: "strict" as const,
-	secure: process.env.NODE_ENV === "production",
-	maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days to match the token
+	sameSite: isProd ? ("none" as const) : ("strict" as const),
+	secure: isProd,
+	maxAge: 1000 * 60 * 60 * 24 * 7,
 };
 
 const router = express.Router();
@@ -22,8 +24,9 @@ const router = express.Router();
 const resetSession = (res: Response, token?: string) => {
 	res.clearCookie("session", {
 		httpOnly: true,
-		secure: process.env.NODE_ENV === "production",
-		sameSite: "strict",
+		sameSite: isProd ? ("none" as const) : ("strict" as const),
+		secure: isProd,
+		maxAge: 1000 * 60 * 60 * 24 * 7,
 	});
 
 	if (token) {
@@ -78,9 +81,7 @@ router.get("/me", requireAuth, async (req, res) => {
 	res.setHeader("Pragma", "no-cache");
 	res.setHeader("Expires", "0");
 
-	console.log("User Authenticated: ", user);
-
-	res.json(user);
+	res.json(sanitizeAuthUser(resp));
 });
 
 router.post("/signup", validateUserInput, async (req, res) => {
