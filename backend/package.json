@@ -10,7 +10,8 @@
 		"build": "tsc",
 		"postbuild": "prisma migrate deploy",
 		"cleanup": "node dist/scripts/cleanup.js",
-		"postinstall": "prisma generate"
+		"postinstall": "prisma generate",
+		"erd": "DISABLE_ERD=false prisma generate"
 	},
 	"keywords": [],
 	"author": "",
@@ -32,6 +33,7 @@
 		"pg": "^8.16.3"
 	},
 	"devDependencies": {
+		"@mermaid-js/mermaid-cli": "^11.14.0",
 		"@types/bcrypt": "^6.0.0",
 		"@types/cookie-parser": "^1.4.9",
 		"@types/cors": "^2.8.19",
@@ -41,6 +43,7 @@
 		"@types/morgan": "^1.9.10",
 		"@types/node": "^24.3.0",
 		"prisma": "^6.19.3",
+		"prisma-erd-generator": "^2.4.2",
 		"tsx": "^4.20.4",
 		"typescript": "^5.9.2"
 	}

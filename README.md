@@ -91,13 +91,9 @@ npx playwright test
 
 ## Data model
 
-```
-User (ADMIN | TEAM)  →  Team  →  Project  →  Folder  →  Note
-                                       ↕  many-to-many via ProjectsUser
-                                     User
-```
+![Schema](docs/schema.svg)
 
-Full schema diagram: [dbdiagram.io](https://dbdiagram.io/d/68cd9239960f6d821af77f52)
+Generated automatically from `backend/prisma/schema.prisma` via `prisma-erd-generator`.
 
 ## Wireframe
 
