@@ -1,8 +1,20 @@
+import clsx from "clsx";
 import LoadingSpinner from "./LoadingSpinner";
 
-const Loading = ({ withText = false }: { withText?: boolean }) => {
+const Loading = ({
+	withText = false,
+	className,
+}: {
+	withText?: boolean;
+	className?: string;
+}) => {
 	return (
-		<div className="flex justify-center items-center h-full w-full">
+		<div
+			className={clsx(
+				"flex justify-center items-center h-full w-full",
+				className,
+			)}
+		>
 			<div className="flex flex-col gap-4 ">
 				<LoadingSpinner size={32} />
 				{withText && (

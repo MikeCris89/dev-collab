@@ -103,7 +103,6 @@ const Button = ({
 					className={clsx(btnInitStyle, btnVariants[variant], className)}
 					disabled={disabled}
 					onClick={() => {
-						// if (showForm) setFormDirty(false);
 						if (onClick) onClick();
 					}}
 					form={form}
