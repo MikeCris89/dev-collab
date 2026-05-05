@@ -4,13 +4,14 @@ import ProjectForm from "./ProjectForm";
 import UserEditForm from "./UserEditForm";
 import useGetSearchParams from "@/hooks/useGetSearchParams";
 import UserAddForm from "./UserAddForm";
+import RequireAdmin from "../RequireAdmin";
 
 const formReg = {
-	"user-add-form": UserAddForm,
-	"user-edit-form": UserEditForm,
-	"project-form": ProjectForm,
-	"folder-form": FolderForm,
-	"note-form": NoteForm,
+	"user-add-form": { Component: UserAddForm, adminOnly: true },
+	"user-edit-form": { Component: UserEditForm, adminOnly: true },
+	"project-form": { Component: ProjectForm, adminOnly: true },
+	"folder-form": { Component: FolderForm, adminOnly: true },
+	"note-form": { Component: NoteForm, adminOnly: false },
 };
 
 type FormId = keyof typeof formReg;
@@ -21,9 +22,15 @@ const FormRenderer = () => {
 	if (!formId || !formReg[formId as FormId])
 		throw new Error(`FormId mismatch: ${formId}`);
 
-	const FormComponent = formReg[formId as FormId];
+	const { Component, adminOnly } = formReg[formId as FormId];
 
-	return <FormComponent />;
+	return adminOnly ? (
+		<RequireAdmin>
+			<Component />
+		</RequireAdmin>
+	) : (
+		<Component />
+	);
 };
 
 export default FormRenderer;

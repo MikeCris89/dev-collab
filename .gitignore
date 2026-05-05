@@ -156,3 +156,8 @@ dist
 # Prisma
 /backend/src/generated/
 frontend/src/hooks/useUnsavedChanges.ts
+
+# lock not in root
+backend/package-lock.json
+frontend/package-lock.json
+contract/package-lock.json

@@ -124,7 +124,7 @@ const Signup = () => {
 					<span>
 						I understand that my account and all data will be{" "}
 						<strong className="text-text-primary">
-							permanently deleted 7 days
+							permanently deleted 7 - 10 days
 						</strong>{" "}
 						after creation.
 					</span>

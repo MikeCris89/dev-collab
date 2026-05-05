@@ -6,10 +6,11 @@
 	"scripts": {
 		"dev": "tsx watch src/server.ts",
 		"start": "node dist/server.js",
-		"prebuild": "npm --prefix ../contract run build && npx prisma generate",
+		"prebuild": "npm --prefix ../contract run build",
 		"build": "tsc",
-		"postbuild": "npx prisma migrate deploy",
-		"cleanup": "node dist/scripts/cleanup.js"
+		"postbuild": "prisma migrate deploy",
+		"cleanup": "node dist/scripts/cleanup.js",
+		"postinstall": "prisma generate"
 	},
 	"keywords": [],
 	"author": "",

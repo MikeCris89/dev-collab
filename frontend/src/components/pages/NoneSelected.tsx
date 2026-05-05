@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { useGlobal } from "../../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { Edit3, FolderEditIcon, Layers2 } from "lucide-react";
+import useRequireAuth from "@/hooks/useRequireAuth";
 
 const info = {
 	p: { label: "Project", icon: <Layers2 size={38} opacity={0.5} /> },
@@ -12,7 +13,9 @@ const info = {
 
 const NoneSelected = () => {
 	const { setShowMenu, selected, nav } = useGlobal();
+	const { isAdmin } = useRequireAuth();
 	const navigate = useNavigate();
+
 	const page = selected.page;
 
 	return (
@@ -28,19 +31,23 @@ const NoneSelected = () => {
 				<h3 className="text-text-muted text-4xl">
 					No {info[page].label} selected
 				</h3>
-				<p className="text-text-muted">Select from the menu or Create New:</p>
-				<Button
-					variant="primary"
-					onClick={() => {
-						setShowMenu(false);
-						navigate(
-							`${nav[page].formUrl}?action=add&formId=${nav[page].formId}`,
-						);
-					}}
-					className="w-[150px]"
-				>
-					New {info[page].label}
-				</Button>
+				<p className="text-text-muted">
+					Select from the menu {(isAdmin || page === "n") && "or Create New:"}
+				</p>
+				{(isAdmin || page === "n") && (
+					<Button
+						variant="primary"
+						onClick={() => {
+							setShowMenu(false);
+							navigate(
+								`${nav[page].formUrl}?action=add&formId=${nav[page].formId}`,
+							);
+						}}
+						className="w-[150px]"
+					>
+						New {info[page].label}
+					</Button>
+				)}
 			</div>
 		</>
 	);
