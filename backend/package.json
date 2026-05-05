@@ -8,7 +8,8 @@
 		"start": "node dist/server.js",
 		"prebuild": "npm --prefix ../contract run build && npx prisma generate",
 		"build": "tsc",
-		"postbuild": "npx prisma migrate deploy"
+		"postbuild": "npx prisma migrate deploy",
+		"cleanup": "node dist/scripts/cleanup.js"
 	},
 	"keywords": [],
 	"author": "",
