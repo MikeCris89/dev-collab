@@ -2,7 +2,7 @@
 
 @layer components {
 	#root {
-		max-width: 1600px;
+		max-width: 2000px;
 		margin: auto auto;
 		text-align: center;
 		width: 100%;
@@ -15,6 +15,10 @@
 
 	.dark .card {
 		@apply outline-border-medium;
+	}
+
+	.max-width {
+		@apply max-w-[1200px] mx-auto;
 	}
 
 	.search-icon {

@@ -180,18 +180,20 @@ const Toolbar = () => {
 				"flex items-center justify-center w-full bg-bg-elevated border-b border-b-border-light min-h-[56px] md:min-h-[64px] relative flex-nowrap",
 			)}
 		>
-			{!isNote && !isForm && title.title && (
-				<div className="grid grid-cols-[70px_1fr_70px]">
-					<div className="col-start-2 flex gap-2 items-center justify-center flex-nowrap">
-						<i className="text-accent mr-1">{title.icon}</i>
-						<h1 className="w-fit p-0 m-0 text-2xl md:text-4xl text-center">
-							{title.title}
-						</h1>
+			<div className="w-full max-width">
+				{!isNote && !isForm && title.title && (
+					<div className={clsx("w-full grid grid-cols-[70px_1fr_70px]")}>
+						<div className="col-start-2 flex gap-2 items-center justify-center flex-nowrap">
+							<i className="text-accent mr-1">{title.icon}</i>
+							<h1 className="w-fit p-0 m-0 text-2xl md:text-4xl text-center">
+								{title.title}
+							</h1>
+						</div>
 					</div>
-				</div>
-			)}
+				)}
 
-			{(isNote || isForm) && <FormBar />}
+				{(isNote || isForm) && <FormBar />}
+			</div>
 		</div>
 	);
 };

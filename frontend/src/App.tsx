@@ -19,7 +19,7 @@ function App() {
 	if (isPending) return null;
 
 	return (
-		<main className="h-full w-full relative overflow-hidden">
+		<main className="h-full w-full  relative overflow-hidden">
 			<RouterProvider router={router} />;
 		</main>
 	);

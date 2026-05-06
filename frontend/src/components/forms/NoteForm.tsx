@@ -190,7 +190,7 @@ const NoteForm = () => {
 			onSubmit={handleSubmit}
 			className="form h-full p-0 gap-0"
 		>
-			<div className="w-full px-2 md:px-3 pt-2 pb-1 md:pt-3 md:pb-2 border-b border-border-light">
+			<div className="w-full px-2 md:px-3 pt-2 pb-1 md:pt-3 md:pb-2 border-b border-border-light max-width">
 				<input
 					value={title}
 					placeholder="title"

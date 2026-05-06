@@ -29,108 +29,112 @@ export function TiptapEditor({ placeholder, editor }: TiptapEditorProps) {
 		<div className="flex flex-col overflow-hidden bg-bg-elevated h-full w-full">
 			{/* Toolbar */}
 			<div
-				className="flex items-center gap-0.5 px-2 py-1.5 bg-bg-muted border-y border-border-light overflow-x-auto"
+				className=" px-2 py-1.5 bg-bg-muted border-y border-border-light overflow-x-auto"
 				tabIndex={-1}
 			>
-				<ToolbarButton
-					onClick={() => editor.chain().focus().toggleBold().run()}
-					isActive={editor.isActive("bold")}
-					title="Bold"
-				>
-					<Bold size={16} />
-				</ToolbarButton>
-				<ToolbarButton
-					onClick={() => editor.chain().focus().toggleItalic().run()}
-					isActive={editor.isActive("italic")}
-					title="Italic"
-				>
-					<Italic size={16} />
-				</ToolbarButton>
-				<ToolbarButton
-					onClick={() => editor.chain().focus().toggleStrike().run()}
-					isActive={editor.isActive("strike")}
-					title="Strikethrough"
-				>
-					<Strikethrough size={16} />
-				</ToolbarButton>
+				<div className="flex items-center gap-0.5 max-width">
+					<ToolbarButton
+						onClick={() => editor.chain().focus().toggleBold().run()}
+						isActive={editor.isActive("bold")}
+						title="Bold"
+					>
+						<Bold size={16} />
+					</ToolbarButton>
+					<ToolbarButton
+						onClick={() => editor.chain().focus().toggleItalic().run()}
+						isActive={editor.isActive("italic")}
+						title="Italic"
+					>
+						<Italic size={16} />
+					</ToolbarButton>
+					<ToolbarButton
+						onClick={() => editor.chain().focus().toggleStrike().run()}
+						isActive={editor.isActive("strike")}
+						title="Strikethrough"
+					>
+						<Strikethrough size={16} />
+					</ToolbarButton>
 
-				<Separator />
+					<Separator />
 
-				<ToolbarButton
-					onClick={() =>
-						editor.chain().focus().toggleHeading({ level: 1 }).run()
-					}
-					isActive={editor.isActive("heading", { level: 1 })}
-					title="Heading 1"
-				>
-					<Heading1 size={16} />
-				</ToolbarButton>
-				<ToolbarButton
-					onClick={() =>
-						editor.chain().focus().toggleHeading({ level: 2 }).run()
-					}
-					isActive={editor.isActive("heading", { level: 2 })}
-					title="Heading 2"
-				>
-					<Heading2 size={16} />
-				</ToolbarButton>
-				<ToolbarButton
-					onClick={() =>
-						editor.chain().focus().toggleHeading({ level: 3 }).run()
-					}
-					isActive={editor.isActive("heading", { level: 3 })}
-					title="Heading 3"
-				>
-					<Heading3 size={16} />
-				</ToolbarButton>
+					<ToolbarButton
+						onClick={() =>
+							editor.chain().focus().toggleHeading({ level: 1 }).run()
+						}
+						isActive={editor.isActive("heading", { level: 1 })}
+						title="Heading 1"
+					>
+						<Heading1 size={16} />
+					</ToolbarButton>
+					<ToolbarButton
+						onClick={() =>
+							editor.chain().focus().toggleHeading({ level: 2 }).run()
+						}
+						isActive={editor.isActive("heading", { level: 2 })}
+						title="Heading 2"
+					>
+						<Heading2 size={16} />
+					</ToolbarButton>
+					<ToolbarButton
+						onClick={() =>
+							editor.chain().focus().toggleHeading({ level: 3 }).run()
+						}
+						isActive={editor.isActive("heading", { level: 3 })}
+						title="Heading 3"
+					>
+						<Heading3 size={16} />
+					</ToolbarButton>
 
-				<Separator />
+					<Separator />
 
-				<ToolbarButton
-					onClick={() => editor.chain().focus().toggleBulletList().run()}
-					isActive={editor.isActive("bulletList")}
-					title="Bullet List"
-				>
-					<List size={16} />
-				</ToolbarButton>
-				<ToolbarButton
-					onClick={() => editor.chain().focus().toggleOrderedList().run()}
-					isActive={editor.isActive("orderedList")}
-					title="Numbered List"
-				>
-					<ListOrdered size={16} />
-				</ToolbarButton>
-				<ToolbarButton
-					onClick={() => editor.chain().focus().toggleTaskList().run()}
-					isActive={editor.isActive("taskList")}
-					title="Task List"
-				>
-					<ListChecks size={16} />
-				</ToolbarButton>
+					<ToolbarButton
+						onClick={() => editor.chain().focus().toggleBulletList().run()}
+						isActive={editor.isActive("bulletList")}
+						title="Bullet List"
+					>
+						<List size={16} />
+					</ToolbarButton>
+					<ToolbarButton
+						onClick={() => editor.chain().focus().toggleOrderedList().run()}
+						isActive={editor.isActive("orderedList")}
+						title="Numbered List"
+					>
+						<ListOrdered size={16} />
+					</ToolbarButton>
+					<ToolbarButton
+						onClick={() => editor.chain().focus().toggleTaskList().run()}
+						isActive={editor.isActive("taskList")}
+						title="Task List"
+					>
+						<ListChecks size={16} />
+					</ToolbarButton>
 
-				<Separator />
+					<Separator />
 
-				<ToolbarButton
-					onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-					isActive={editor.isActive("codeBlock")}
-					title="Code Block"
-				>
-					<Code2 size={16} />
-				</ToolbarButton>
-				<ToolbarButton
-					onClick={() => editor.chain().focus().toggleBlockquote().run()}
-					isActive={editor.isActive("blockquote")}
-					title="Quote"
-				>
-					<Quote size={16} />
-				</ToolbarButton>
+					<ToolbarButton
+						onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+						isActive={editor.isActive("codeBlock")}
+						title="Code Block"
+					>
+						<Code2 size={16} />
+					</ToolbarButton>
+					<ToolbarButton
+						onClick={() => editor.chain().focus().toggleBlockquote().run()}
+						isActive={editor.isActive("blockquote")}
+						title="Quote"
+					>
+						<Quote size={16} />
+					</ToolbarButton>
+				</div>
 			</div>
-			<p className="text-xs bg-yellow-500/30 py-1">
-				⚠️ Portfolio Demo: Do not store any personal or sensitive info.
-			</p>
+			<div className="bg-yellow-500/20 py-1 px-3 w-full">
+				<p className="text-xs w-full max-width text-left">
+					⚠️ Portfolio Demo: Do not store any personal or sensitive info.
+				</p>
+			</div>
 
 			{/* Editor */}
-			<div className="flex-1 flex overflow-hidden h-full">
+			<div className="flex-1 flex overflow-hidden h-full w-full max-width">
 				<EditorContent
 					editor={editor}
 					placeholder={placeholder}
