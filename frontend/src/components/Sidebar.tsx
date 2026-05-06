@@ -123,12 +123,9 @@ const Sidebar = () => {
 	return (
 		<>
 			{/* Mobile Menu Button — outside sidebar to avoid transform stacking context */}
-			<div
-				ref={menuBtnRef}
-				className="md:hidden fixed bottom-6 right-6 z-[9999]"
-			>
+			<div ref={menuBtnRef} className="md:hidden fixed bottom-6 right-6 z-9999">
 				<Button
-					className="!rounded-full !p-0 !w-14 !h-14 !min-w-0 flex items-center justify-center shadow-lg"
+					className="rounded-full! p-0! w-14! h-14! min-w-0! flex items-center justify-center shadow-lg"
 					variant="menu"
 					onClick={toggleMenu}
 				>
@@ -140,7 +137,7 @@ const Sidebar = () => {
 				className={clsx(
 					"absolute left-0 -translate-x-full md:static md:inset-auto  md:translate-x-0",
 					"flex flex-col",
-					" h-screen w-[250px] max-w-screen md:h-full md:w-[300px] bg-bg-surface  p-1 py-4 border-r border-r-border-medium shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] transition-all duration-300 z-[49] backdrop-blur-sm ",
+					" h-screen w-[250px] max-w-screen md:h-full md:w-[300px] bg-bg-surface  p-1 py-4 border-r border-r-border-medium shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] transition-all duration-300 z-49 backdrop-blur-sm ",
 					showMenu && "translate-x-0",
 				)}
 			>

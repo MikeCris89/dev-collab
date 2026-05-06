@@ -1,5 +1,6 @@
 import notesRouter from "./routes/notes.js";
 import authRouter from "./routes/auth.js";
+import debugRouter from "./routes/debug.js";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -37,6 +38,7 @@ app.use(morgan("tiny"));
 app.get("/health", (_req, res) => res.sendStatus(200));
 
 // Routers
+app.use("/api", debugRouter);
 app.use("/api/auth", authRouter);
 
 app.use(requireAuth);

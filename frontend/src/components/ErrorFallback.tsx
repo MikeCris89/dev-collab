@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { btnInitStyle, btnVariants } from "./Button";
+import { useEffect } from "react";
 
 export interface BoundaryError {
 	message: string;
@@ -7,6 +8,20 @@ export interface BoundaryError {
 }
 
 const ErrorFallback = ({ boundaryError }: { boundaryError: BoundaryError }) => {
+	useEffect(() => {
+		fetch("/api/debug-log", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				message: boundaryError.message,
+				url: window.location.href,
+				userAgent: navigator.userAgent,
+				isStandalone: window.matchMedia("(display-mode: standalone)").matches,
+				timestamp: new Date().toISOString(),
+			}),
+		}).catch(() => {});
+	}, [boundaryError.message]);
+
 	// TEMP: always show error while debugging friend's iPhone issue
 	// const showError = import.meta.env.DEV;
 	const showError = true; // change back to import.meta.env.DEV later
