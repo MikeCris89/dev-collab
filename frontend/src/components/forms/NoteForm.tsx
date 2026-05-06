@@ -142,6 +142,7 @@ const NoteForm = () => {
 
 	if (isEdit && !existing) throw new Error("Note not found.");
 	if (!isEdit && existing) throw new Error("Existing note found for new entry");
+	if (noteError) throw noteError;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -181,8 +182,6 @@ const NoteForm = () => {
 			minute: "2-digit",
 		});
 	};
-
-	if (noteError) throw new Error("Error fetching note.");
 
 	return (
 		<form

@@ -14,7 +14,6 @@ import Signup from "./components/pages/Signup";
 import TeamPage from "./components/pages/TeamPage";
 import NoneSelected from "./components/pages/NoneSelected";
 import Account from "./components/pages/Account";
-import InnerErrorFallback from "./components/InnerErrorFallback";
 
 const PublicRoutes = () => {
 	const { user } = useAuth();
@@ -43,7 +42,6 @@ const PrivateRoutes = () => {
 export const router = createBrowserRouter([
 	{
 		element: <PublicRoutes />,
-		errorElement: <InnerErrorFallback />,
 		children: [
 			{ path: "/login", element: <Login /> },
 			{ path: "/signup", element: <Signup /> },
@@ -51,12 +49,10 @@ export const router = createBrowserRouter([
 	},
 	{
 		element: <PrivateRoutes />,
-		errorElement: <InnerErrorFallback />,
 		children: [
 			{
 				path: "/",
 				element: <Home />,
-				errorElement: <InnerErrorFallback />,
 				children: [
 					{ index: true, element: <NoneSelected /> },
 					{ path: "p/", element: <NoneSelected /> },
