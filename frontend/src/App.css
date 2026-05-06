@@ -1,9 +1,9 @@
 @reference "./index.css";
 
-@utility max-width {
-	max-width: 1200px;
-	margin-inline: auto;
-}
+/* @utility max-width {
+  max-width: 1200px;
+  margin-inline: auto;
+} */
 
 @layer components {
 	#root {
@@ -20,6 +20,10 @@
 
 	.dark .card {
 		@apply outline-border-medium;
+	}
+
+	.max-width {
+		@apply max-w-[1200px] mx-auto;
 	}
 
 	.search-icon {

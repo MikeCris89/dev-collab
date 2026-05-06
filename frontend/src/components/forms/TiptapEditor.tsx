@@ -32,7 +32,7 @@ export function TiptapEditor({ placeholder, editor }: TiptapEditorProps) {
 				className=" px-2 py-1.5 bg-bg-muted border-y border-border-light overflow-x-auto"
 				tabIndex={-1}
 			>
-				<div className="flex items-center gap-0.5 max-width">
+				<div className="flex items-center gap-0.5 max-w-[1200px] mx-auto">
 					<ToolbarButton
 						onClick={() => editor.chain().focus().toggleBold().run()}
 						isActive={editor.isActive("bold")}
@@ -127,8 +127,8 @@ export function TiptapEditor({ placeholder, editor }: TiptapEditorProps) {
 					</ToolbarButton>
 				</div>
 			</div>
-			<div className="bg-yellow-500/20 py-1 px-3 w-full">
-				<p className="text-xs w-full max-width text-left">
+			<div className="bg-yellow-500/20  w-full">
+				<p className="text-xs w-full max-w-[1200px] mx-auto py-1 px-3 text-left">
 					⚠️ Portfolio Demo: Do not store any personal or sensitive info.
 				</p>
 			</div>
