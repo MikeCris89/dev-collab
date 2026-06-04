@@ -113,6 +113,17 @@ model Comment {
   @@index([noteId, createdAt])
 }
 
+model Heartbeat {
+  id               String   @id @default(cuid(2))
+  ranAt            DateTime @default(now()) @map("ran_at")
+  deletedTeams     Int      @map("deleted_teams")
+  deletedDemoTeams Int      @map("deleted_demo_teams")
+  totalTeams       Int      @map("total_teams")
+  totalDemoTeams   Int      @map("total_demo_teams")
+
+  @@map("heartbeats")
+}
+
 model ProjectsUser {
   userId String  @map("user_id")
   projectId String  @map("project_id")
