@@ -3,7 +3,7 @@ import { BadRequestError, UnauthorizedError } from "../lib/errors.js";
 import jwt from "jsonwebtoken";
 import { requireAuth } from "../lib/middleware.js";
 import { CreateUserDTO, ROLES } from "@shared/contract";
-import { userQueries } from "../db/queries/index.js";
+import { userQueries, seedDemoData } from "../db/queries/index.js";
 import type { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { randomBytes } from "crypto";
@@ -133,6 +133,8 @@ router.post("/demo", async (_req, res) => {
 		name: "Demo User",
 		role: ROLES.admin,
 	});
+
+	await seedDemoData(user.id, user.teamId);
 
 	const token = getToken(user);
 
