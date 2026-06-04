@@ -6,6 +6,7 @@ import { CreateUserDTO, ROLES } from "@shared/contract";
 import { userQueries } from "../db/queries/index.js";
 import type { User } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { randomBytes } from "crypto";
 import { reqUser } from "../types/types.js";
 import prisma from "../db/client.js";
 import { sanitizeAuthUser, validateUserInput } from "../lib/utils.js";
@@ -109,6 +110,35 @@ router.post("/signup", validateUserInput, async (req, res) => {
 	const userData = sanitizeAuthUser(user);
 
 	res.status(201).json(userData);
+});
+
+router.post("/demo", async (_req, res) => {
+	let username = "";
+
+	for (let i = 0; i < 3; i++) {
+		const candidate = "demouser" + randomBytes(4).toString("hex");
+		if (!(await userQueries.getByUsername(candidate))) {
+			username = candidate;
+			break;
+		}
+	}
+
+	if (!username) throw new Error("Failed to generate demo account");
+
+	const hash = await hashPassword(randomBytes(12).toString("hex"));
+
+	const user = await userQueries.createUser({
+		username,
+		password: hash,
+		name: "Demo User",
+		role: ROLES.admin,
+	});
+
+	const token = getToken(user);
+
+	resetSession(res, token);
+
+	res.status(201).json(sanitizeAuthUser(user));
 });
 
 router.post("/login", async (req, res) => {

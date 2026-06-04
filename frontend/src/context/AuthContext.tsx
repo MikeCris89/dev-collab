@@ -17,6 +17,7 @@ interface AuthCtx {
 	setError: React.Dispatch<React.SetStateAction<string | null>>;
 	user: UserAuth | null;
 	signup: (userData: SignupRequest) => Promise<JwtUser | undefined>;
+	demo: () => Promise<JwtUser | undefined>;
 	login: (userData: LoginRequest) => Promise<JwtUser | undefined>;
 	logout: () => Promise<void>;
 	refresh: () => Promise<void>;
@@ -85,6 +86,22 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 		}
 	};
 
+	const demo = async () => {
+		try {
+			setError(null);
+			setIsLoading(true);
+			const resp = await poster<undefined, JwtUser>("/auth/demo", undefined);
+			setUser(resp);
+			return resp;
+		} catch (e) {
+			const err = e as AxiosError<ErrorDTO>;
+			const msg = err.response?.data?.message ?? err.message ?? "Unknown error";
+			setError(msg);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
 	const login = async (userData: LoginRequest) => {
 		try {
 			setError(null);
@@ -121,6 +138,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 				error,
 				setError,
 				signup,
+				demo,
 				login,
 				logout,
 				refresh,
