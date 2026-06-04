@@ -32,6 +32,11 @@ const ErrorFallback = ({ boundaryError }: { boundaryError: BoundaryError }) => {
 			{showError && (
 				<pre className="text-red-500 text-wrap">{boundaryError.message}</pre>
 			)}
+			<p className="text-text-muted text-sm text-center max-w-[420px]">
+				If this keeps happening, an ad blocker or privacy setting may be blocking
+				the cookie this site uses to keep you logged in. Try disabling it or
+				allowing cookies for this site, then refresh.
+			</p>
 			<br />
 			<div className="flex gap-4 items-center">
 				<button
