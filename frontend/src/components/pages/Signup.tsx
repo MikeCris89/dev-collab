@@ -43,7 +43,7 @@ const Signup = () => {
 		<form
 			id="user-form"
 			onSubmit={handleSubmit}
-			className="flex flex-col gap-3 w-full"
+			className="flex flex-col gap-3 w-full pb-0"
 			autoComplete="off"
 		>
 			<div className="grid grid-cols-2 gap-3 w-full">

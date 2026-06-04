@@ -14,6 +14,7 @@ interface AuthCtx {
 	isLoading: boolean;
 	isPending: boolean;
 	error: string | null;
+	cookieBlocked: boolean;
 	setError: React.Dispatch<React.SetStateAction<string | null>>;
 	user: UserAuth | null;
 	signup: (userData: SignupRequest) => Promise<JwtUser | undefined>;
@@ -29,6 +30,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isPending, setIsPending] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [cookieBlocked, setCookieBlocked] = useState(false);
 	const [user, setUser] = useState<JwtUser | null>(null);
 
 	const queryClient = useQueryClient();
@@ -67,54 +69,57 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 		return () => window.removeEventListener("pageshow", handlePageShow);
 	}, []);
 
-	const signup = async (userData: SignupRequest) => {
+	const apiErrorMessage = (e: unknown) => {
+		const err = e as AxiosError<ErrorDTO>;
+		return err.response?.data?.message ?? err.message ?? "Unknown error";
+	};
+
+	// Runs an auth request, then confirms the session cookie actually persisted
+	// by calling /auth/me. The POST can "succeed" (server sets the cookie + returns
+	// the user) while the browser silently drops the Set-Cookie — typically an ad
+	// blocker or third-party-cookie setting. In that case /auth/me comes back 401,
+	// so we surface a cookie warning instead of dropping the user into a broken,
+	// logged-out app where every request is unauthorized.
+	const authenticate = async (
+		request: () => Promise<unknown>,
+		onError: (e: unknown) => void,
+	) => {
+		let authenticated = false;
 		try {
 			setError(null);
+			setCookieBlocked(false);
 			setIsLoading(true);
-			const resp = await poster<SignupRequest, JwtUser>(
-				"/auth/signup",
-				userData,
-			);
-			setUser(resp);
-			return resp;
+			await request();
+			authenticated = true;
+			const me = await fetcher<JwtUser>("/auth/me");
+			setUser(me);
+			return me;
 		} catch (e) {
-			const err = e as AxiosError<ErrorDTO>;
-			const msg = err.response?.data?.message ?? err.message ?? "Unknown error";
-			setError(msg);
+			const status = (e as AxiosError).response?.status;
+			if (authenticated && status === 401) setCookieBlocked(true);
+			else onError(e);
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
-	const demo = async () => {
-		try {
-			setError(null);
-			setIsLoading(true);
-			const resp = await poster<undefined, JwtUser>("/auth/demo", undefined);
-			setUser(resp);
-			return resp;
-		} catch (e) {
-			const err = e as AxiosError<ErrorDTO>;
-			const msg = err.response?.data?.message ?? err.message ?? "Unknown error";
-			setError(msg);
-		} finally {
-			setIsLoading(false);
-		}
-	};
+	const signup = (userData: SignupRequest) =>
+		authenticate(
+			() => poster<SignupRequest, JwtUser>("/auth/signup", userData),
+			(e) => setError(apiErrorMessage(e)),
+		);
 
-	const login = async (userData: LoginRequest) => {
-		try {
-			setError(null);
-			setIsLoading(true);
-			const resp = await poster<LoginRequest, JwtUser>("/auth/login", userData);
-			setUser(resp);
-			return resp;
-		} catch (e) {
-			setError("Error logging in");
-		} finally {
-			setIsLoading(false);
-		}
-	};
+	const demo = () =>
+		authenticate(
+			() => poster<undefined, JwtUser>("/auth/demo", undefined),
+			(e) => setError(apiErrorMessage(e)),
+		);
+
+	const login = (userData: LoginRequest) =>
+		authenticate(
+			() => poster<LoginRequest, JwtUser>("/auth/login", userData),
+			() => setError("Error logging in"),
+		);
 
 	const logout = async () => {
 		try {
@@ -136,6 +141,7 @@ const AuthProvider = ({ children }: React.PropsWithChildren) => {
 				isPending,
 				user,
 				error,
+				cookieBlocked,
 				setError,
 				signup,
 				demo,

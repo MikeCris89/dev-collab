@@ -29,6 +29,11 @@ const Login = () => {
 				{isLoading ? <LoadingSpinner /> : "Try a demo account"}
 			</Button>
 
+			<p className="text-text-muted text-xs text-center mt-2 max-w-[320px] mx-auto">
+				No sign-up needed. Will keep you signed in on this browser. Allow
+				cookies if you use an ad blocker.
+			</p>
+
 			<div className="flex items-center gap-3 my-4">
 				<span className="h-px flex-1 bg-border-light" />
 				<span className="text-text-muted text-xs">or</span>
@@ -52,8 +57,6 @@ const Login = () => {
 					autoFocus
 					required
 				/>
-
-				{/* // TODO generate random passwords instead, do not let users create their own passwords */}
 
 				<FormInput
 					id="password"
