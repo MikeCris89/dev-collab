@@ -20,10 +20,15 @@ const publicUrl = process.env.PUBLIC_URL;
 
 if (!publicUrl) throw new Error("PUBLIC_URL env var required");
 
+const allowedOrigins = (process.env.PUBLIC_URL ?? "")
+	.split(",")
+	.map((s) => s.trim())
+	.filter(Boolean);
+
 // Cookie Headers
 app.use(helmet());
 
-app.use(cors({ origin: publicUrl, credentials: true }));
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 app.use(cookieParser());
 
