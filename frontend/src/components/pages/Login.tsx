@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import type { LoginRequest } from "@shared/contract";
 import Button from "../Button";
@@ -10,7 +10,12 @@ const Login = () => {
 		username: "",
 		password: "",
 	});
+	const [demoClick, setDemoClick] = useState(false);
 	const { isLoading, login, demo, setError } = useAuth();
+
+	useEffect(() => {
+		if (!isLoading) setDemoClick(false);
+	}, [isLoading]);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -23,10 +28,13 @@ const Login = () => {
 			<Button
 				variant="primary"
 				disabled={isLoading}
-				onClick={() => demo()}
+				onClick={() => {
+					setDemoClick(true);
+					demo();
+				}}
 				className="w-full max-w-[250px] mx-auto"
 			>
-				{isLoading ? <LoadingSpinner /> : "Try a demo account"}
+				{isLoading && demoClick ? <LoadingSpinner /> : "Try a demo account"}
 			</Button>
 
 			<p className="text-text-muted text-xs text-center mt-2 max-w-[320px] mx-auto">
@@ -76,7 +84,7 @@ const Login = () => {
 					variant="primary"
 					className="w-full max-w-[250px] mx-auto mt-2"
 				>
-					{isLoading ? <LoadingSpinner /> : "Sign In"}
+					{isLoading && !demoClick ? <LoadingSpinner /> : "Sign In"}
 				</Button>
 			</form>
 		</>
