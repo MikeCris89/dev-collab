@@ -161,3 +161,6 @@ frontend/src/hooks/useUnsavedChanges.ts
 backend/package-lock.json
 frontend/package-lock.json
 contract/package-lock.json
+
+# Personal interview prep notes — never commit
+INTERVIEW_QA.md
